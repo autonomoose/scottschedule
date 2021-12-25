@@ -1,29 +1,30 @@
 {
-  "name": "scottschedule",
-  "version": "1.0.1",
-  "private": true,
-  "description": "Scotts Schedule Reminder",
-  "keywords": [
-      "complex timer"
-  ],
-
-  "scripts": {
-      "develop": "gatsby develop",
-      "start": "gatsby develop",
-      "build": "gatsby build",
-      "serve": "gatsby serve",
-      "clean": "gatsby clean",
-      "testcoverage": "jest --coverage",
-      "testsilent": "jest --silent",
-      "testupdate": "jest -u",
-      "test": "jest",
-      "type-check": "tsc --noEmit"
-  },
-  "author": "tw",
-  "license": "ISC",
-  "dependencies": {
-    "gatsby": "^4.4.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  }
+    "name": "scottschedule",
+    "version": "1.0.1",
+    "private": true,
+    "description": "Scotts Schedule Reminder",
+    "keywords": [
+        "complex timer"
+    ],
+    "scripts": {
+        "develop": "gatsby develop",
+        "start": "gatsby develop",
+        "build": "gatsby build",
+        "serve": "gatsby serve",
+        "clean": "gatsby clean",
+        "testcoverage": "jest --coverage",
+        "testsilent": "jest --silent",
+        "testupdate": "jest -u",
+        "test": "jest",
+        "type-check": "tsc --noEmit"
+    },
+    "author": "tw",
+    "license": "ISC",
+    "dependencies": {
+        "@aws-amplify/ui-react": "^2.1.5",
+        "aws-amplify": "^4.3.11",
+        "gatsby": "^4.4.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    }
 }
