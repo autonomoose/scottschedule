@@ -1,4 +1,4 @@
-node_modules/
+amplify/team-provider-info.json
 .cache/
 public
 coverage/
