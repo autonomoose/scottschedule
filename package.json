@@ -1,10 +1,23 @@
 {
   "name": "scottschedule",
   "version": "1.0.0",
+  "private": true,
   "description": "Scotts Schedule Reminder",
-  "main": "index.js",
+  "keywords": [
+      "complex timer"
+  ],
+
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "develop": "gatsby develop",
+      "start": "gatsby develop",
+      "build": "gatsby build",
+      "serve": "gatsby serve",
+      "clean": "gatsby clean",
+      "testcoverage": "jest --coverage",
+      "testsilent": "jest --silent",
+      "testupdate": "jest -u",
+      "test": "jest",
+      "type-check": "tsc --noEmit"
   },
   "author": "tw",
   "license": "ISC",
