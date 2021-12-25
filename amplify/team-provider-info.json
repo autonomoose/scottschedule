@@ -10,6 +10,11 @@
       "StackName": "amplify-scottschedule-prod-180945",
       "StackId": "arn:aws:cloudformation:us-east-1:199577769813:stack/amplify-scottschedule-prod-180945/9768fb70-650e-11ec-a874-0af9c7a58f19",
       "AmplifyAppId": "d38c5yzv1km9z5"
+    },
+    "categories": {
+      "auth": {
+        "scottschedule611780b0": {}
+      }
     }
   }
 }

@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "scottschedule611780b0": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
