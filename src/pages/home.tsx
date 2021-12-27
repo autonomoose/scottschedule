@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout'
@@ -12,6 +12,11 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 
+interface iFutureEvent {
+    evTstamp: string,
+    evTaskId: string,
+}
+
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
@@ -19,7 +24,14 @@ const HomePage = () => {
     const [hstatus, setHstatus] = useState(''); // hstatus depends on hdata
     const [quiet, setQuiet] = useState(false);
     const [currSched, setCurrSched] = useState('off');
-    const [futureEvs, setFutureEvs] = useState({});
+    const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+
+    const DisplayFutureEvent = (props: iFutureEvent) => {
+        return (
+          <div>
+            {props.evTstamp} -- Task {props.evTaskId}
+          </div>
+    )}
 
     const buildFutureEvents = (wksched: string) => {
         if (currSched !== wksched) {
@@ -27,11 +39,26 @@ const HomePage = () => {
                 setCurrSched(wksched);
                 console.log("rebuild schedule", wksched);
 
-                let wkEvents = {};
+                let wkEvents: iFutureEvent[] = [];
                 if (wksched === "off") {
                         setFutureEvs(wkEvents);
                         enqueueSnackbar(`scheduler off`,
                                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                } else if (wksched === "test1") {
+                        let wkdate = new Date();
+                        wkdate.setSeconds(wkdate.getSeconds()+120)
+                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+
+                        wkdate.setSeconds(wkdate.getSeconds()+120)
+                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+
+                        wkdate.setSeconds(wkdate.getSeconds()+120)
+                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+
+                        setFutureEvs(wkEvents);
+                        enqueueSnackbar(`scheduled test event 1`,
+                                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+
                 } else {
                         enqueueSnackbar(`rebuilt schedule`,
                                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
@@ -40,8 +67,8 @@ const HomePage = () => {
                 setHstatus("");
         }
     }
-    // every ten seconds, get the time and update clock
-    var currenttime = setInterval(() => {
+
+    const setNow = () => {
         var mainclock = document.getElementById('mainclock');
         var maindate = document.getElementById('maindate');
         var wkdate = new Date();
@@ -58,7 +85,16 @@ const HomePage = () => {
         } else {
                 console.log("undefined maindate");
         }
-    }, 10000);
+    }
+    // every ten seconds, get the time and update clock
+    var currenttime = setInterval(() => {setNow()}, 10000);
+
+    // init
+    useEffect(() => {
+        setNow();
+        enqueueSnackbar(`init complete`,
+                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+    }, [enqueueSnackbar]);
 
     return(
     <Layout>
@@ -86,6 +122,13 @@ const HomePage = () => {
       <Button size="small" variant={(currSched === "test9")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test9")}>Test9</Button>
       </Box>
       </Card>
+
+    { (futureEvs.length > 0) &&
+      <Card style={{marginTop: '3px', maxWidth: 410, flex: '1 1'}}>
+        Upcoming Events
+        { futureEvs.map(item => <DisplayFutureEvent key={item.evTstamp} {...item}/>)}
+      </Card>
+    }
 
     <Backdrop sx={{ color: '#fff', zIndex: 3000 }} open={(hstatus === "Loading")} >
       <CircularProgress data-testid="dataBackdrop" color="inherit" />
