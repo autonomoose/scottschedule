@@ -13,7 +13,7 @@ import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 
 interface iFutureEvent {
-    evTstamp: string,
+    evTstamp: number,
     evTaskId: string,
 }
 
@@ -25,37 +25,81 @@ const HomePage = () => {
     const [quiet, setQuiet] = useState(false);
     const [currSched, setCurrSched] = useState('off');
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+    const [alarmId, setAlarmId] = useState(0);
 
     const DisplayFutureEvent = (props: iFutureEvent) => {
+        const wkdate = new Date(props.evTstamp);
         return (
           <div>
-            {props.evTstamp} -- Task {props.evTaskId}
+            {wkdate.toLocaleString()} -- Task {props.evTaskId}
           </div>
     )}
+
+    const getNextAlarm = () => {
+        console.log("Looking for next alarm");
+        let ret_milli = 0;
+        let currdate = new Date().valueOf();
+        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
+
+        // return milliseconds until alarm
+        if (wkEvents.length > 0) {
+            ret_milli = wkEvents[0].evTstamp - currdate;
+        }
+        console.log("milliseconds until alarm", ret_milli);
+        return (ret_milli);
+    };
+
+    const AlarmTask = () => {
+        setAlarmId(0);
+        var currdate = new Date();
+        console.log('Timer Complete', currdate.toLocaleString());
+
+        // play sound unless quieted
+
+        // remove current event from
+        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
+        if (wkEvents.length !== futureEvs.length) {
+            console.log("cleanup current event after alarm");
+            setFutureEvs(wkEvents);
+            if (wkEvents.length === 0) {
+                setCurrSched("off");
+            }
+        } else {
+            console.log("no cleanup after alarm");
+        }
+    };
+
+    const killAlarmTask = () => {
+        if (alarmId) {
+            clearTimeout(alarmId);
+            setAlarmId(0);
+            console.log('Cancel timer');
+        }
+    };
 
     const buildFutureEvents = (wksched: string) => {
         if (currSched !== wksched) {
                 setHstatus("Loading");
                 setCurrSched(wksched);
                 console.log("rebuild schedule", wksched);
+                killAlarmTask();
 
                 let wkEvents: iFutureEvent[] = [];
+                let currdate = new Date();
                 if (wksched === "off") {
-                        setFutureEvs(wkEvents);
                         enqueueSnackbar(`scheduler off`,
                                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 } else if (wksched === "test1") {
-                        let wkdate = new Date();
+                        let wkdate = new Date(currdate.valueOf());
                         wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
 
                         wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
 
                         wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.toLocaleString(), evTaskId: '1'})
+                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
 
-                        setFutureEvs(wkEvents);
                         enqueueSnackbar(`scheduled test event 1`,
                                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
 
@@ -64,11 +108,18 @@ const HomePage = () => {
                                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 }
 
+                let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
+                setFutureEvs(finalEvents);
+                if (finalEvents.length === 0 && wksched !== "off") {
+                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                    setCurrSched("off");
+                }
                 setHstatus("");
         }
     }
 
     const setNow = () => {
+        console.log("setnow");
         var mainclock = document.getElementById('mainclock');
         var maindate = document.getElementById('maindate');
         var wkdate = new Date();
@@ -87,14 +138,35 @@ const HomePage = () => {
         }
     }
     // every ten seconds, get the time and update clock
-    var currenttime = setInterval(() => {setNow()}, 10000);
 
     // init
     useEffect(() => {
         setNow();
+        var intervalId = setInterval(() => {setNow()}, 10000);
+
         enqueueSnackbar(`init complete`,
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+        return () => {clearInterval(intervalId)};
     }, [enqueueSnackbar]);
+
+    // maintain the next alarm timer, and update state
+    // const [alarmId, setAlarmId] = useState();
+    useEffect(() => {
+        console.log("futureEvs changed", futureEvs);
+        killAlarmTask();
+
+        // build new alarm task
+        if (futureEvs.length > 0) {
+            //    find next alarm, and milliseconds until trigger
+            var nextAlarm = getNextAlarm();
+            if (nextAlarm > 0) {
+                var timeoutId = setTimeout(AlarmTask, nextAlarm) as unknown as number;
+                setAlarmId(timeoutId);
+            } else {
+                console.log('future events but no next alarm?');
+            }
+        }
+    }, [futureEvs]);
 
     return(
     <Layout>
