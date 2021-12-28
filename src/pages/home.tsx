@@ -24,8 +24,7 @@ const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
 
-    const [hstatus, setHstatus] = useState(''); // hstatus depends on hdata
-    const [quiet, setQuiet] = useState(false);
+    const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [currSched, setCurrSched] = useState('off');
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [alarmId, setAlarmId] = useState(0);
@@ -39,7 +38,6 @@ const HomePage = () => {
     )}
 
     const getNextAlarm = () => {
-        console.log("Looking for next alarm");
         let ret_milli = 0;
         let currdate = new Date().valueOf();
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
@@ -48,7 +46,6 @@ const HomePage = () => {
         if (wkEvents.length > 0) {
             ret_milli = wkEvents[0].evTstamp - currdate;
         }
-        console.log("milliseconds until alarm", ret_milli);
         return (ret_milli);
     };
 
@@ -60,7 +57,6 @@ const HomePage = () => {
         // play sound unless quieted
         const alarmAudio = document.getElementsByClassName("audio-element")[0]
         if (alarmAudio) {
-            console.log("mooo");
             alarmAudio.play();
         } else {
             console.log("no mooo");
@@ -69,10 +65,10 @@ const HomePage = () => {
         // remove current event from
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
         if (wkEvents.length !== futureEvs.length) {
-            console.log("cleanup current event after alarm");
             setFutureEvs(wkEvents);
             if (wkEvents.length === 0) {
                 setCurrSched("off");
+                setHstatus("Completed");
             }
         } else {
             console.log("no cleanup after alarm");
@@ -91,27 +87,40 @@ const HomePage = () => {
         if (currSched !== wksched) {
                 setHstatus("Loading");
                 setCurrSched(wksched);
-                console.log("rebuild schedule", wksched);
+                console.log("Building schedule ", wksched);
                 killAlarmTask();
 
                 let wkEvents: iFutureEvent[] = [];
                 let currdate = new Date();
                 if (wksched === "off") {
-                        enqueueSnackbar(`scheduler off`,
-                                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                    enqueueSnackbar(`scheduler off`,
+                        {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 } else if (wksched === "test1") {
-                        let wkdate = new Date(currdate.valueOf());
-                        wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
+                    // couple of quick short tests
+                    let wkdate = new Date(currdate.valueOf());
+                    wkdate.setSeconds(wkdate.getSeconds()+120)
+                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
 
-                        wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
+                    wkdate.setSeconds(wkdate.getSeconds()+120)
+                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
 
-                        wkdate.setSeconds(wkdate.getSeconds()+120)
-                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
+                    wkdate.setSeconds(wkdate.getSeconds()+120)
+                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
 
-                        enqueueSnackbar(`scheduled test event 1`,
-                                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                    enqueueSnackbar(`scheduled test event 1`,
+                            {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+
+                } else if (wksched === "test2") {
+                    // on the hour
+                    let wkdate = new Date(currdate.valueOf());
+                    for (let wkhour = 8; wkhour < 19; wkhour++) {
+                        wkdate.setHours(wkhour);
+                        wkdate.setMinutes(0);
+                        wkdate.setSeconds(0);
+                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: wkhour.toString()})
+                    }
+                    enqueueSnackbar(`scheduled test event 2`,
+                            {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
 
                 } else {
                         enqueueSnackbar(`rebuilt schedule`,
@@ -120,11 +129,15 @@ const HomePage = () => {
 
                 let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
                 setFutureEvs(finalEvents);
-                if (finalEvents.length === 0 && wksched !== "off") {
-                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
-                    setCurrSched("off");
+                if (finalEvents.length === 0) {
+                    setHstatus("Ready");
+                    if (wksched !== "off") {
+                        enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                        setCurrSched("off");
+                    }
+                } else {
+                    setHstatus("Running");
                 }
-                setHstatus("");
         }
     }
 
@@ -146,6 +159,7 @@ const HomePage = () => {
         } else {
                 console.log("undefined maindate");
         }
+
     }
     // every ten seconds, get the time and update clock
 
@@ -154,6 +168,7 @@ const HomePage = () => {
         setNow();
         var intervalId = setInterval(() => {setNow()}, 10000);
 
+        setHstatus("Ready");
         enqueueSnackbar(`init complete`,
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
         return () => {clearInterval(intervalId)};
@@ -162,7 +177,6 @@ const HomePage = () => {
     // maintain the next alarm timer, and update state
     // const [alarmId, setAlarmId] = useState();
     useEffect(() => {
-        console.log("futureEvs changed", futureEvs);
         killAlarmTask();
 
         // build new alarm task
@@ -184,13 +198,13 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
-      <Box display="flex" flexWrap="wrap">
+      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 350, flex: '1 1'}}>
+      <Card style={{marginTop: '3px', maxWidth: 412, minWidth: 410, flex: '1 1'}}>
       <Box display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box><h2 id='maindate'></h2></Box>
-        <Box><Button variant={(quiet)? "contained": "outlined"} onClick={() => setQuiet(() => {return(quiet === false)})}>Quiet</Button></Box>
+        <Box id='status'>{hstatus}</Box>
       </Box>
 
       <Box mx={1} mb={1}>
@@ -206,7 +220,14 @@ const HomePage = () => {
       <Button size="small" variant={(currSched === "test9")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test9")}>Test9</Button>
       </Box>
 
-      <Divider />
+     <Divider />
+     <Box mx={1} my={1}>
+      <Button size="small" variant={(currSched === "opt1")? "contained": "outlined"} color="primary" >Option1</Button>
+      <Button size="small" variant={(currSched === "opt2")? "contained": "outlined"} color="primary" >Option2</Button>
+      <Button size="small" variant={(currSched === "opt3")? "contained": "outlined"} color="primary" >Option3</Button>
+      <Button size="small" variant={(currSched === "opt4")? "contained": "outlined"} color="primary" >Option4</Button>
+     </Box>
+     <Divider />
      <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
        Default <audio className="audio-element" controls >
          <source src={DefaultSound} type="audio/wav" />
@@ -217,10 +238,14 @@ const HomePage = () => {
       </Card>
 
     { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 350, flex: '1 1'}}>
+      <Box>
+      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 300, flex: '1 1'}}>
+        <Box mx={1}>
         <h4>Upcoming Events</h4>
         { futureEvs.map(item => <DisplayFutureEvent key={item.evTstamp} {...item}/>)}
+        </Box>
       </Card>
+      </Box>
     }
     </Box>
 
