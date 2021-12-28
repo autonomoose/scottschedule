@@ -11,6 +11,9 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
+
+import DefaultSound from '../sounds/default.wav';
 
 interface iFutureEvent {
     evTstamp: number,
@@ -55,6 +58,13 @@ const HomePage = () => {
         console.log('Timer Complete', currdate.toLocaleString());
 
         // play sound unless quieted
+        const alarmAudio = document.getElementsByClassName("audio-element")[0]
+        if (alarmAudio) {
+            console.log("mooo");
+            alarmAudio.play();
+        } else {
+            console.log("no mooo");
+        }
 
         // remove current event from
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
@@ -174,7 +184,9 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
-      <Card style={{marginTop: '3px', maxWidth: 410, flex: '1 1'}}>
+      <Box display="flex" flexWrap="wrap">
+
+      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 350, flex: '1 1'}}>
       <Box display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box><h2 id='maindate'></h2></Box>
@@ -193,14 +205,24 @@ const HomePage = () => {
       <Button size="small" variant={(currSched === "test8")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test8")}>Test8</Button>
       <Button size="small" variant={(currSched === "test9")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test9")}>Test9</Button>
       </Box>
+
+      <Divider />
+     <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
+       Default <audio className="audio-element" controls >
+         <source src={DefaultSound} type="audio/wav" />
+         Your browser doesn't support audio
+       </audio>
+     </Box>
+
       </Card>
 
     { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 410, flex: '1 1'}}>
-        Upcoming Events
+      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 350, flex: '1 1'}}>
+        <h4>Upcoming Events</h4>
         { futureEvs.map(item => <DisplayFutureEvent key={item.evTstamp} {...item}/>)}
       </Card>
     }
+    </Box>
 
     <Backdrop sx={{ color: '#fff', zIndex: 3000 }} open={(hstatus === "Loading")} >
       <CircularProgress data-testid="dataBackdrop" color="inherit" />
