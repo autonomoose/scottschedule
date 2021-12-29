@@ -20,6 +20,11 @@ interface iFutureEvent {
     evTaskId: string,
 }
 
+// schedule options
+interface iSchedOptions {
+    [name: string]: boolean;
+}
+
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
@@ -27,6 +32,7 @@ const HomePage = () => {
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [currSched, setCurrSched] = useState('off');
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+    const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
     const [alarmId, setAlarmId] = useState(0);
 
     const DisplayFutureEvent = (props: iFutureEvent) => {
@@ -161,12 +167,19 @@ const HomePage = () => {
         }
 
     }
-    // every ten seconds, get the time and update clock
 
+    const toggleOptions = (item) => {
+        const newOptions = {...schedOptions};
+        newOptions[item] = (schedOptions[item] === false);
+        setSchedOptions(newOptions);
+    }
+
+    // every ten seconds, get the time and update clock
     // init
     useEffect(() => {
         setNow();
         var intervalId = setInterval(() => {setNow()}, 10000);
+        setSchedOptions({'Miralax': true,'Sunday': false,});
 
         setHstatus("Ready");
         enqueueSnackbar(`init complete`,
@@ -220,13 +233,21 @@ const HomePage = () => {
       <Button size="small" variant={(currSched === "test9")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test9")}>Test9</Button>
       </Box>
 
+     { (Object.keys(schedOptions).length > 0) &&
+     <>
      <Divider />
      <Box mx={1} my={1}>
-      <Button size="small" variant={(currSched === "opt1")? "contained": "outlined"} color="primary" >Option1</Button>
-      <Button size="small" variant={(currSched === "opt2")? "contained": "outlined"} color="primary" >Option2</Button>
-      <Button size="small" variant={(currSched === "opt3")? "contained": "outlined"} color="primary" >Option3</Button>
-      <Button size="small" variant={(currSched === "opt4")? "contained": "outlined"} color="primary" >Option4</Button>
+       {Object.keys(schedOptions).map(item => {
+         return (
+         <Button key={item} size="small" variant={(schedOptions[item])? "contained": "outlined"}
+           color="primary" onClick={() => toggleOptions(item)}>
+           {item}
+         </Button>
+       )})}
      </Box>
+     </>
+     }
+
      <Divider />
      <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
        Default <audio className="audio-element" controls >
