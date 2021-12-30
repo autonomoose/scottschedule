@@ -1,7 +1,9 @@
 // runs complex timers
-//  execute events, AlarmTask, getNextAlarm, killAlarmTask, useEffect(futureEvs)
+//  execute events, alarmTask, getNextAlarm, killAlarmTask, useEffect(futureEvs)
 //  future events, DisplayFutureEvent, buildFutureEvents
-//  ui, setNow (maintain clock/calendar), toggleOptions(string)
+//  ui, setNow (maintain clock/calendar),
+//    toggleOptions(string), toggleScheds(string),
+//    bldOptions(iSchedGroup, string)
 //  init
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
@@ -69,7 +71,7 @@ const HomePage = () => {
 
     // execute event
     //
-    const AlarmTask = () => {
+    const alarmTask = () => {
         setAlarmId(0);
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
@@ -122,7 +124,7 @@ const HomePage = () => {
             //    find next alarm, and milliseconds until trigger
             var nextAlarm = getNextAlarm();
             if (nextAlarm > 0) {
-                var timeoutId = setTimeout(AlarmTask, nextAlarm) as unknown as number;
+                var timeoutId = setTimeout(alarmTask, nextAlarm) as unknown as number;
                 setAlarmId(timeoutId);
             } else {
                 console.log('future events but no next alarm?');
@@ -140,63 +142,45 @@ const HomePage = () => {
             {wkdate.toLocaleString()} -- Task {props.evTaskId}
           </div>
     )}
+    const buildFutureEvents = (wksched: string): iFutureEvent[] => {
+        let wkEvents: iFutureEvent[] = [];
+        let currdate = new Date();
 
-    const buildFutureEvents = (wksched: string) => {
-        if (currSched !== wksched) {
-                setHstatus("Loading");
-                setCurrSched(wksched);
-                console.log("Building schedule ", wksched);
-                killAlarmTask();
+        if (wksched === "test1") {
+            // couple of quick short tests
+            let wkdate = new Date(currdate.valueOf());
+            wkdate.setSeconds(wkdate.getSeconds()+120)
+            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
 
-                let wkEvents: iFutureEvent[] = [];
-                let currdate = new Date();
-                if (wksched === "off") {
-                    enqueueSnackbar(`scheduler off`,
-                        {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-                } else if (wksched === "test1") {
-                    // couple of quick short tests
-                    let wkdate = new Date(currdate.valueOf());
-                    wkdate.setSeconds(wkdate.getSeconds()+120)
-                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
+            wkdate.setSeconds(wkdate.getSeconds()+120)
+            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
 
-                    wkdate.setSeconds(wkdate.getSeconds()+120)
-                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
-
-                    wkdate.setSeconds(wkdate.getSeconds()+120)
-                    wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
-
-                    enqueueSnackbar(`scheduled test event 1`,
-                            {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-
-                } else if (wksched === "test2") {
-                    // on the hour
-                    let wkdate = new Date(currdate.valueOf());
-                    for (let wkhour = 8; wkhour < 19; wkhour++) {
-                        wkdate.setHours(wkhour);
-                        wkdate.setMinutes(0);
-                        wkdate.setSeconds(0);
-                        wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: wkhour.toString()})
-                    }
-                    enqueueSnackbar(`scheduled test event 2`,
-                            {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-
-                } else {
-                        enqueueSnackbar(`rebuilt schedule`,
-                                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-                }
-
-                let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
-                setFutureEvs(finalEvents);
-                if (finalEvents.length === 0) {
-                    setHstatus("Ready");
-                    if (wksched !== "off") {
-                        enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
-                        setCurrSched("off");
-                    }
-                } else {
-                    setHstatus("Running");
-                }
+            wkdate.setSeconds(wkdate.getSeconds()+120)
+            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
+        } else if (wksched === "test2") {
+            // on the hour
+            let wkdate = new Date(currdate.valueOf());
+            for (let wkhour = 8; wkhour < 19; wkhour++) {
+                wkdate.setHours(wkhour);
+                wkdate.setMinutes(0);
+                wkdate.setSeconds(0);
+                wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: wkhour.toString()})
+            }
+        } else {
+            // derive the future events from schedule
+            // find the schedule
+            let schedList: iSchedule[] = [];
+            if (schedGroup['default']) {
+                schedList = schedGroup['default'].schedNames.filter(item => item.schedName === wksched);
+            }
+            if (schedList.length !== 1) {
+                console.log("no unique schedule found ", schedList);
+            } else {
+                console.log("found ", schedList[0]);
+                console.log("found ", schedList[0].schedName);
+            }
         }
+        return wkEvents;
     }
 
     // ui functions
@@ -222,10 +206,69 @@ const HomePage = () => {
 
     }
 
+    // handle ui for optional schedule buttons
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
+    }
+    // loops through nested scheduleGroup looking for all possible options
+    const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSchedOptions => {
+        // loop through rules looking for opt statements
+        const optionRuleReduce = (outDict: iSchedOptions, item: string) => {
+            const optIndex = item.indexOf('option ');
+            if (optIndex >= 0) {
+                const ruleWords = item.slice(optIndex).split(' ');
+                if (ruleWords[1]) {
+                    ruleWords[1].split(',').forEach((item: string) => {
+                        outDict[item] = false;
+                    });
+                }
+            }
+            return outDict;
+        }
+        // loop through tasks looking for rules
+        const optionTaskReduce = (outDict: iSchedOptions, item: iSchedTask) => {
+            return (wkTasks[item.evTaskId])? wkTasks[item.evTaskId].schedRules.reduce(optionRuleReduce, outDict): outDict;
+        }
+        // loop through schedules looking for tasks
+        const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
+            return item.schedTasks.reduce(optionTaskReduce, outDict)
+        }
+
+        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, {}): {};
+    }
+
+    // handle ui for schedule buttons
+    const toggleScheds = (wksched: string) => {
+        if (currSched !== wksched) {
+            setHstatus("Loading");
+            setCurrSched(wksched);
+            console.log("Building schedule ", wksched);
+            killAlarmTask();
+
+            let wkEvents: iFutureEvent[] = [];
+            let currdate = new Date();
+            if (wksched === "off") {
+                enqueueSnackbar(`scheduler off`,
+                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                } else {
+                    wkEvents = buildFutureEvents(wksched);
+                }
+
+            // cleanup
+            let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
+            setFutureEvs(finalEvents);
+            if (finalEvents.length === 0) {
+                setHstatus("Ready");
+                if (wksched !== "off") {
+                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                    setCurrSched("off");
+                }
+            } else {
+                setHstatus("Running");
+            }
+        }
     }
 
     // init
@@ -240,8 +283,8 @@ const HomePage = () => {
         //
         // setup events
         const wkTasks: iTask = {
-            'Miralax' : {descr:'long description', schedRules: [
-                'begin +2:15'
+            'miralax' : {descr:'long description', schedRules: [
+                'begin +2:15',
             ]},
         }
         setAllTasks(wkTasks);
@@ -256,8 +299,8 @@ const HomePage = () => {
         }
         setSchedGroup(wkSchedGroup);
 
-        // need to generate this
-        setSchedOptions({'Miralax': true,'Sunday': false,});
+        // setSchedOptions({'Miralax': true,'Sunday': false,});
+        setSchedOptions(buildOptions(wkSchedGroup, wkTasks));
 
         // init completed
         setHstatus("Ready");
@@ -285,16 +328,16 @@ const HomePage = () => {
       </Box>
 
       <Box mx={1} mb={1}>
-      <Button size="small" variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => buildFutureEvents("off")}>Off</Button>
-      <Button size="small" variant={(currSched === "test1")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test1")}>Test1</Button>
-      <Button size="small" variant={(currSched === "test2")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test2")}>Test2</Button>
-      <Button size="small" variant={(currSched === "test3")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test3")}>Test3</Button>
-      <Button size="small" variant={(currSched === "test4")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test4")}>Test4</Button>
-      <Button size="small" variant={(currSched === "test5")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test5")}>Test5</Button>
-      <Button size="small" variant={(currSched === "test6")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test6")}>Test6</Button>
-      <Button size="small" variant={(currSched === "test7")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test7")}>Test7</Button>
-      <Button size="small" variant={(currSched === "test8")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test8")}>Test8</Button>
-      <Button size="small" variant={(currSched === "test9")? "contained": "outlined"} color="primary" onClick={() => buildFutureEvents("test9")}>Test9</Button>
+      <Button size="small" variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+      <Button size="small" variant={(currSched === "test1")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test1")}>Test1</Button>
+      <Button size="small" variant={(currSched === "test2")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test2")}>Test2</Button>
+      <Button size="small" variant={(currSched === "test3")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test3")}>Test3</Button>
+      <Button size="small" variant={(currSched === "test4")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test4")}>Test4</Button>
+      <Button size="small" variant={(currSched === "test5")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test5")}>Test5</Button>
+      <Button size="small" variant={(currSched === "test6")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test6")}>Test6</Button>
+      <Button size="small" variant={(currSched === "test7")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test7")}>Test7</Button>
+      <Button size="small" variant={(currSched === "test8")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test8")}>Test8</Button>
+      <Button size="small" variant={(currSched === "test-miralax")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test-miralax")}>test-miralax</Button>
       </Box>
 
      { (Object.keys(schedOptions).length > 0) &&
