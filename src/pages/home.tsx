@@ -40,8 +40,9 @@ interface iSchedTask {
 
 interface iSchedule {
     schedName: string,
-    begins: string,
     schedTasks: iSchedTask[],
+    begins?: string,
+    buttonName?: string,
 }
 
 interface iSchedGroup {
@@ -49,6 +50,11 @@ interface iSchedGroup {
         descr: string,
         schedNames: iSchedule[],
     };
+};
+
+// schedule buttons
+interface iSchedButtons {
+    [name: string]: string; // button [name]=text
 };
 
 // schedule options
@@ -62,10 +68,12 @@ const HomePage = () => {
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [currSched, setCurrSched] = useState('off');
+    const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
+    const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
+
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroup, setSchedGroup] = useState<iSchedGroup>({});
-    const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
     const [alarmId, setAlarmId] = useState(0);
 
 
@@ -212,6 +220,32 @@ const HomePage = () => {
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
     }
+    // loops through nested scheduleGroup to build schedule buttons
+    const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
+
+        // loop through schedules looking for tasks
+        const optionSchedReduce = (outDict: iSchedButtons, item: iSchedule) => {
+            console.log(item.schedName, item);
+            if (item.begins) {
+                const scheds = item.begins.split(',');
+                if (scheds.length > 1) {
+                    scheds.forEach((starttime: string) => {
+                        if (starttime && starttime !== '') {
+                            outDict[item.schedName + '.' + starttime] = (item.buttonName)
+                                ? item.buttonName + ' ' + starttime
+                                : item.schedName + ' ' + starttime;
+                        }
+                    });
+                } else {
+                    outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
+                }
+            } else {
+                outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
+            }
+            return outDict;
+        }
+        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, {}): {};
+    }
     // loops through nested scheduleGroup looking for all possible options
     const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSchedOptions => {
         // loop through rules looking for opt statements
@@ -292,13 +326,21 @@ const HomePage = () => {
         // setup scheduleGroup
         const wkSchedGroup: iSchedGroup = {
             'default': {descr:'default schedules', schedNames: [
-                {schedName: 'test-miralax', begins: 'now', schedTasks: [
+                {schedName: 'main', buttonName: ' ', begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
                     {evTaskId: 'miralax'},
-                ]}
+                ]},
+                {schedName: 'test1', schedTasks: []},
+                {schedName: 'test2', begins: 'now', schedTasks: []},
+                {schedName: 'test3', begins: 'now', schedTasks: []},
             ]},
         }
         setSchedGroup(wkSchedGroup);
 
+        // set schedule buttons
+        // setSchedButtons({'test4': 'wake'});
+        setSchedButtons(buildButtons(wkSchedGroup));
+
+        // set optional schedule buttons
         // setSchedOptions({'Miralax': true,'Sunday': false,});
         setSchedOptions(buildOptions(wkSchedGroup, wkTasks));
 
@@ -329,15 +371,12 @@ const HomePage = () => {
 
       <Box mx={1} mb={1}>
       <Button size="small" variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
-      <Button size="small" variant={(currSched === "test1")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test1")}>Test1</Button>
-      <Button size="small" variant={(currSched === "test2")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test2")}>Test2</Button>
-      <Button size="small" variant={(currSched === "test3")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test3")}>Test3</Button>
-      <Button size="small" variant={(currSched === "test4")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test4")}>Test4</Button>
-      <Button size="small" variant={(currSched === "test5")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test5")}>Test5</Button>
-      <Button size="small" variant={(currSched === "test6")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test6")}>Test6</Button>
-      <Button size="small" variant={(currSched === "test7")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test7")}>Test7</Button>
-      <Button size="small" variant={(currSched === "test8")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test8")}>Test8</Button>
-      <Button size="small" variant={(currSched === "test-miralax")? "contained": "outlined"} color="primary" onClick={() => toggleScheds("test-miralax")}>test-miralax</Button>
+      {Object.keys(schedButtons).map(item => {
+          return (
+            <Button key={item} size="small" variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
+              {schedButtons[item]}
+            </Button>
+      )})}
       </Box>
 
      { (Object.keys(schedOptions).length > 0) &&
