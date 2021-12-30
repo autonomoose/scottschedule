@@ -18,12 +18,36 @@ import DefaultSound from '../sounds/default.wav';
 interface iFutureEvent {
     evTstamp: number,
     evTaskId: string,
+};
+
+interface iTask {
+    [evTaskId: string]: {
+        descr: string,
+        schedRules: string[],
+    };
+};
+
+interface iSchedTask {
+   evTaskId: string,
 }
+
+interface iSchedule {
+    schedName: string,
+    begins: string,
+    schedTasks: iSchedTask[],
+}
+
+interface iSchedGroup {
+    [name: string]: {
+        descr: string,
+        schedNames: iSchedule[],
+    };
+};
 
 // schedule options
 interface iSchedOptions {
     [name: string]: boolean;
-}
+};
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -32,6 +56,8 @@ const HomePage = () => {
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [currSched, setCurrSched] = useState('off');
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+    const [allTasks, setAllTasks] = useState<iTask>({});
+    const [schedGroup, setSchedGroup] = useState<iSchedGroup>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
     const [alarmId, setAlarmId] = useState(0);
 
@@ -168,17 +194,37 @@ const HomePage = () => {
 
     }
 
-    const toggleOptions = (item) => {
+    const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
     }
 
-    // every ten seconds, get the time and update clock
     // init
     useEffect(() => {
         setNow();
+        // every ten seconds, get the time and update clock
         var intervalId = setInterval(() => {setNow()}, 10000);
+
+        // setup events
+        const wkTasks: iTask = {
+            'Miralax' : {descr:'long description', schedRules: [
+                'begin +2:15'
+            ]},
+        }
+        setAllTasks(wkTasks);
+
+        // setup scheduleGroup
+        const wkSchedGroup: iSchedGroup = {
+            'default': {descr:'default schedules', schedNames: [
+                {schedName: 'test-miralax', begins: 'now', schedTasks: [
+                    {evTaskId: 'miralax'},
+                ]}
+            ]},
+        }
+        setSchedGroup(wkSchedGroup);
+
+        // need to generate this
         setSchedOptions({'Miralax': true,'Sunday': false,});
 
         setHstatus("Ready");
