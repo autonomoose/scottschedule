@@ -1,3 +1,8 @@
+// runs complex timers
+//  execute events, AlarmTask, getNextAlarm, killAlarmTask, useEffect(futureEvs)
+//  future events, DisplayFutureEvent, buildFutureEvents
+//  ui, setNow (maintain clock/calendar), toggleOptions(string)
+//  init
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
 
@@ -61,26 +66,9 @@ const HomePage = () => {
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
     const [alarmId, setAlarmId] = useState(0);
 
-    const DisplayFutureEvent = (props: iFutureEvent) => {
-        const wkdate = new Date(props.evTstamp);
-        return (
-          <div>
-            {wkdate.toLocaleString()} -- Task {props.evTaskId}
-          </div>
-    )}
 
-    const getNextAlarm = () => {
-        let ret_milli = 0;
-        let currdate = new Date().valueOf();
-        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
-
-        // return milliseconds until alarm
-        if (wkEvents.length > 0) {
-            ret_milli = wkEvents[0].evTstamp - currdate;
-        }
-        return (ret_milli);
-    };
-
+    // execute event
+    //
     const AlarmTask = () => {
         setAlarmId(0);
         var currdate = new Date();
@@ -106,7 +94,17 @@ const HomePage = () => {
             console.log("no cleanup after alarm");
         }
     };
+    const getNextAlarm = () => {
+        let ret_milli = 0;
+        let currdate = new Date().valueOf();
+        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
 
+        // return milliseconds until alarm
+        if (wkEvents.length > 0) {
+            ret_milli = wkEvents[0].evTstamp - currdate;
+        }
+        return (ret_milli);
+    };
     const killAlarmTask = () => {
         if (alarmId) {
             clearTimeout(alarmId);
@@ -114,6 +112,34 @@ const HomePage = () => {
             console.log('Cancel timer');
         }
     };
+    // maintain the next alarm timer, and update state
+    // const [alarmId, setAlarmId] = useState();
+    useEffect(() => {
+        killAlarmTask();
+
+        // build new alarm task
+        if (futureEvs.length > 0) {
+            //    find next alarm, and milliseconds until trigger
+            var nextAlarm = getNextAlarm();
+            if (nextAlarm > 0) {
+                var timeoutId = setTimeout(AlarmTask, nextAlarm) as unknown as number;
+                setAlarmId(timeoutId);
+            } else {
+                console.log('future events but no next alarm?');
+            }
+        }
+    }, [futureEvs]);
+
+
+    // future events
+    //
+    const DisplayFutureEvent = (props: iFutureEvent) => {
+        const wkdate = new Date(props.evTstamp);
+        return (
+          <div>
+            {wkdate.toLocaleString()} -- Task {props.evTaskId}
+          </div>
+    )}
 
     const buildFutureEvents = (wksched: string) => {
         if (currSched !== wksched) {
@@ -173,6 +199,8 @@ const HomePage = () => {
         }
     }
 
+    // ui functions
+    // maintain the clock/calendar on ui
     const setNow = () => {
         console.log("setnow");
         var mainclock = document.getElementById('mainclock');
@@ -202,10 +230,14 @@ const HomePage = () => {
 
     // init
     useEffect(() => {
+        // setup UI
         setNow();
         // every ten seconds, get the time and update clock
         var intervalId = setInterval(() => {setNow()}, 10000);
+        // cleanup on useeffect return
 
+        // setup Data
+        //
         // setup events
         const wkTasks: iTask = {
             'Miralax' : {descr:'long description', schedRules: [
@@ -227,29 +259,15 @@ const HomePage = () => {
         // need to generate this
         setSchedOptions({'Miralax': true,'Sunday': false,});
 
+        // init completed
         setHstatus("Ready");
         enqueueSnackbar(`init complete`,
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+
         return () => {clearInterval(intervalId)};
     }, [enqueueSnackbar]);
 
-    // maintain the next alarm timer, and update state
-    // const [alarmId, setAlarmId] = useState();
-    useEffect(() => {
-        killAlarmTask();
 
-        // build new alarm task
-        if (futureEvs.length > 0) {
-            //    find next alarm, and milliseconds until trigger
-            var nextAlarm = getNextAlarm();
-            if (nextAlarm > 0) {
-                var timeoutId = setTimeout(AlarmTask, nextAlarm) as unknown as number;
-                setAlarmId(timeoutId);
-            } else {
-                console.log('future events but no next alarm?');
-            }
-        }
-    }, [futureEvs]);
 
     return(
     <Layout>
