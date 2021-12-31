@@ -155,6 +155,54 @@ const HomePage = () => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
 
+        const tasksReduceToRules = (outRules: string[], wkTaskName: iSchedTask) => {
+            console.log("task", wkTaskName);
+            if (taskInfo[wkTaskName.evTaskId]) {
+                // find matching rule - loop backward through rules to find first match
+                let matchRule: string = '';
+                const tasklist = taskInfo[wkTaskName.evTaskId].schedRules.slice().reverse();
+
+                for (const wkRule of tasklist) {
+                    console.log("rule", wkRule);
+
+                    const ruleWords = wkRule.split(' ');
+                    switch(ruleWords[0]) {
+                        case "begin":
+                            // begin always matches
+                            matchRule = ruleWords.slice(1).join(' ');
+                            break;
+                        case "option":
+                            // option matches if all arguments are true
+                            console.log("option");
+                            break;
+                        case "start":
+                            // start matches if start === beginning
+                            console.log("start");
+                            break;
+                        default:
+                            console.log("unknown word", ruleWords[0]);
+                        break;
+                    }
+                    if (matchRule !== '') {
+                        break; // out of for loop
+                    }
+                } // end of find matching rule
+
+                // add matching rule to output
+                if (matchRule !== '') {
+                    const outRule = wkTaskName.evTaskId + "." + matchRule
+                    outRules.push(outRule);
+                }
+
+                // end valid task handling
+            } else {
+                console.log(wkTaskName.evTaskId, " task not found");
+            }
+            return outRules;
+        }
+
+
+        // start
         if (wksched === "test1") {
             // couple of quick short tests
             let wkdate = new Date(currdate.valueOf());
@@ -177,9 +225,9 @@ const HomePage = () => {
             }
         } else {
             // derive the future events from schedule
-            const schedParts = wksched.split('.');
 
-            // find the schedule
+            // find the schedule and possibly start time
+            const schedParts = wksched.split('.');
             let schedList: iSchedule[] = [];
             if (schedGroup['default']) {
                 schedList = schedGroup['default'].schedNames.filter(item => item.schedName === schedParts[0]);
@@ -192,56 +240,15 @@ const HomePage = () => {
 
             // find the start date
             if (schedParts[1]) {
-                console.log("start ", schedParts[1]);
+                console.log("schedule start ", schedParts[1]);
             } else {
-                console.log("start current");
+                console.log("schedule start current");
             }
 
-            // loop through schedule tasks to get appropriate rules
-            schedList[0].schedTasks.forEach((wkTaskName: iSchedTask) => {
-                console.log("task", wkTaskName);
-                if (allTasks[wkTaskName.evTaskId]) {
-                    // find matching rule - loop backward through rules to find first match
-                    let matchRule: string = '';
-                    const tasklist = taskInfo[wkTaskName.evTaskId].schedRules.slice().reverse();
+            // get appropriate rules from tasklist
+            const activeRules = schedList[0].schedTasks.reduce(tasksReduceToRules, []);
+            console.log("active Rules", activeRules);
 
-                    for (const wkRule of tasklist) {
-                        console.log("rule", wkRule);
-
-                        const ruleWords = wkRule.split(' ');
-                        switch(ruleWords[0]) {
-                            case "begin":
-                                // begin always matches
-                                console.log("begin");
-                                matchRule = wkRule;
-                                break;
-                            case "option":
-                                // option matches if all arguments are true
-                                console.log("option");
-                                break;
-                            case "start":
-                                // start matches if start === beginning
-                                console.log("start");
-                                break;
-                            default:
-                                console.log("unknown word", ruleWords[0]);
-                            break;
-                        }
-                        if (matchRule !== '') {
-                            break; // out of for loop
-                        }
-                    } // end of find matching rule
-
-
-                    // parse rule
-                    // calculate rule start and create future event
-
-
-                    // end valid task handling
-                } else {
-                    console.log(wkTaskName.evTaskId, " task not found");
-                }
-            });
             // finished with all tasks
         }
         return wkEvents;
@@ -278,7 +285,6 @@ const HomePage = () => {
     }
     // loops through nested scheduleGroup to build schedule buttons
     const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
-
         // loop through schedules looking for tasks
         const optionSchedReduce = (outDict: iSchedButtons, item: iSchedule) => {
             if (item.begins) {
