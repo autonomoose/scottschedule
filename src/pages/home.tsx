@@ -150,7 +150,8 @@ const HomePage = () => {
             {wkdate.toLocaleString()} -- Task {props.evTaskId}
           </div>
     )}
-    const buildFutureEvents = (wksched: string): iFutureEvent[] => {
+
+    const buildFutureEvents = (wksched: string, taskInfo: iTask): iFutureEvent[] => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
 
@@ -176,17 +177,72 @@ const HomePage = () => {
             }
         } else {
             // derive the future events from schedule
+            const schedParts = wksched.split('.');
+
             // find the schedule
             let schedList: iSchedule[] = [];
             if (schedGroup['default']) {
-                schedList = schedGroup['default'].schedNames.filter(item => item.schedName === wksched);
+                schedList = schedGroup['default'].schedNames.filter(item => item.schedName === schedParts[0]);
             }
             if (schedList.length !== 1) {
-                console.log("no unique schedule found ", schedList);
-            } else {
-                console.log("found ", schedList[0]);
-                console.log("found ", schedList[0].schedName);
+                console.log("no unique schedule found ", schedList, schedParts[0]);
+                return wkEvents;
             }
+            console.log("found ", schedList[0].schedName, schedList[0]);
+
+            // find the start date
+            if (schedParts[1]) {
+                console.log("start ", schedParts[1]);
+            } else {
+                console.log("start current");
+            }
+
+            // loop through schedule tasks to get appropriate rules
+            schedList[0].schedTasks.forEach((wkTaskName: iSchedTask) => {
+                console.log("task", wkTaskName);
+                if (allTasks[wkTaskName.evTaskId]) {
+                    // find matching rule - loop backward through rules to find first match
+                    let matchRule: string = '';
+                    const tasklist = taskInfo[wkTaskName.evTaskId].schedRules.slice().reverse();
+
+                    for (const wkRule of tasklist) {
+                        console.log("rule", wkRule);
+
+                        const ruleWords = wkRule.split(' ');
+                        switch(ruleWords[0]) {
+                            case "begin":
+                                // begin always matches
+                                console.log("begin");
+                                matchRule = wkRule;
+                                break;
+                            case "option":
+                                // option matches if all arguments are true
+                                console.log("option");
+                                break;
+                            case "start":
+                                // start matches if start === beginning
+                                console.log("start");
+                                break;
+                            default:
+                                console.log("unknown word", ruleWords[0]);
+                            break;
+                        }
+                        if (matchRule !== '') {
+                            break; // out of for loop
+                        }
+                    } // end of find matching rule
+
+
+                    // parse rule
+                    // calculate rule start and create future event
+
+
+                    // end valid task handling
+                } else {
+                    console.log(wkTaskName.evTaskId, " task not found");
+                }
+            });
+            // finished with all tasks
         }
         return wkEvents;
     }
@@ -225,7 +281,6 @@ const HomePage = () => {
 
         // loop through schedules looking for tasks
         const optionSchedReduce = (outDict: iSchedButtons, item: iSchedule) => {
-            console.log(item.schedName, item);
             if (item.begins) {
                 const scheds = item.begins.split(',');
                 if (scheds.length > 1) {
@@ -287,7 +342,7 @@ const HomePage = () => {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 } else {
-                    wkEvents = buildFutureEvents(wksched);
+                    wkEvents = buildFutureEvents(wksched, allTasks);
                 }
 
             // cleanup
