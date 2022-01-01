@@ -27,6 +27,10 @@ interface iFutureEvent {
     evTaskId: string,
 };
 
+interface iFutureDict {
+    [evTstampKey: string]: iFutureEvent[],
+}
+
 interface iTask {
     [evTaskId: string]: {
         descr: string,
@@ -151,63 +155,101 @@ const HomePage = () => {
           </div>
     )}
 
-    const buildFutureEvents = (wksched: string, taskInfo: iTask): iFutureEvent[] => {
+    const buildFutureEvents = (wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
 
         // date object used for starting times,
-        //      constant - 8:00,13:00,now
-        //      offset - +0:00
-        //      complex time or _descr_ time [,or _descr_ time...]
-        const tlangDate = (wkTlang: string, wkStart: Date) => {
+        const tlangDate = (wkTlang: string | undefined, wkStart: Date) => {
             let retDate = new Date(wkStart.valueOf())
-
-            const dateParts = wkTlang.split(':');
-            if (wkTlang[0] === '+') {
-                // offset
-                retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
-                retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
-                retDate.setSeconds(0);
-            } else {
-                // constant
-                retDate.setHours(Number(dateParts[0]));
-                retDate.setMinutes(Number(dateParts[1]));
-                retDate.setSeconds(0);
+            if (wkTlang) {
+                const dateParts = wkTlang.split(':');
+                if (wkTlang[0] === '+') {
+                    // offset
+                    retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
+                    retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
+                    retDate.setSeconds(0);
+                } else if (wkTlang !== 'now') {
+                    // constant
+                    retDate.setHours(Number(dateParts[0]));
+                    retDate.setMinutes(Number(dateParts[1]));
+                    retDate.setSeconds(0);
+                }
             }
             return retDate;
         };
-        const rulesReduceToEvents = (outEvents: iFutureEvent[], taskRule: string) => {
+        // reducer loop thru rules
+        const rulesReduceToEvents = (outEvents: iFutureDict, taskRule: string) => {
             console.log("taskrule", taskRule);
             const evTask = taskRule.split('.')[0];
             const ruleParts = taskRule.split('.')[1].split(',');
 
+            // handle each rule as a set of compound statements comma separated
             for (const wkRule of ruleParts) {
-                const ruleWords = wkRule.split(' ');
-                console.log("tlangTime", ruleWords[0]);
-                let evTime = tlangDate(ruleWords[0], startDate);
-                // possibly adjust evTime with orlater/orsooner
+                // get timeoffset info and generate possible event time
 
-                outEvents.push({evTstamp: evTime.valueOf(), evTaskId: evTask})
+                let ruleWords = wkRule.split(' ');
+                let tlangTimeWord = ruleWords.shift();
+                let evTime = tlangDate(tlangTimeWord, startDate);
+
+                // possibly adjust evTime with orlater(+0:00)/orsooner(xx:xx)
+                //     continue matching unless it fails
+                let nextTlangWord = ruleWords.shift();
+                while (nextTlangWord === 'or' && ruleWords.length > 0) {
+                    let nextTimeWord = ruleWords.shift();
+                    let nextEvTime = tlangDate(nextTimeWord, startDate);
+                    if (!nextTimeWord) {
+                        console.log("or fail - no time word");
+                        break;
+                    }
+
+                    console.log("or ", nextTimeWord, nextEvTime);
+                    if (nextTimeWord[0] === '+') {
+                        // or later
+                        if (evTime > nextEvTime) {
+                            // fails, no more or
+                            console.log("fails or ");
+                            break;
+                        }
+                        tlangTimeWord = nextTimeWord;
+                        evTime = nextEvTime;
+                        console.log("passes or later ", tlangTimeWord, evTime);
+                    } else {
+                        // or sooner
+                        if (evTime < nextEvTime) {
+                            // fails, no more or
+                            console.log("fails or ");
+                            break;
+                        }
+                        tlangTimeWord = nextTimeWord;
+                        evTime = nextEvTime;
+                        console.log("passes or sooner ", tlangTimeWord, evTime);
+                    }
+                    nextTlangWord = ruleWords.shift();
+                }
+
+                // store event by timestamp for later extract in order
+                let evVal = evTime.valueOf().toString();
+                if (outEvents[evVal]) {
+                    outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                } else {
+                    outEvents[evVal] = [];
+                    outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                }
 
                 // deal with any * (repeat) instructions
+
             }
-
-            // sort outEvents with earlier events on top,
-            //     alternately extract this from dict to preserve order
-            //     wkDict[tstamp] = [evtaskid,evtaskid,...]
-
             return(outEvents);
         };
+        // reducer loop thru tasks
         const tasksReduceToRules = (outRules: string[], wkTaskName: iSchedTask) => {
-            console.log("task", wkTaskName);
             if (taskInfo[wkTaskName.evTaskId]) {
                 // find matching rule - loop backward through rules to find first match
                 let matchRule: string = '';
                 const tasklist = taskInfo[wkTaskName.evTaskId].schedRules.slice().reverse();
 
                 for (const wkRule of tasklist) {
-                    console.log("rule", wkRule);
-
                     const ruleWords = wkRule.split(' ');
                     switch(ruleWords[0]) {
                         case "begin":
@@ -216,7 +258,26 @@ const HomePage = () => {
                             break;
                         case "option":
                             // option matches if all arguments are true
-                            console.log("option");
+                            let options = ruleWords[1].split('+');
+                            let matcher = true;
+                            for (const wkOption of options) {
+                                if (wkOption.startsWith('start:')) {
+                                    // todo ends with + should do date check
+                                    if (wkOption.slice(6) !== startTlang) {
+                                        matcher = false;
+                                        break;
+                                    }
+                                } else if (!optInfo[wkOption]) {
+                                    matcher = false;
+                                    break;
+                                }
+                            }
+                            if (matcher) {
+                                matchRule = ruleWords.slice(2).join(' ');
+                                console.log("option pass");
+                            } else {
+                                console.log("option fail");
+                            }
                             break;
                         case "start":
                             // start matches if start === beginning
@@ -236,8 +297,6 @@ const HomePage = () => {
                     const outRule = wkTaskName.evTaskId + "." + matchRule
                     outRules.push(outRule);
                 }
-
-                // end valid task handling
             } else {
                 console.log(wkTaskName.evTaskId, " task not found");
             }
@@ -245,18 +304,7 @@ const HomePage = () => {
         }
 
         // start
-        if (wksched === "test1") {
-            // couple of quick short tests
-            let wkdate = new Date(currdate.valueOf());
-            wkdate.setSeconds(wkdate.getSeconds()+120)
-            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '1'})
-
-            wkdate.setSeconds(wkdate.getSeconds()+120)
-            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '2'})
-
-            wkdate.setSeconds(wkdate.getSeconds()+120)
-            wkEvents.push({evTstamp: wkdate.valueOf(), evTaskId: '3'})
-        } else if (wksched === "test2") {
+        if (wksched === "test2") {
             // on the hour
             let wkdate = new Date(currdate.valueOf());
             for (let wkhour = 8; wkhour < 19; wkhour++) {
@@ -281,7 +329,7 @@ const HomePage = () => {
             console.log("found iSchedule ", schedList[0].schedName, schedList[0]);
 
             // find the starting time
-            let startTlang = 'now';
+            var startTlang = 'now';
             if (schedParts[1]) {
                 startTlang = schedParts[1];
             } else if (schedList[0].begins) {
@@ -294,8 +342,14 @@ const HomePage = () => {
             const activeRules = schedList[0].schedTasks.reduce(tasksReduceToRules, []);
             console.log("active Rules", activeRules);
 
-           // convert rules to future events
-           wkEvents = activeRules.reduce(rulesReduceToEvents, []);
+           // convert rules to future events dict (to preserve order on mult event per timestamp)
+           const dictEvents = activeRules.reduce(rulesReduceToEvents, {});
+           // convert dictionary to wkEvents: iFutureEvent[]
+           for (const tmpTstamp of Object.keys(dictEvents).sort()) {
+               for (const tmpEv of dictEvents[tmpTstamp]) {
+                   wkEvents.push(tmpEv);
+               }
+           }
            console.log("active Events", wkEvents);
         }
         return wkEvents;
@@ -362,8 +416,10 @@ const HomePage = () => {
             if (optIndex >= 0) {
                 const ruleWords = item.slice(optIndex).split(' ');
                 if (ruleWords[1]) {
-                    ruleWords[1].split(',').forEach((item: string) => {
-                        outDict[item] = false;
+                    ruleWords[1].split('+').forEach((item: string) => {
+                        if (!item.startsWith('start:')) {
+                            outDict[item] = false;
+                        }
                     });
                 }
             }
@@ -395,7 +451,7 @@ const HomePage = () => {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 } else {
-                    wkEvents = buildFutureEvents(wksched, allTasks);
+                    wkEvents = buildFutureEvents(wksched, allTasks, schedOptions);
                 }
 
             // cleanup
@@ -425,8 +481,34 @@ const HomePage = () => {
         //
         // setup events
         const wkTasks: iTask = {
+            'therapy' : {descr:'therapy time, vest nebie', schedRules: [
+                'begin +2:30',
+                'option sunday 14:00 or +5:00',
+            ]},
             'miralax' : {descr:'long description', schedRules: [
-                'begin +2:15',
+                'option miralax +2:15',
+                'option miralax+sunday 13:45 or +4:45',
+            ]},
+            'back2bed' : {descr:'Back to Bed', schedRules: [
+                'begin +2:00,16:00 or +7:00,18:45 or +7:30',
+            ]},
+            'backdown' : {descr:'lay back down', schedRules: [
+                'begin +4:30',
+                'option sunday +5:00 or 13:30 or +4:30',
+            ]},
+            'hook1can' : {descr:'hookup 1 can', schedRules: [
+                'begin +2:30,17:00 or +7:30',
+                'option sunday +0:00,+3:00 or 11:45 or +2:45',
+                'option sunday+start:9:30 +0:00,+4:15',
+                'option sunday+start:9:45 +0:00,+4:15',
+                'option sunday+start:10:00 +0:00,+4:15',
+            ]},
+            'hook125' : {descr:'hookup 1.25 can', schedRules: [
+                'begin +0:0,14:00 or +5:00',
+                'option sunday 14:00 or +5:00,17:00 or +7:30',
+            ]},
+            'twominute' : {descr:'long description', schedRules: [
+                'begin +0:2,+0:04,+0:06',
             ]},
         }
         setAllTasks(wkTasks);
@@ -436,10 +518,21 @@ const HomePage = () => {
             'default': {descr:'default schedules', schedNames: [
                 {schedName: 'main', buttonName: ' ', begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
                     {evTaskId: 'miralax'},
+                    {evTaskId: 'therapy'},
+                    {evTaskId: 'back2bed'},
+                    {evTaskId: 'backdown'},
+                    {evTaskId: 'hook1can'},
+                    {evTaskId: 'hook125'},
                 ]},
-                {schedName: 'test1', schedTasks: []},
+                {schedName: 'test1', schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
                 {schedName: 'test2', begins: 'now', schedTasks: []},
-                {schedName: 'test3', begins: 'now', schedTasks: []},
+                {schedName: 'test3', begins: 'now', schedTasks: [
+                    {evTaskId: 'back2bed'},
+                    {evTaskId: 'twominute'},
+                    {evTaskId: 'miralax'},
+                ]},
             ]},
         }
         setSchedGroup(wkSchedGroup);
