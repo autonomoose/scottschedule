@@ -160,11 +160,10 @@ const HomePage = () => {
     }
     const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
         const wkdate = new Date(props.item.evTstamp);
-        const dateOptions = {hour: '2-digit', minute: '2-digit'};
         const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
         return (
           <div>
-            {wkdate.toLocaleString('en-US', dateOptions)} - {wkdescr}
+            {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
           </div>
     )}
 
