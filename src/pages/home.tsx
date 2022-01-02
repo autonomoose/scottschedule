@@ -534,14 +534,11 @@ const HomePage = () => {
                     {evTaskId: 'hook125'},
                 ]},
                 {schedName: 'test1', schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'test2', begins: 'now', schedTasks: []},
-                {schedName: 'test3', begins: 'now', schedTasks: [
                     {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
                     {evTaskId: 'miralax'},
                 ]},
+                {schedName: 'test2', begins: 'now', schedTasks: []},
             ]},
         }
         setSchedGroup(wkSchedGroup);
