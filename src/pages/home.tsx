@@ -158,6 +158,11 @@ const HomePage = () => {
     const buildFutureEvents = (wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
+        console.log("buildFutureEvents", optInfo);
+        if (optInfo['tomorrow']) {
+            console.log("would have added a day to current");
+            currdate.setHours(currdate.getHours() + 24);
+        }
 
         // date object used for starting times,
         const tlangDate = (wkTlang: string | undefined, wkStart: Date) => {
@@ -208,22 +213,18 @@ const HomePage = () => {
                         // or later
                         if (evTime > nextEvTime) {
                             // fails, no more or
-                            console.log("fails or ");
                             break;
                         }
                         tlangTimeWord = nextTimeWord;
                         evTime = nextEvTime;
-                        console.log("passes or later ", tlangTimeWord, evTime);
                     } else {
                         // or sooner
                         if (evTime < nextEvTime) {
                             // fails, no more or
-                            console.log("fails or ");
                             break;
                         }
                         tlangTimeWord = nextTimeWord;
                         evTime = nextEvTime;
-                        console.log("passes or sooner ", tlangTimeWord, evTime);
                     }
                     nextTlangWord = ruleWords.shift();
                 }
@@ -274,14 +275,7 @@ const HomePage = () => {
                             }
                             if (matcher) {
                                 matchRule = ruleWords.slice(2).join(' ');
-                                console.log("option pass");
-                            } else {
-                                console.log("option fail");
                             }
-                            break;
-                        case "start":
-                            // start matches if start === beginning
-                            console.log("start");
                             break;
                         default:
                             console.log("unknown word", ruleWords[0]);
@@ -379,13 +373,13 @@ const HomePage = () => {
     }
 
     // cleanly reset and rebuild future events using globals
-    const cleanRebuildFutureEvents = (wksched: string) => {
+    const cleanRebuildFutureEvents = (wksched: string, wkoptions: iSchedOptions) => {
             console.log("Building schedule ", wksched);
             killAlarmTask();
 
             let wkEvents: iFutureEvent[] = [];
             if (wksched !== "off") {
-                wkEvents = buildFutureEvents(wksched, allTasks, schedOptions);
+                wkEvents = buildFutureEvents(wksched, allTasks, wkoptions);
                 }
 
             // cleanup
@@ -410,7 +404,7 @@ const HomePage = () => {
         setSchedOptions(newOptions);
 
         if (currSched !== 'off') {
-            cleanRebuildFutureEvents(currSched);
+            cleanRebuildFutureEvents(currSched, newOptions);
         }
     }
     // loops through nested scheduleGroup to build schedule buttons
@@ -462,8 +456,9 @@ const HomePage = () => {
         const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
             return item.schedTasks.reduce(optionTaskReduce, outDict)
         }
+        const starterOptions = {'tomorrow': false};
 
-        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, {}): {};
+        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, starterOptions): {};
     }
 
     // handle ui for schedule buttons
@@ -472,7 +467,7 @@ const HomePage = () => {
             setHstatus("Loading");
             setCurrSched(wksched);
 
-            cleanRebuildFutureEvents(wksched);
+            cleanRebuildFutureEvents(wksched, schedOptions);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
@@ -593,13 +588,18 @@ const HomePage = () => {
      <>
      <Divider />
      <Box mx={1} my={1}>
-       {Object.keys(schedOptions).map(item => {
+       {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
          return (
          <Button key={item} size="small" variant={(schedOptions[item])? "contained": "outlined"}
            color="primary" onClick={() => toggleOptions(item)}>
            {item}
          </Button>
        )})}
+         <Button key={'tomorrow'} size="small" variant={(schedOptions['tomorrow'])? "contained": "outlined"}
+           color="primary" onClick={() => toggleOptions('tomorrow')}>
+           {(schedOptions['tomorrow'])? "tomorrow": "today"}
+         </Button>
+
      </Box>
      </>
      }
