@@ -75,6 +75,7 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroup, setSchedGroup] = useState<iSchedGroup>({});
@@ -88,17 +89,22 @@ const HomePage = () => {
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
 
+
         // play sound unless quieted
-        const alarmAudio = document.getElementsByClassName("audio-element")[0]
+        const alarmAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
         if (alarmAudio) {
             alarmAudio.play();
         } else {
             console.log("no mooo");
         }
 
-        // remove current event from
+        // remove current events (and next 30 seconds worth) from
+        currdate.setSeconds(currdate.getSeconds() + 30);
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
         if (wkEvents.length !== futureEvs.length) {
+            let stripEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp <= currdate.valueOf());
+            setExpiredEvs(stripEvents);
+
             setFutureEvs(wkEvents);
             if (wkEvents.length === 0) {
                 setCurrSched("off");
@@ -108,6 +114,7 @@ const HomePage = () => {
             console.log("no cleanup after alarm");
         }
     };
+
     const getNextAlarm = () => {
         let ret_milli = 0;
         let currdate = new Date().valueOf();
@@ -147,17 +154,30 @@ const HomePage = () => {
 
     // future events
     //
-    const DisplayFutureEvent = (props: iFutureEvent) => {
-        const wkdate = new Date(props.evTstamp);
+    interface DisplayFutureEventProps {
+        item: iFutureEvent,
+        descr?: string,
+    }
+    const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
+        const wkdate = new Date(props.item.evTstamp);
+        const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
         return (
           <div>
-            {wkdate.toLocaleString()} -- Task {props.evTaskId}
+            {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
           </div>
     )}
 
     const buildFutureEvents = (wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
+        console.log("buildFutureEvents", optInfo);
+        if (optInfo['tomorrow']) {
+            currdate.setHours(currdate.getHours() + 24);
+            currdate.setHours(0);
+            currdate.setMinutes(0);
+            currdate.setSeconds(1);
+
+        }
 
         // date object used for starting times,
         const tlangDate = (wkTlang: string | undefined, wkStart: Date) => {
@@ -208,22 +228,18 @@ const HomePage = () => {
                         // or later
                         if (evTime > nextEvTime) {
                             // fails, no more or
-                            console.log("fails or ");
                             break;
                         }
                         tlangTimeWord = nextTimeWord;
                         evTime = nextEvTime;
-                        console.log("passes or later ", tlangTimeWord, evTime);
                     } else {
                         // or sooner
                         if (evTime < nextEvTime) {
                             // fails, no more or
-                            console.log("fails or ");
                             break;
                         }
                         tlangTimeWord = nextTimeWord;
                         evTime = nextEvTime;
-                        console.log("passes or sooner ", tlangTimeWord, evTime);
                     }
                     nextTlangWord = ruleWords.shift();
                 }
@@ -274,14 +290,7 @@ const HomePage = () => {
                             }
                             if (matcher) {
                                 matchRule = ruleWords.slice(2).join(' ');
-                                console.log("option pass");
-                            } else {
-                                console.log("option fail");
                             }
-                            break;
-                        case "start":
-                            // start matches if start === beginning
-                            console.log("start");
                             break;
                         default:
                             console.log("unknown word", ruleWords[0]);
@@ -378,11 +387,45 @@ const HomePage = () => {
 
     }
 
+    // cleanly reset and rebuild future events using globals
+    const cleanRebuildFutureEvents = (wksched: string, wkoptions: iSchedOptions) => {
+            console.log("Building schedule ", wksched);
+            killAlarmTask();
+
+            let wkEvents: iFutureEvent[] = [];
+            if (wksched !== "off") {
+                wkEvents = buildFutureEvents(wksched, allTasks, wkoptions);
+                }
+
+            // cleanup, get expired (or about to in next 30 seconds)
+            let currdate = new Date();
+            currdate.setSeconds(currdate.getSeconds() + 30);
+
+            let stripEvents = wkEvents.filter(item => item.evTstamp <= currdate.valueOf());
+            setExpiredEvs(stripEvents);
+
+            let finalEvents = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
+            setFutureEvs(finalEvents);
+            if (finalEvents.length === 0) {
+                setHstatus("Ready");
+                if (wksched !== "off") {
+                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                    setCurrSched("off");
+                }
+            } else {
+                setHstatus("Running");
+            }
+    };
+
     // handle ui for optional schedule buttons
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
+
+        if (currSched !== 'off') {
+            cleanRebuildFutureEvents(currSched, newOptions);
+        }
     }
     // loops through nested scheduleGroup to build schedule buttons
     const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
@@ -433,8 +476,9 @@ const HomePage = () => {
         const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
             return item.schedTasks.reduce(optionTaskReduce, outDict)
         }
+        const starterOptions = {'tomorrow': false};
 
-        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, {}): {};
+        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, starterOptions): {};
     }
 
     // handle ui for schedule buttons
@@ -442,29 +486,11 @@ const HomePage = () => {
         if (currSched !== wksched) {
             setHstatus("Loading");
             setCurrSched(wksched);
-            console.log("Building schedule ", wksched);
-            killAlarmTask();
 
-            let wkEvents: iFutureEvent[] = [];
-            let currdate = new Date();
+            cleanRebuildFutureEvents(wksched, schedOptions);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-                } else {
-                    wkEvents = buildFutureEvents(wksched, allTasks, schedOptions);
-                }
-
-            // cleanup
-            let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
-            setFutureEvs(finalEvents);
-            if (finalEvents.length === 0) {
-                setHstatus("Ready");
-                if (wksched !== "off") {
-                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
-                    setCurrSched("off");
-                }
-            } else {
-                setHstatus("Running");
             }
         }
     }
@@ -485,7 +511,7 @@ const HomePage = () => {
                 'begin +2:30',
                 'option sunday 14:00 or +5:00',
             ]},
-            'miralax' : {descr:'long description', schedRules: [
+            'miralax' : {descr:'miralax treatment', schedRules: [
                 'option miralax +2:15',
                 'option miralax+sunday 13:45 or +4:45',
             ]},
@@ -507,7 +533,7 @@ const HomePage = () => {
                 'begin +0:0,14:00 or +5:00',
                 'option sunday 14:00 or +5:00,17:00 or +7:30',
             ]},
-            'twominute' : {descr:'long description', schedRules: [
+            'twominute' : {descr:'quick 2 min test ev', schedRules: [
                 'begin +0:2,+0:04,+0:06',
             ]},
         }
@@ -525,24 +551,19 @@ const HomePage = () => {
                     {evTaskId: 'hook125'},
                 ]},
                 {schedName: 'test1', schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'test2', begins: 'now', schedTasks: []},
-                {schedName: 'test3', begins: 'now', schedTasks: [
                     {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
                     {evTaskId: 'miralax'},
                 ]},
+                {schedName: 'test2', begins: 'now', schedTasks: []},
             ]},
         }
         setSchedGroup(wkSchedGroup);
 
-        // set schedule buttons
-        // setSchedButtons({'test4': 'wake'});
+        // set schedule buttons, example = {'test4': 'wake'}
         setSchedButtons(buildButtons(wkSchedGroup));
 
-        // set optional schedule buttons
-        // setSchedOptions({'Miralax': true,'Sunday': false,});
+        // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
         setSchedOptions(buildOptions(wkSchedGroup, wkTasks));
 
         // init completed
@@ -557,43 +578,43 @@ const HomePage = () => {
 
     return(
     <Layout>
-      <Seo title="Scottschedule Home" />
+      <Seo title="Scottschedule Prototype" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Card style={{maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+        boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-      <Card style={{marginTop: '3px', maxWidth: 412, minWidth: 410, flex: '1 1'}}>
-      <Box display="flex" justifyContent="space-around" alignItems="flex-start">
+      <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box><h2 id='maindate'></h2></Box>
         <Box id='status'>{hstatus}</Box>
       </Box>
 
       <Box mx={1} mb={1}>
-      <Button size="small" variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+
+      {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
+        return (
+          <Button key={item} variant={(schedOptions[item])? "contained": "outlined"}
+            color="primary" onClick={() => toggleOptions(item)}>
+            {item}
+          </Button>
+        )})}
+          <Button key={'tomorrow'} variant={(schedOptions['tomorrow'])? "contained": "outlined"}
+            color="primary" onClick={() => toggleOptions('tomorrow')}>
+            {(schedOptions['tomorrow'])? "tomorrow": "today"}
+          </Button>
+
+      </Box><Box mx={1} my={1}>
       {Object.keys(schedButtons).map(item => {
           return (
-            <Button key={item} size="small" variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
+            <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
       )})}
       </Box>
-
-     { (Object.keys(schedOptions).length > 0) &&
-     <>
-     <Divider />
-     <Box mx={1} my={1}>
-       {Object.keys(schedOptions).map(item => {
-         return (
-         <Button key={item} size="small" variant={(schedOptions[item])? "contained": "outlined"}
-           color="primary" onClick={() => toggleOptions(item)}>
-           {item}
-         </Button>
-       )})}
-     </Box>
-     </>
-     }
 
      <Divider />
      <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
@@ -605,14 +626,32 @@ const HomePage = () => {
 
       </Card>
 
-    { (futureEvs.length > 0) &&
+    { (futureEvs.length > 0 || expiredEvs.length > 0) &&
       <Box>
-      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 300, flex: '1 1'}}>
+      { (expiredEvs.length > 0) &&
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
-        <h4>Upcoming Events</h4>
-        { futureEvs.map(item => <DisplayFutureEvent key={item.evTstamp} {...item}/>)}
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <h4>Recent Events</h4>
+            <Button onClick={() => setExpiredEvs([])}>
+              Clear
+            </Button>
+          </Box>
+        { expiredEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} item={item} descr={allTasks[item.evTaskId].descr}/>)}
         </Box>
       </Card>
+      }
+
+      { (futureEvs.length > 0) &&
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+        <h4>Upcoming Events</h4>
+        { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} item={item} descr={allTasks[item.evTaskId].descr}/>)}
+        </Box>
+      </Card>
+      }
       </Box>
     }
     </Box>
