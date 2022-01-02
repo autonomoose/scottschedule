@@ -160,8 +160,11 @@ const HomePage = () => {
         let currdate = new Date();
         console.log("buildFutureEvents", optInfo);
         if (optInfo['tomorrow']) {
-            console.log("would have added a day to current");
             currdate.setHours(currdate.getHours() + 24);
+            currdate.setHours(0);
+            currdate.setMinutes(0);
+            currdate.setSeconds(1);
+
         }
 
         // date object used for starting times,
