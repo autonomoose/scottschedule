@@ -154,12 +154,17 @@ const HomePage = () => {
 
     // future events
     //
-    const DisplayFutureEvent = (props: iFutureEvent) => {
-        const wkdate = new Date(props.evTstamp);
-        const dateOptions = {hour: '2-digit', minute: '2-digit'}
+    interface DisplayFutureEventProps {
+        item: iFutureEvent,
+        descr?: string,
+    }
+    const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
+        const wkdate = new Date(props.item.evTstamp);
+        const dateOptions = {hour: '2-digit', minute: '2-digit'};
+        const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
         return (
           <div>
-            {wkdate.toLocaleString('en-US', dateOptions)} - {props.evTaskId}
+            {wkdate.toLocaleString('en-US', dateOptions)} - {wkdescr}
           </div>
     )}
 
@@ -507,7 +512,7 @@ const HomePage = () => {
                 'begin +2:30',
                 'option sunday 14:00 or +5:00',
             ]},
-            'miralax' : {descr:'long description', schedRules: [
+            'miralax' : {descr:'miralax treatment', schedRules: [
                 'option miralax +2:15',
                 'option miralax+sunday 13:45 or +4:45',
             ]},
@@ -529,7 +534,7 @@ const HomePage = () => {
                 'begin +0:0,14:00 or +5:00',
                 'option sunday 14:00 or +5:00,17:00 or +7:30',
             ]},
-            'twominute' : {descr:'long description', schedRules: [
+            'twominute' : {descr:'quick 2 min test ev', schedRules: [
                 'begin +0:2,+0:04,+0:06',
             ]},
         }
@@ -574,7 +579,7 @@ const HomePage = () => {
 
     return(
     <Layout>
-      <Seo title="Scottschedule Home" />
+      <Seo title="Scottschedule Prototype" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
@@ -634,7 +639,7 @@ const HomePage = () => {
               Clear
             </Button>
           </Box>
-        { expiredEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
+        { expiredEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} item={item} descr={allTasks[item.evTaskId].descr}/>)}
         </Box>
       </Card>
       }
@@ -644,7 +649,7 @@ const HomePage = () => {
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>
-        { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
+        { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} item={item} descr={allTasks[item.evTaskId].descr}/>)}
         </Box>
       </Card>
       }
