@@ -89,6 +89,7 @@ const HomePage = () => {
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
 
+
         // play sound unless quieted
         const alarmAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
         if (alarmAudio) {
@@ -97,9 +98,13 @@ const HomePage = () => {
             console.log("no mooo");
         }
 
-        // remove current event from
+        // remove current events (and next 30 seconds worth) from
+        currdate.setSeconds(currdate.getSeconds() + 30);
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
         if (wkEvents.length !== futureEvs.length) {
+            let stripEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp <= currdate.valueOf());
+            setExpiredEvs(stripEvents);
+
             setFutureEvs(wkEvents);
             if (wkEvents.length === 0) {
                 setCurrSched("off");
@@ -109,6 +114,7 @@ const HomePage = () => {
             console.log("no cleanup after alarm");
         }
     };
+
     const getNextAlarm = () => {
         let ret_milli = 0;
         let currdate = new Date().valueOf();
@@ -150,9 +156,10 @@ const HomePage = () => {
     //
     const DisplayFutureEvent = (props: iFutureEvent) => {
         const wkdate = new Date(props.evTstamp);
+        const dateOptions = {hour: '2-digit', minute: '2-digit'}
         return (
           <div>
-            {wkdate.toLocaleString()} -- Task {props.evTaskId}
+            {wkdate.toLocaleString('en-US', dateOptions)} - {props.evTaskId}
           </div>
     )}
 
@@ -386,8 +393,13 @@ const HomePage = () => {
                 wkEvents = buildFutureEvents(wksched, allTasks, wkoptions);
                 }
 
-            // cleanup
+            // cleanup, get expired (or about to in next 30 seconds)
             let currdate = new Date();
+            currdate.setSeconds(currdate.getSeconds() + 30);
+
+            let stripEvents = wkEvents.filter(item => item.evTstamp <= currdate.valueOf());
+            setExpiredEvs(stripEvents);
+
             let finalEvents = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
             setFutureEvs(finalEvents);
             if (finalEvents.length === 0) {
@@ -616,6 +628,12 @@ const HomePage = () => {
       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <h4>Recent Events</h4>
+            <Button onClick={() => setExpiredEvs([])}>
+              Clear
+            </Button>
+          </Box>
         { expiredEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
         </Box>
       </Card>
