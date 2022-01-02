@@ -95,10 +95,10 @@ const Header = ({uname}: HeaderProps) => {
       style={{ height: "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)',
           boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Toolbar sx={{ justifyContent: 'space-around'}}>
 
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
-            <MenuIcon />
+            <MenuIcon /> M
           </IconButton>
 
           <Link to={homePage}>
@@ -130,7 +130,7 @@ const Header = ({uname}: HeaderProps) => {
           <strong>Main Menu</strong>
 
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
-              <ChevronLeftIcon />
+              <ChevronLeftIcon /> C
           </IconButton>
         </div>
         <Divider />
