@@ -75,6 +75,7 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroup, setSchedGroup] = useState<iSchedGroup>({});
@@ -565,9 +566,10 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
-      <Box mx={3} display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Card style={{maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+        boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-      <Card style={{maxWidth: 432, minWidth: 410, flex: '1 1'}}>
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box><h2 id='maindate'></h2></Box>
@@ -608,14 +610,26 @@ const HomePage = () => {
 
       </Card>
 
-    { (futureEvs.length > 0) &&
+    { (futureEvs.length > 0 || expiredEvs.length > 0) &&
       <Box>
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1'}}>
+      { (expiredEvs.length > 0) &&
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+        { expiredEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
+        </Box>
+      </Card>
+      }
+
+      { (futureEvs.length > 0) &&
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>
         { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
         </Box>
       </Card>
+      }
       </Box>
     }
     </Box>

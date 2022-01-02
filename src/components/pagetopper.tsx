@@ -47,7 +47,7 @@ interface PageTopperProps {
 export const PageTopper = (props: PageTopperProps) => {
     const { linksList, xtraList, helpPage, ptitle, pname, vdebug } = props;
     return (
-        <Box display="flex" justifyContent="space-between">
+        <Box mx={2} display="flex" justifyContent="space-between">
         <div style={{ float: 'left' }}>
             <Breadcrumbs separator=">" aria-label="Breadcrumb">
             { (pname !== 'Home') &&
