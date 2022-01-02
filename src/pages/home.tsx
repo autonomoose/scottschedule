@@ -89,7 +89,7 @@ const HomePage = () => {
         console.log('Timer Complete', currdate.toLocaleString());
 
         // play sound unless quieted
-        const alarmAudio = document.getElementsByClassName("audio-element")[0]
+        const alarmAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
         if (alarmAudio) {
             alarmAudio.play();
         } else {
@@ -378,11 +378,40 @@ const HomePage = () => {
 
     }
 
+    // cleanly reset and rebuild future events using globals
+    const cleanRebuildFutureEvents = (wksched: string) => {
+            console.log("Building schedule ", wksched);
+            killAlarmTask();
+
+            let wkEvents: iFutureEvent[] = [];
+            if (wksched !== "off") {
+                wkEvents = buildFutureEvents(wksched, allTasks, schedOptions);
+                }
+
+            // cleanup
+            let currdate = new Date();
+            let finalEvents = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
+            setFutureEvs(finalEvents);
+            if (finalEvents.length === 0) {
+                setHstatus("Ready");
+                if (wksched !== "off") {
+                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                    setCurrSched("off");
+                }
+            } else {
+                setHstatus("Running");
+            }
+    };
+
     // handle ui for optional schedule buttons
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
+
+        if (currSched !== 'off') {
+            cleanRebuildFutureEvents(currSched);
+        }
     }
     // loops through nested scheduleGroup to build schedule buttons
     const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
@@ -442,29 +471,11 @@ const HomePage = () => {
         if (currSched !== wksched) {
             setHstatus("Loading");
             setCurrSched(wksched);
-            console.log("Building schedule ", wksched);
-            killAlarmTask();
 
-            let wkEvents: iFutureEvent[] = [];
-            let currdate = new Date();
+            cleanRebuildFutureEvents(wksched);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-                } else {
-                    wkEvents = buildFutureEvents(wksched, allTasks, schedOptions);
-                }
-
-            // cleanup
-            let finalEvents: iFutureEvent[] = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
-            setFutureEvs(finalEvents);
-            if (finalEvents.length === 0) {
-                setHstatus("Ready");
-                if (wksched !== "off") {
-                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
-                    setCurrSched("off");
-                }
-            } else {
-                setHstatus("Running");
             }
         }
     }
@@ -537,12 +548,10 @@ const HomePage = () => {
         }
         setSchedGroup(wkSchedGroup);
 
-        // set schedule buttons
-        // setSchedButtons({'test4': 'wake'});
+        // set schedule buttons, example = {'test4': 'wake'}
         setSchedButtons(buildButtons(wkSchedGroup));
 
-        // set optional schedule buttons
-        // setSchedOptions({'Miralax': true,'Sunday': false,});
+        // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
         setSchedOptions(buildOptions(wkSchedGroup, wkTasks));
 
         // init completed
@@ -610,7 +619,7 @@ const HomePage = () => {
       <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 300, flex: '1 1'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>
-        { futureEvs.map(item => <DisplayFutureEvent key={item.evTstamp} {...item}/>)}
+        { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
         </Box>
       </Card>
       </Box>
