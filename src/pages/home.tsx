@@ -565,44 +565,38 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box mx={3} display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Card style={{marginTop: '3px', maxWidth: 412, minWidth: 410, flex: '1 1'}}>
-      <Box display="flex" justifyContent="space-around" alignItems="flex-start">
+      <Card style={{maxWidth: 432, minWidth: 410, flex: '1 1'}}>
+      <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box><h2 id='maindate'></h2></Box>
         <Box id='status'>{hstatus}</Box>
       </Box>
 
       <Box mx={1} mb={1}>
-      <Button size="small" variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+
+      {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
+        return (
+          <Button key={item} variant={(schedOptions[item])? "contained": "outlined"}
+            color="primary" onClick={() => toggleOptions(item)}>
+            {item}
+          </Button>
+        )})}
+          <Button key={'tomorrow'} variant={(schedOptions['tomorrow'])? "contained": "outlined"}
+            color="primary" onClick={() => toggleOptions('tomorrow')}>
+            {(schedOptions['tomorrow'])? "tomorrow": "today"}
+          </Button>
+
+      </Box><Box mx={1} my={1}>
       {Object.keys(schedButtons).map(item => {
           return (
-            <Button key={item} size="small" variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
+            <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
       )})}
       </Box>
-
-     { (Object.keys(schedOptions).length > 0) &&
-     <>
-     <Divider />
-     <Box mx={1} my={1}>
-       {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
-         return (
-         <Button key={item} size="small" variant={(schedOptions[item])? "contained": "outlined"}
-           color="primary" onClick={() => toggleOptions(item)}>
-           {item}
-         </Button>
-       )})}
-         <Button key={'tomorrow'} size="small" variant={(schedOptions['tomorrow'])? "contained": "outlined"}
-           color="primary" onClick={() => toggleOptions('tomorrow')}>
-           {(schedOptions['tomorrow'])? "tomorrow": "today"}
-         </Button>
-
-     </Box>
-     </>
-     }
 
      <Divider />
      <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
@@ -616,7 +610,7 @@ const HomePage = () => {
 
     { (futureEvs.length > 0) &&
       <Box>
-      <Card style={{marginTop: '3px', maxWidth: 410, minWidth: 300, flex: '1 1'}}>
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>
         { futureEvs.map(item => <DisplayFutureEvent key={`${item.evTstamp}:${item.evTaskId}`} {...item}/>)}
