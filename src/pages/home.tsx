@@ -19,6 +19,8 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 
 import DefaultSound from '../sounds/default.wav';
 
@@ -50,6 +52,12 @@ interface iSchedule {
 }
 
 interface iSchedGroup {
+    name: string,
+    descr: string,
+    schedNames: iSchedule[],
+};
+
+interface iSchedGroupList {
     [name: string]: {
         descr: string,
         schedNames: iSchedule[],
@@ -71,6 +79,8 @@ const HomePage = () => {
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
+
+    const [currGroup, setCurrGroup] = useState('default');
     const [currSched, setCurrSched] = useState('off');
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
@@ -78,7 +88,7 @@ const HomePage = () => {
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [allTasks, setAllTasks] = useState<iTask>({});
-    const [schedGroup, setSchedGroup] = useState<iSchedGroup>({});
+    const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [eventId, setEventId] = useState(0);
 
 
@@ -171,10 +181,10 @@ const HomePage = () => {
     //   get the Task rules that match
     //   process rules into events dict w/ tstamp key
     //   convert dict to sorted array w/ earliest events first
-    const buildFutureEvents = (wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
+    const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
         let wkEvents: iFutureEvent[] = [];
         let currdate = new Date();
-        console.log("buildFutureEvents", optInfo);
+        console.log("buildFutureEvents", wkgroup.name, wksched, optInfo);
         if (optInfo['tomorrow']) {
             currdate.setHours(currdate.getHours() + 24);
             currdate.setHours(0);
@@ -237,9 +247,11 @@ const HomePage = () => {
         };
         // reducer loop thru rules
         const rulesReduceToEvents = (outEvents: iFutureDict, taskRule: string) => {
+            // globals startTlang, startDate
             console.log("taskrule", taskRule);
             const evTask = taskRule.split('.')[0];
             const ruleParts = taskRule.split('.')[1].split(',');
+            var lastDate: Date;
 
             // handle each rule as a set of compound statements comma separated
             for (const wkRule of ruleParts) {
@@ -247,14 +259,18 @@ const HomePage = () => {
 
                 let ruleWords = wkRule.split(' ');
                 let tlangTimeWord = ruleWords.shift();
-                let evTime = tlangDate(tlangTimeWord, startDate);
+                let evTime = (tlangTimeWord.startsWith('++'))
+                    ? tlangDate(tlangTimeWord.slice(1), lastDate)
+                    : tlangDate(tlangTimeWord, startDate); // global startDate
 
                 // possibly adjust evTime with orlater(+0:00)/orsooner(xx:xx)
                 //     continue matching unless it fails
                 let nextTlangWord = ruleWords.shift();
                 while (nextTlangWord === 'or' && ruleWords.length > 0) {
                     let nextTimeWord = ruleWords.shift();
-                    let nextEvTime = tlangDate(nextTimeWord, startDate);
+                    let nextEvTime = (nextTimeWord.startsWith('++'))
+                        ? tlangDate(nextTimeWord.slice(1), lastDate)
+                        : tlangDate(nextTimeWord, startDate); // global startDate
                     if (!nextTimeWord) {
                         console.log("or fail - no time word");
                         break;
@@ -282,12 +298,18 @@ const HomePage = () => {
                 }
 
                 // store event by timestamp for later extract in order
-                let evVal = evTime.valueOf().toString();
-                if (outEvents[evVal]) {
-                    outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                console.log("dates", lastDate, evTime);
+                if (typeof lastDate !== 'undefined' && lastDate.valueOf() === evTime.valueOf()) {
+                    console.log("repeat event not added");
                 } else {
-                    outEvents[evVal] = [];
-                    outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                    let evVal = evTime.valueOf().toString();
+                    if (outEvents[evVal]) {
+                        outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                    } else {
+                        outEvents[evVal] = [];
+                        outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
+                    }
+                    lastDate = evTime;
                 }
 
                 // deal with any * (repeat) instructions
@@ -297,6 +319,7 @@ const HomePage = () => {
         };
         // reducer loop thru tasks
         const tasksReduceToRules = (outRules: string[], wkTaskName: iSchedTask) => {
+            // globals startTlang, startDate
             if (taskInfo[wkTaskName.evTaskId]) {
                 // find matching rule - loop backward through rules to find first match
                 let matchRule: string = '';
@@ -316,7 +339,7 @@ const HomePage = () => {
                             for (const wkOption of options) {
                                 if (wkOption.startsWith('start:')) {
                                     // todo ends with + should do date check
-                                    if (wkOption.slice(6) !== startTlang) {
+                                    if (wkOption.slice(6) !== startTlang) { // global startTlang
                                         matcher = false;
                                         break;
                                     }
@@ -353,8 +376,8 @@ const HomePage = () => {
         // find the schedule and possibly start time
         const schedParts = wksched.split('.');
         let schedList: iSchedule[] = [];
-        if (schedGroup['default']) {
-            schedList = schedGroup['default'].schedNames.filter(item => item.schedName === schedParts[0]);
+        if (wkgroup) {
+            schedList = wkgroup.schedNames.filter(item => item.schedName === schedParts[0]);
         }
         if (schedList.length !== 1) {
             console.log("no unique schedule found ", schedList, schedParts[0]);
@@ -420,13 +443,13 @@ const HomePage = () => {
     }
 
     // cleanly reset and rebuild future events using globals
-    const cleanRebuildFutureEvents = (wksched: string, wkoptions: iSchedOptions) => {
-            console.log("Building schedule ", wksched);
+    const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
+            console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
 
             let wkEvents: iFutureEvent[] = [];
             if (wksched !== "off") {
-                wkEvents = buildFutureEvents(wksched, allTasks, wkoptions);
+                wkEvents = buildFutureEvents(wkgroup, wksched, allTasks, wkoptions);
                 }
 
             // cleanup, get expired (or about to in next 30 seconds)
@@ -449,16 +472,6 @@ const HomePage = () => {
             }
     };
 
-    // handle ui for optional schedule buttons
-    const toggleOptions = (item: string) => {
-        const newOptions = {...schedOptions};
-        newOptions[item] = (schedOptions[item] === false);
-        setSchedOptions(newOptions);
-
-        if (currSched !== 'off') {
-            cleanRebuildFutureEvents(currSched, newOptions);
-        }
-    }
     // loops through nested scheduleGroup to build schedule buttons
     const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
         // loop through schedules looking for tasks
@@ -481,7 +494,7 @@ const HomePage = () => {
             }
             return outDict;
         }
-        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, {}): {};
+        return (wkSchedGroup.schedNames.reduce(optionSchedReduce, {}));
     }
     // loops through nested scheduleGroup looking for all possible options
     const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSchedOptions => {
@@ -510,33 +523,64 @@ const HomePage = () => {
         }
         const starterOptions = {'tomorrow': false};
 
-        return (wkSchedGroup['default'])? wkSchedGroup['default'].schedNames.reduce(optionSchedReduce, starterOptions): {};
+        return (wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions));
     }
 
+    // handle ui for optional schedule button presses
+    const toggleOptions = (item: string) => {
+        const newOptions = {...schedOptions};
+        newOptions[item] = (schedOptions[item] === false);
+        setSchedOptions(newOptions);
+
+        if (currSched !== 'off') {
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions);
+        }
+    }
     // handle ui for schedule buttons
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setHstatus("Loading");
             setCurrSched(wksched);
 
-            cleanRebuildFutureEvents(wksched, schedOptions);
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             }
         }
     }
+    // change currGroup from choicelist
+    const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrGroup(event.target.value);
+        if (currSched !== "off") {
+            setCurrSched("off");
+            // uses old group in call, thats OK as long as schedule is set to off
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, 'off', schedOptions);
+            enqueueSnackbar(`scheduler canceled`,
+                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+        }
+    }
+
+    // update when currGroup updates
+    useEffect(() => {
+        if (schedGroups[currGroup] && allTasks) {
+            // set schedule buttons, example = {'test4': 'wake'}
+            setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
+
+            // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
+            setSchedOptions(buildOptions({name:currGroup,...schedGroups[currGroup]}, allTasks));
+        }
+
+    }, [enqueueSnackbar, allTasks, schedGroups, currGroup]);
 
     // init
     useEffect(() => {
-        // setup UI
-        setNow();
         // every ten seconds, get the time and update clock
-        var intervalId = setInterval(() => {setNow()}, 10000);
         // cleanup on useeffect return
+        setNow();
+        var intervalId = setInterval(() => {setNow()}, 10000);
 
         // setup Data
-        //
         // setup events
         const wkTasks: iTask = {
             'therapy' : {descr:'therapy time, vest nebie', schedRules: [
@@ -568,11 +612,17 @@ const HomePage = () => {
             'twominute' : {descr:'quick 2 min test ev', schedRules: [
                 'begin +0:2,+0:04,+0:06',
             ]},
+            'cuckoo97' : {descr:'top of the hour 9am-7pm', schedRules: [
+                'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
+            ]},
+            'basetime' : {descr:'testing ++ and repeat', schedRules: [
+                'begin 22:00,+1,+1',
+            ]},
         }
         setAllTasks(wkTasks);
 
         // setup scheduleGroup
-        const wkSchedGroup: iSchedGroup = {
+        const wkSchedGroup: iSchedGroupList = {
             'default': {descr:'default schedules', schedNames: [
                 {schedName: 'main', buttonName: ' ', begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
                     {evTaskId: 'miralax'},
@@ -582,21 +632,22 @@ const HomePage = () => {
                     {evTaskId: 'hook1can'},
                     {evTaskId: 'hook125'},
                 ]},
+            ]},
+            'test': {descr:'test schedules', schedNames: [
                 {schedName: 'test1', schedTasks: [
                     {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
-                    {evTaskId: 'miralax'},
                 ]},
-                {schedName: 'test2', begins: 'now', schedTasks: []},
+                {schedName: 'test2', begins: 'now', schedTasks: [
+                    {evTaskId: 'cuckoo97'},
+                ]},
+                {schedName: 'test3', begins: 'now', schedTasks: [
+                    {evTaskId: 'basetime'},
+                ]},
+                {schedName: 'blank', begins: 'now', schedTasks: []},
             ]},
         }
-        setSchedGroup(wkSchedGroup);
-
-        // set schedule buttons, example = {'test4': 'wake'}
-        setSchedButtons(buildButtons(wkSchedGroup));
-
-        // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
-        setSchedOptions(buildOptions(wkSchedGroup, wkTasks));
+        setSchedGroups(wkSchedGroup);
 
         // init completed
         setHstatus("Ready");
@@ -620,8 +671,25 @@ const HomePage = () => {
 
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box><h1 id='mainclock'>Starting...</h1></Box>
-        <Box><h2 id='maindate'></h2></Box>
-        <Box id='status'>{hstatus}</Box>
+        <Box>
+          <h2 id='maindate'></h2>
+        </Box>
+        <Box id='status'>
+            <TextField margin="dense" type="text" variant="outlined" size="small"
+              value={currGroup} onChange={changeGroup}
+              label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
+              inputProps={{'data-testid': 'schedgroup'}}
+              select
+             >
+              {(schedGroups)
+                ? Object.keys(schedGroups).map(item => {
+                    return(
+                      <MenuItem key={item} value={item}>{item}</MenuItem>
+                )})
+                : <MenuItem value='default'>default</MenuItem>
+              }
+            </TextField>
+        </Box>
       </Box>
 
       <Box mx={1} mb={1}>
