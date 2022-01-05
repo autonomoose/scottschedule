@@ -21,6 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import DefaultSound from '../sounds/default.wav';
 
@@ -248,7 +249,6 @@ const HomePage = () => {
         // reducer loop thru rules
         const rulesReduceToEvents = (outEvents: iFutureDict, taskRule: string) => {
             // globals startTlang, startDate
-            console.log("taskrule", taskRule);
             const evTask = taskRule.split('.')[0];
             const ruleParts = taskRule.split('.')[1].split(',');
             var lastDate: Date;
@@ -298,7 +298,6 @@ const HomePage = () => {
                 }
 
                 // store event by timestamp for later extract in order
-                console.log("dates", lastDate, evTime);
                 if (typeof lastDate !== 'undefined' && lastDate.valueOf() === evTime.valueOf()) {
                     console.log("repeat event not added");
                 } else {
@@ -435,7 +434,7 @@ const HomePage = () => {
                 console.log("undefined mainclock");
         }
         if (maindate) {
-                maindate.textContent = wkdate.toLocaleDateString("en-US", {day: "2-digit", month: "2-digit", year: "2-digit"});
+                maindate.textContent = wkdate.toLocaleDateString("en-US", {day: "2-digit", month: "2-digit", weekday: "short"});
         } else {
                 console.log("undefined maindate");
         }
@@ -569,6 +568,12 @@ const HomePage = () => {
 
             // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
             setSchedOptions(buildOptions({name:currGroup,...schedGroups[currGroup]}, allTasks));
+
+            // update group title
+            if (schedGroups[currGroup].descr) {
+                    document.getElementById('grouptitle').textContent = schedGroups[currGroup].descr;
+            }
+
         }
 
     }, [enqueueSnackbar, allTasks, schedGroups, currGroup]);
@@ -623,7 +628,7 @@ const HomePage = () => {
 
         // setup scheduleGroup
         const wkSchedGroup: iSchedGroupList = {
-            'default': {descr:'default schedules', schedNames: [
+            'default': {descr:'main schedule', schedNames: [
                 {schedName: 'main', buttonName: ' ', begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
                     {evTaskId: 'miralax'},
                     {evTaskId: 'therapy'},
@@ -648,6 +653,9 @@ const HomePage = () => {
             ]},
         }
         setSchedGroups(wkSchedGroup);
+        if (wkSchedGroup[currGroup].descr) {
+                document.getElementById('grouptitle').textContent = wkSchedGroup[currGroup].descr;
+        }
 
         // init completed
         setHstatus("Ready");
@@ -661,18 +669,23 @@ const HomePage = () => {
 
     return(
     <Layout>
-      <Seo title="Scottschedule Prototype" />
+      <Seo title="Scottschedule Prototype 2" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
       <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
-      <Card style={{maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+
+      <Box>
+      <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
-        <Box><h1 id='mainclock'>Starting...</h1></Box>
         <Box>
-          <h2 id='maindate'></h2>
+          <Typography variant='h3' id='mainclock'>00:00</Typography>
+        </Box>
+        <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
+          <Typography mx={2} variant='h5' id='maindate'>01/01/00
+          </Typography><Typography mx={1} variant='caption' id='grouptitle'>Group Title</Typography>
         </Box>
         <Box id='status'>
             <TextField margin="dense" type="text" variant="outlined" size="small"
@@ -704,7 +717,7 @@ const HomePage = () => {
         )})}
           <Button key={'tomorrow'} variant={(schedOptions['tomorrow'])? "contained": "outlined"}
             color="primary" onClick={() => toggleOptions('tomorrow')}>
-            {(schedOptions['tomorrow'])? "tomorrow": "today"}
+            tomorrow
           </Button>
 
       </Box><Box mx={1} my={1}>
@@ -724,12 +737,12 @@ const HomePage = () => {
        </audio>
      </Box>
 
-      </Card>
+     </Card></Box>
 
     { (futureEvs.length > 0 || expiredEvs.length > 0) &&
       <Box>
       { (expiredEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <Box display="flex" justifyContent="space-between" alignItems="baseline">
@@ -747,7 +760,7 @@ const HomePage = () => {
       }
 
       { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 410, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>
