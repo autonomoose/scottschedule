@@ -9,6 +9,7 @@ import { useSnackbar } from 'notistack';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
 import Header from './header';
 
@@ -248,7 +249,9 @@ interface HdataValues {
 
            <footer style={{ paddingTop: 40 }}>
              <Divider />
-             &copy; {new Date().getFullYear()}, Werner Digital Technology Inc
+             <Typography variant='caption' mx={2}>
+               &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc
+             </Typography>
            </footer>
          </div>
        </div>

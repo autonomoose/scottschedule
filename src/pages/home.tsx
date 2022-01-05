@@ -669,14 +669,14 @@ const HomePage = () => {
 
     return(
     <Layout>
-      <Seo title="Scottschedule Prototype 2" />
+      <Seo title="Prototype 2 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
       <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
 
       <Box>
-      <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+      <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
@@ -760,7 +760,7 @@ const HomePage = () => {
       }
 
       { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
         <h4>Upcoming Events</h4>

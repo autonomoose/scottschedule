@@ -15,6 +15,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import HomeIcon from '@mui/icons-material/Home';
@@ -102,19 +103,30 @@ const Header = ({uname}: HeaderProps) => {
           </IconButton>
 
           <Link to={homePage}>
-            <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png" />
+            <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"
+            /><Typography variant='body'>
             Scottschedule
+            </Typography>
           </Link>
 
           { (uname !== '') ?
               <Box sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
-                  <Link to="/usermaint" style={{ marginRight: `1em`}} >{uname}</Link>
-                  <Button variant="outlined" onClick={signOut}>Sign Out</Button>
+                  <Link to="/usermaint" style={{ marginRight: `1em`}} >
+                    <Typography variant='body'>
+                    {uname}
+                    </Typography>
+
+                  </Link>
+                  <Button variant="outlined" onClick={signOut}>
+                    Sign Out
+                  </Button>
                </Box>
                :
                <Box sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
                  <Link to="/home" style={{ marginRight: `1em`}} >
-                     <Button variant="outlined">Sign In</Button>
+                     <Button variant="outlined">
+                       Sign In
+                     </Button>
                  </Link>
                </Box>
           }
@@ -139,6 +151,7 @@ const Header = ({uname}: HeaderProps) => {
           { (uname !== '') ?
             <>
             <ListItemMenu link="/home" icon={<HomeIcon />} text="Home" />
+            <ListItemMenu link="/help" icon={<StarIcon />} text="Help" />
             <ListItemMenu jslink={signOut} icon={<StarIcon />} text="Logout" />
             </>
           :
