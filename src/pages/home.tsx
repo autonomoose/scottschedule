@@ -80,8 +80,9 @@ const HomePage = () => {
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
+    const [showClock, setShowClock] = useState(false);
 
-    const [currGroup, setCurrGroup] = useState('default');
+    const [currGroup, setCurrGroup] = useState('');
     const [currSched, setCurrSched] = useState('off');
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
@@ -251,7 +252,10 @@ const HomePage = () => {
             // globals startTlang, startDate
             const evTask = taskRule.split('.')[0];
             const ruleParts = taskRule.split('.')[1].split(',');
-            var lastDate: Date;
+            var lastDate = new Date(startDate.valueOf());
+            lastDate.setHours(0);
+            lastDate.setMinutes(0);
+            lastDate.setSeconds(0);
 
             // handle each rule as a set of compound statements comma separated
             for (const wkRule of ruleParts) {
@@ -259,6 +263,10 @@ const HomePage = () => {
 
                 let ruleWords = wkRule.split(' ');
                 let tlangTimeWord = ruleWords.shift();
+                if (!tlangTimeWord || tlangTimeWord === '') {
+                    continue;
+                }
+
                 let evTime = (tlangTimeWord.startsWith('++'))
                     ? tlangDate(tlangTimeWord.slice(1), lastDate)
                     : tlangDate(tlangTimeWord, startDate); // global startDate
@@ -268,13 +276,14 @@ const HomePage = () => {
                 let nextTlangWord = ruleWords.shift();
                 while (nextTlangWord === 'or' && ruleWords.length > 0) {
                     let nextTimeWord = ruleWords.shift();
-                    let nextEvTime = (nextTimeWord.startsWith('++'))
-                        ? tlangDate(nextTimeWord.slice(1), lastDate)
-                        : tlangDate(nextTimeWord, startDate); // global startDate
-                    if (!nextTimeWord) {
+                    if (!nextTimeWord || nextTimeWord === '') {
                         console.log("or fail - no time word");
                         break;
                     }
+
+                    let nextEvTime = (nextTimeWord.startsWith('++'))
+                        ? tlangDate(nextTimeWord.slice(1), lastDate)
+                        : tlangDate(nextTimeWord, startDate); // global startDate
 
                     console.log("or ", nextTimeWord, nextEvTime);
                     if (nextTimeWord[0] === '+') {
@@ -570,8 +579,9 @@ const HomePage = () => {
             setSchedOptions(buildOptions({name:currGroup,...schedGroups[currGroup]}, allTasks));
 
             // update group title
-            if (schedGroups[currGroup].descr) {
-                    document.getElementById('grouptitle').textContent = schedGroups[currGroup].descr;
+            let groupElement =  document.getElementById('grouptitle');
+            if (schedGroups[currGroup].descr && groupElement) {
+                    groupElement.textContent = schedGroups[currGroup].descr;
             }
 
         }
@@ -653,8 +663,11 @@ const HomePage = () => {
             ]},
         }
         setSchedGroups(wkSchedGroup);
-        if (wkSchedGroup[currGroup].descr) {
-                document.getElementById('grouptitle').textContent = wkSchedGroup[currGroup].descr;
+        let wkGroup = (wkSchedGroup)? 'default': 'new';
+        setCurrGroup(wkGroup);
+        let groupElement =  document.getElementById('grouptitle');
+        if (wkSchedGroup[wkGroup] && groupElement) {
+                groupElement.textContent = wkSchedGroup[wkGroup].descr;
         }
 
         // init completed
@@ -669,23 +682,45 @@ const HomePage = () => {
 
     return(
     <Layout>
-      <Seo title="Prototype 2 - Scottschedule" />
+      <Seo title="Prototype 3 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
       <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box display="flex" flexWrap="wrap">
 
       <Box>
       <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
+      <Box display={(showClock === true)? 'flex': 'none'} flexWrap="wrap">
+        { (showClock === true) &&
+        <>
+        <Button onClick={() => setShowClock(false)}><Typography variant='h1' sx={{color: 'black'}} id='mainclock'>00:00</Typography></Button>
+        <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
+        </>
+        }
+        <Button onClick={() => setShowClock(false)}>Close</Button>
+        {(currSched !== "off") &&
+        <Box m={1}>
+          <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          {currSched} - {schedGroups[currGroup].descr}
+        </Box>
+        }
+      </Box>
+
+      {(showClock === false) &&
+      <>
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box>
-          <Typography variant='h3' id='mainclock'>00:00</Typography>
+          <Button onClick={() => setShowClock(true)}><Typography variant='h3' id='mainclock'>00:00</Typography></Button>
         </Box>
         <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
-          <Typography mx={2} variant='h5' id='maindate'>01/01/00
-          </Typography><Typography mx={1} variant='caption' id='grouptitle'>Group Title</Typography>
+          <Typography mx={1} variant='h5' id='maindate'>
+            01/01/00
+          </Typography><Typography mx={1} variant='caption' id='grouptitle'>
+            {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
+          </Typography>
         </Box>
         <Box id='status'>
             <TextField margin="dense" type="text" variant="outlined" size="small"
@@ -699,7 +734,7 @@ const HomePage = () => {
                     return(
                       <MenuItem key={item} value={item}>{item}</MenuItem>
                 )})
-                : <MenuItem value='default'>default</MenuItem>
+                : <MenuItem value='new'>new</MenuItem>
               }
             </TextField>
         </Box>
@@ -736,8 +771,11 @@ const HomePage = () => {
          Your browser doesn't support audio
        </audio>
      </Box>
+     </>
+     }
 
      </Card></Box>
+     </Box>
 
     { (futureEvs.length > 0 || expiredEvs.length > 0) &&
       <Box>
