@@ -80,7 +80,7 @@ const HomePage = () => {
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
-    const [showClock, setShowClock] = useState(false);
+    const [showClock, setShowClock] = useState('');
 
     const [currGroup, setCurrGroup] = useState('');
     const [currSched, setCurrSched] = useState('off');
@@ -428,27 +428,45 @@ const HomePage = () => {
     }
 
     // ui functions
-    // maintain the clock/calendar on ui
-    const setNow = () => {
-        console.log("setnow");
-        var mainclock = document.getElementById('mainclock');
-        var maindate = document.getElementById('maindate');
-        var wkdate = new Date();
-        var hours = (wkdate.getHours() < 10)? " " + wkdate.getHours(): wkdate.getHours();
-        var minutes = (wkdate.getMinutes() < 10? "0" + wkdate.getMinutes(): wkdate.getMinutes());
+    // maintain the clock/calendar on scheduler ui card
+    const setNowDigital = () => {
+        console.log("setnow digital");
+        let wkdate = new Date();
 
+        let mainclock = document.getElementById('mainclock');
         if (mainclock) {
-                mainclock.textContent = hours + ":" + minutes;
+            // pad hours with space, minutes with 0 for readability
+            let hours = (wkdate.getHours() < 10)? " " + wkdate.getHours(): wkdate.getHours();
+            let minutes = (wkdate.getMinutes() < 10? "0" + wkdate.getMinutes(): wkdate.getMinutes());
+
+            mainclock.textContent = hours + ":" + minutes;
         } else {
-                console.log("undefined mainclock");
-        }
-        if (maindate) {
-                maindate.textContent = wkdate.toLocaleDateString("en-US", {day: "2-digit", month: "2-digit", weekday: "short"});
-        } else {
-                console.log("undefined maindate");
+            console.log("undefined mainclock");
         }
 
+        let maindate = document.getElementById('maindate');
+        if (maindate) {
+            maindate.textContent = wkdate.toLocaleDateString(
+              "en-US", {day: "2-digit", month: "2-digit", weekday: "short"});
+        } else {
+            console.log("undefined maindate");
+        }
     }
+    // maintain selected clock
+    useEffect(() => {
+        // every ten seconds, get the time and update clock
+        // cleanup on useeffect return
+
+        if (showClock && showClock !== '') {
+            console.log("restart clock");
+            setNowDigital();
+            var intervalId = setInterval(() => {setNowDigital()}, 10000);
+
+            return () => {clearInterval(intervalId)};
+        } else {
+            console.log("clock pre-init");
+        }
+    }, [showClock]);
 
     // cleanly reset and rebuild future events using globals
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
@@ -588,14 +606,8 @@ const HomePage = () => {
 
     }, [enqueueSnackbar, allTasks, schedGroups, currGroup]);
 
-    // init
+    // init Data
     useEffect(() => {
-        // every ten seconds, get the time and update clock
-        // cleanup on useeffect return
-        setNow();
-        var intervalId = setInterval(() => {setNow()}, 10000);
-
-        // setup Data
         // setup events
         const wkTasks: iTask = {
             'therapy' : {descr:'therapy time, vest nebie', schedRules: [
@@ -663,19 +675,22 @@ const HomePage = () => {
             ]},
         }
         setSchedGroups(wkSchedGroup);
+
+        // post data init
         let wkGroup = (wkSchedGroup)? 'default': 'new';
         setCurrGroup(wkGroup);
+
         let groupElement =  document.getElementById('grouptitle');
         if (wkSchedGroup[wkGroup] && groupElement) {
                 groupElement.textContent = wkSchedGroup[wkGroup].descr;
         }
+        setShowClock('scheduler');
 
         // init completed
         setHstatus("Ready");
         enqueueSnackbar(`init complete`,
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
 
-        return () => {clearInterval(intervalId)};
     }, [enqueueSnackbar]);
 
 
@@ -693,27 +708,34 @@ const HomePage = () => {
       <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-      <Box display={(showClock === true)? 'flex': 'none'} flexWrap="wrap">
-        { (showClock === true) &&
+      <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
+        { (showClock === "digital1") &&
         <>
-        <Button onClick={() => setShowClock(false)}><Typography variant='h1' sx={{color: 'black'}} id='mainclock'>00:00</Typography></Button>
-        <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
+        <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
+          <Typography variant='h1' sx={{color: 'black', padding: 0, margin: 0}} id='mainclock'>00:00</Typography>
+        </Button>
+        <Box mx={4} display='flex' justifyContent='space-between'>
+          <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
+          <Button onClick={() => setShowClock('scheduler')}>Close</Button>
+        </Box>
         </>
         }
-        <Button onClick={() => setShowClock(false)}>Close</Button>
+
         {(currSched !== "off") &&
-        <Box m={1}>
+        <Box ml={1} mb={1} display="flex">
           <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
-          {currSched} - {schedGroups[currGroup].descr}
+          <Box mx={1}>
+            {currSched} - {schedGroups[currGroup].descr}
+          </Box>
         </Box>
         }
       </Box>
 
-      {(showClock === false) &&
+      {(showClock === 'scheduler') &&
       <>
       <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
         <Box>
-          <Button onClick={() => setShowClock(true)}><Typography variant='h3' id='mainclock'>00:00</Typography></Button>
+          <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
         </Box>
         <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
           <Typography mx={1} variant='h5' id='maindate'>
@@ -764,6 +786,9 @@ const HomePage = () => {
       )})}
       </Box>
 
+     </>
+     }
+
      <Divider />
      <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
        Default <audio className="audio-element" controls >
@@ -771,9 +796,6 @@ const HomePage = () => {
          Your browser doesn't support audio
        </audio>
      </Box>
-     </>
-     }
-
      </Card></Box>
      </Box>
 
