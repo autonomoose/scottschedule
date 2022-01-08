@@ -1,15 +1,17 @@
-// runs complex timers
+// prototype
 //  execute events, eventTask, getNextEvent, killEventTask, useEffect(futureEvs)
-//  future events, buildFutureEvents
-//  ui, setNow (maintain clock/calendar),
-//    toggleOptions(string), toggleScheds(string),
-//    bldOptions(iSchedGroup, string)
-//  init
+//  clock/cal, setNowDigital, useEffect(showClock),
+//  cleanRebuild futurevent
+//    toggleOptions(string), toggleScheds(string), changeGroup(choicelist event)
+//    useEffect(currGroup,schedGroups,allTasks) - build buttons, options, update screen
+//  useEffect() data init
+
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
-import DisplayFutureEvent, {buildFutureEvents, buildButtons, buildOptions} from '../components/futurevents';
+import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../components/futurevents';
+import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 
@@ -84,6 +86,7 @@ const HomePage = () => {
         }
     };
 
+    // use state futureEvs to find next afer current, return milliseconds
     const getNextEvent = () => {
         let ret_milli = 0;
         let currdate = new Date().valueOf();
@@ -95,6 +98,7 @@ const HomePage = () => {
         }
         return (ret_milli);
     };
+    // use state eventId and clears it
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
@@ -102,7 +106,7 @@ const HomePage = () => {
             console.log('Cancel timer');
         }
     };
-    // maintain the next event timer, and update state
+    // when futureEvs change, maintain the next event timer, and update state eventId
     useEffect(() => {
         killEventTask();
 
@@ -118,6 +122,7 @@ const HomePage = () => {
             }
         }
     }, [futureEvs]);
+
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
@@ -191,7 +196,7 @@ const HomePage = () => {
             }
     };
 
-    // handle ui for optional schedule button presses
+    // change state handle ui for optional schedule button presses
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
@@ -201,7 +206,7 @@ const HomePage = () => {
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions);
         }
     }
-    // handle ui for schedule buttons
+    // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setHstatus("Loading");
@@ -214,7 +219,7 @@ const HomePage = () => {
             }
         }
     }
-    // change currGroup from choicelist
+    // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
         if (currSched !== "off") {
@@ -331,11 +336,9 @@ const HomePage = () => {
 
     }, [enqueueSnackbar]);
 
-
-
     return(
     <Layout>
-      <Seo title="Prototype 3 - Scottschedule" />
+      <Seo title="Prototype 2.1 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug}
         helpPage="/help/home"
       />
@@ -402,18 +405,7 @@ const HomePage = () => {
 
       <Box mx={1} mb={1}>
           <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
-
-      {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
-        return (
-          <Button key={item} variant={(schedOptions[item])? "contained": "outlined"}
-            color="primary" onClick={() => toggleOptions(item)}>
-            {item}
-          </Button>
-        )})}
-          <Button key={'tomorrow'} variant={(schedOptions['tomorrow'])? "contained": "outlined"}
-            color="primary" onClick={() => toggleOptions('tomorrow')}>
-            tomorrow
-          </Button>
+          <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
 
       </Box><Box mx={1} my={1}>
       {Object.keys(schedButtons).map(item => {
@@ -458,16 +450,7 @@ const HomePage = () => {
       }
 
       { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
-          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
-        <h4>Upcoming Events</h4>
-        { futureEvs.map(item => <DisplayFutureEvent
-          key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-          descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
-        }
-        </Box>
-      </Card>
+        <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
       }
       </Box>
     }

@@ -1,10 +1,11 @@
 import React from 'react';
 
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+
 interface iFutureDict {
     [evTstampKey: string]: iFutureEvent[],
 }
-
-
 interface DisplayFutureEventProps {
     item: iFutureEvent,
     descr?: string,
@@ -17,6 +18,26 @@ const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
         {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
       </div>
 )};
+export default DisplayFutureEvent
+
+interface DisplayFutureCardProps {
+    evs: iFutureEvent[],
+    tasks: iTask,
+};
+export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
+    return (
+      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
+          background: '#F5F5E6', boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <h4>Upcoming Events</h4>
+          { props.evs.map(item => <DisplayFutureEvent
+            key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+            descr={(props.tasks[item.evTaskId])? props.tasks[item.evTaskId].descr: 'system'}/>)
+          }
+        </Box>
+      </Card>
+)};
+
 
 // future events
 //
@@ -268,61 +289,3 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
     console.log("active Events", wkEvents);
     return wkEvents;
 };
-
-// loops through nested scheduleGroup to build schedule buttons
-export const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
-    // loop through schedules looking for tasks
-    const optionSchedReduce = (outDict: iSchedButtons, item: iSchedule) => {
-        if (item.begins) {
-            const scheds = item.begins.split(',');
-            if (scheds.length > 1) {
-                scheds.forEach((starttime: string) => {
-                    if (starttime && starttime !== '') {
-                        outDict[item.schedName + '.' + starttime] = (item.buttonName)
-                            ? item.buttonName + ' ' + starttime
-                            : item.schedName + ' ' + starttime;
-                    }
-                });
-            } else {
-                outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
-            }
-        } else {
-            outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
-        }
-        return outDict;
-    }
-    return (wkSchedGroup.schedNames.reduce(optionSchedReduce, {}));
-}
-
-// loops through nested scheduleGroup looking for all possible options
-export const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSchedOptions => {
-    // loop through rules looking for opt statements
-    const optionRuleReduce = (outDict: iSchedOptions, item: string) => {
-        const optIndex = item.indexOf('option ');
-        if (optIndex >= 0) {
-            const ruleWords = item.slice(optIndex).split(' ');
-            if (ruleWords[1]) {
-                ruleWords[1].split('+').forEach((item: string) => {
-                    if (!item.startsWith('start:')) {
-                        outDict[item] = false;
-                    }
-                });
-            }
-        }
-        return outDict;
-    }
-    // loop through tasks looking for rules
-    const optionTaskReduce = (outDict: iSchedOptions, item: iSchedTask) => {
-        return (wkTasks[item.evTaskId])? wkTasks[item.evTaskId].schedRules.reduce(optionRuleReduce, outDict): outDict;
-    }
-    // loop through schedules looking for tasks
-    const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
-        return item.schedTasks.reduce(optionTaskReduce, outDict)
-    }
-    const starterOptions = {'tomorrow': false};
-
-    return (wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions));
-};
-
-
-export default DisplayFutureEvent
