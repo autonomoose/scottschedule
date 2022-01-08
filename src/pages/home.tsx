@@ -337,125 +337,119 @@ const HomePage = () => {
     }, [enqueueSnackbar]);
 
     return(
-    <Layout>
-      <Seo title="Prototype 2.1 - Scottschedule" />
-      <PageTopper pname="Home" vdebug={vdebug}
-        helpPage="/help/home"
-      />
-      <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
-      <Box display="flex" flexWrap="wrap">
+      <Layout><Seo title="Prototype 2.1 - Scottschedule" />
+      <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
+      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box>
-      <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-      <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
-        { (showClock === "digital1") &&
-        <>
-        <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
-          <Typography variant='h1' sx={{color: 'black', padding: 0, margin: 0}} id='mainclock'>00:00</Typography>
-        </Button>
-        <Box mx={4} display='flex' justifyContent='space-between'>
-          <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
-          <Button onClick={() => setShowClock('scheduler')}>Close</Button>
-        </Box>
-        </>
-        }
-
-        {(currSched !== "off") &&
-        <Box ml={1} mb={1} display="flex">
-          <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
-          <Box mx={1}>
-            {currSched} - {schedGroups[currGroup].descr}
+        <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
+          { (showClock === "digital1") &&
+          <>
+          <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
+            <Typography variant='h1' sx={{color: 'black', padding: 0, margin: 0}} id='mainclock'>00:00</Typography>
+          </Button>
+          <Box mx={4} display='flex' justifyContent='space-between'>
+            <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
+            <Button onClick={() => setShowClock('scheduler')}>Close</Button>
           </Box>
-        </Box>
-        }
-      </Box>
+          </>
+          }
 
-      {(showClock === 'scheduler') &&
-      <>
-      <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
-        <Box>
-          <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
+          {(currSched !== "off") &&
+          <Box ml={1} mb={1} display="flex">
+            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
+            <Box mx={1}>
+              {currSched} - {schedGroups[currGroup].descr}
+            </Box>
+          </Box>
+          }
         </Box>
-        <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
-          <Typography mx={1} variant='h5' id='maindate'>
-            01/01/00
-          </Typography><Typography mx={1} variant='caption' id='grouptitle'>
-            {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
-          </Typography>
-        </Box>
-        <Box id='status'>
+
+        {(showClock === 'scheduler') &&
+        <>
+        <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
+          <Box>
+            <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
+          </Box>
+          <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
+            <Typography mx={1} variant='h5' id='maindate'>
+              01/01/00
+            </Typography><Typography mx={1} variant='caption' id='grouptitle'>
+              {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
+            </Typography>
+          </Box>
+          <Box id='status'>
             <TextField margin="dense" type="text" variant="outlined" size="small"
               value={currGroup} onChange={changeGroup}
               label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
               inputProps={{'data-testid': 'schedgroup'}}
               select
-             >
+            >
               {(schedGroups)
                 ? Object.keys(schedGroups).map(item => {
-                    return(
-                      <MenuItem key={item} value={item}>{item}</MenuItem>
-                )})
+                  return(
+                    <MenuItem key={item} value={item}>{item}</MenuItem>
+                   )})
                 : <MenuItem value='new'>new</MenuItem>
               }
             </TextField>
+          </Box>
         </Box>
-      </Box>
 
-      <Box mx={1} mb={1}>
+        <Box mx={1} mb={1}>
           <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
+        </Box>
 
-      </Box><Box mx={1} my={1}>
-      {Object.keys(schedButtons).map(item => {
+        <Box mx={1} my={1}>
+          {Object.keys(schedButtons).map(item => {
           return (
             <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
-      )})}
-      </Box>
-
-     </>
-     }
-
-     <Divider />
-     <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-       Default <audio className="audio-element" controls >
-         <source src={DefaultSound} type="audio/wav" />
-         Your browser doesn't support audio
-       </audio>
-     </Box>
-     </Card></Box>
-     </Box>
-
-    { (futureEvs.length > 0 || expiredEvs.length > 0) &&
-      <Box>
-      { (expiredEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
-          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
-            <h4>Recent Events</h4>
-            <Button onClick={() => setExpiredEvs([])}>
-              Clear
-            </Button>
-          </Box>
-        { expiredEvs.map(item => <DisplayFutureEvent
-          key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-          descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
-        }
+          )})}
         </Box>
-      </Card>
-      }
+        </>
+        }
 
-      { (futureEvs.length > 0) &&
-        <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
-      }
-      </Box>
-    }
+       <Divider />
+       <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
+         Default <audio className="audio-element" controls >
+           <source src={DefaultSound} type="audio/wav" />
+           Your browser doesn't support audio
+         </audio>
+       </Box>
+     </Card></Box>
+
+   { (futureEvs.length > 0 || expiredEvs.length > 0) &&
+     <Box>
+       { (expiredEvs.length > 0) &&
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+         <Box mx={1}>
+           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+             <h4>Recent Events</h4>
+             <Button onClick={() => setExpiredEvs([])}>
+               Clear
+             </Button>
+           </Box>
+           { expiredEvs.map(item => <DisplayFutureEvent
+             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+             descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+           }
+         </Box>
+       </Card>
+       }
+
+       { (futureEvs.length > 0) &&
+         <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
+       }
+     </Box>
+   }
+
     </Box>
-
     <Backdrop sx={{ color: '#fff', zIndex: 3000 }} open={(hstatus === "Loading")} >
       <CircularProgress data-testid="dataBackdrop" color="inherit" />
     </Backdrop>
