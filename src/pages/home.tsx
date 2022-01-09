@@ -144,7 +144,7 @@ const HomePage = () => {
         let maindate = document.getElementById('maindate');
         if (maindate) {
             maindate.textContent = wkdate.toLocaleDateString(
-              "en-US", {day: "2-digit", month: "2-digit", weekday: "short"});
+              "en-US", {day: "2-digit", month: "short", weekday: "short"});
         } else {
             console.log("undefined maindate");
         }
@@ -348,10 +348,11 @@ const HomePage = () => {
           { (showClock === "digital1") &&
           <>
           <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
-            <Typography variant='h1' sx={{color: 'black', padding: 0, margin: 0}} id='mainclock'>00:00</Typography>
+            <Typography variant='h1' id='mainclock'
+              sx={{fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
           <Box mx={4} display='flex' justifyContent='space-between'>
-            <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
+            <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
             <Button onClick={() => setShowClock('scheduler')}>Close</Button>
           </Box>
           </>
