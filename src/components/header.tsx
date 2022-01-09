@@ -139,7 +139,7 @@ const Header = ({uname}: HeaderProps) => {
         >
           <Box ml={4} display='flex' alignItems='center'>
           <Typography variant='subtitle1'>
-            Main Menu
+            Main&nbsp;Menu
           </Typography>
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
             <svg viewBox="0 0 100 80" width="40" height="40">

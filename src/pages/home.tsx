@@ -1,14 +1,17 @@
-// runs complex timers
+// prototype
 //  execute events, eventTask, getNextEvent, killEventTask, useEffect(futureEvs)
-//  future events, DisplayFutureEvent, buildFutureEvents
-//  ui, setNow (maintain clock/calendar),
-//    toggleOptions(string), toggleScheds(string),
-//    bldOptions(iSchedGroup, string)
-//  init
+//  clock/cal, setNowDigital, useEffect(showClock),
+//  cleanRebuild futurevent
+//    toggleOptions(string), toggleScheds(string), changeGroup(choicelist event)
+//    useEffect(currGroup,schedGroups,allTasks) - build buttons, options, update screen
+//  useEffect() data init
+
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
+import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../components/futurevents';
+import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 
@@ -25,54 +28,11 @@ import Typography from '@mui/material/Typography';
 
 import DefaultSound from '../sounds/default.wav';
 
-interface iFutureEvent {
-    evTstamp: number,
-    evTaskId: string,
-};
-
-interface iFutureDict {
-    [evTstampKey: string]: iFutureEvent[],
-}
-
-interface iTask {
-    [evTaskId: string]: {
-        descr: string,
-        schedRules: string[],
-    };
-};
-
-interface iSchedTask {
-   evTaskId: string,
-}
-
-interface iSchedule {
-    schedName: string,
-    schedTasks: iSchedTask[],
-    begins?: string,
-    buttonName?: string,
-}
-
-interface iSchedGroup {
-    name: string,
-    descr: string,
-    schedNames: iSchedule[],
-};
-
 interface iSchedGroupList {
     [name: string]: {
         descr: string,
         schedNames: iSchedule[],
     };
-};
-
-// schedule buttons
-interface iSchedButtons {
-    [name: string]: string; // button [name]=text
-};
-
-// schedule options
-interface iSchedOptions {
-    [name: string]: boolean;
 };
 
 const HomePage = () => {
@@ -101,7 +61,6 @@ const HomePage = () => {
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
 
-
         // play sound unless quieted
         const eventAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
         if (eventAudio) {
@@ -127,6 +86,7 @@ const HomePage = () => {
         }
     };
 
+    // use state futureEvs to find next afer current, return milliseconds
     const getNextEvent = () => {
         let ret_milli = 0;
         let currdate = new Date().valueOf();
@@ -138,6 +98,7 @@ const HomePage = () => {
         }
         return (ret_milli);
     };
+    // use state eventId and clears it
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
@@ -145,7 +106,7 @@ const HomePage = () => {
             console.log('Cancel timer');
         }
     };
-    // maintain the next event timer, and update state
+    // when futureEvs change, maintain the next event timer, and update state eventId
     useEffect(() => {
         killEventTask();
 
@@ -162,270 +123,6 @@ const HomePage = () => {
         }
     }, [futureEvs]);
 
-
-    // future events
-    //
-    interface DisplayFutureEventProps {
-        item: iFutureEvent,
-        descr?: string,
-    }
-    const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
-        const wkdate = new Date(props.item.evTstamp);
-        const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
-        return (
-          <div>
-            {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
-          </div>
-    )}
-
-    // derive the future events from schedule
-    //   get the start time figured out
-    //   get the Task rules that match
-    //   process rules into events dict w/ tstamp key
-    //   convert dict to sorted array w/ earliest events first
-    const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
-        let wkEvents: iFutureEvent[] = [];
-        let currdate = new Date();
-        console.log("buildFutureEvents", wkgroup.name, wksched, optInfo);
-        if (optInfo['tomorrow']) {
-            currdate.setHours(currdate.getHours() + 24);
-            currdate.setHours(0);
-            currdate.setMinutes(0);
-            currdate.setSeconds(1);
-        }
-
-        // date object used for starting times,
-        const tlangDate = (wkTlang: string | undefined, wkStart: Date) => {
-            let retDate = new Date(wkStart.valueOf())
-            if (wkTlang) {
-                const dateParts = wkTlang.split(':');
-                switch(dateParts.length) {
-                    case 0: // undefined and now are handled by retDate init
-                        break;
-                    case 1: // minutes only (offset only) or word
-                        if (/^\+?\d+$/.test(wkTlang)) {
-                            // numeric is minutes only
-                            if (wkTlang[0] === '+') {
-                                // offset
-                                retDate.setMinutes(retDate.getMinutes() + Number(dateParts[0]));
-                                retDate.setSeconds(0);
-                            } else {
-                                // constant
-                                retDate.setMinutes(Number(dateParts[0]));
-                                retDate.setSeconds(0);
-                            }
-                        } else {
-                            switch(wkTlang) {
-                                case 'now':
-                                    break;
-                                default:
-                                    console.log("unknown date", wkTlang);
-                                    break;
-                            }
-                        }
-                        break;
-                    case 2: // hours and minutes (constant or offset)
-                        if (wkTlang[0] === '+') {
-                            // offset
-                            retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
-                            retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
-                            retDate.setSeconds(0);
-                        } else {
-                            // constant
-                            retDate.setHours(Number(dateParts[0]));
-                            retDate.setMinutes(Number(dateParts[1]));
-                            retDate.setSeconds(0);
-                        }
-                        break;
-                    case 3: // constant with offset HH:MM+HH:MM, date with hour minute 12/02/22:HH:MM
-                        break;
-
-                    default:
-                        console.log("unknown date", wkTlang);
-                        break;
-                }
-            }
-            return retDate;
-        };
-        // reducer loop thru rules
-        const rulesReduceToEvents = (outEvents: iFutureDict, taskRule: string) => {
-            // globals startTlang, startDate
-            const evTask = taskRule.split('.')[0];
-            const ruleParts = taskRule.split('.')[1].split(',');
-            var lastDate = new Date(startDate.valueOf());
-            lastDate.setHours(0);
-            lastDate.setMinutes(0);
-            lastDate.setSeconds(0);
-
-            // handle each rule as a set of compound statements comma separated
-            for (const wkRule of ruleParts) {
-                // get timeoffset info and generate possible event time
-
-                let ruleWords = wkRule.split(' ');
-                let tlangTimeWord = ruleWords.shift();
-                if (!tlangTimeWord || tlangTimeWord === '') {
-                    continue;
-                }
-
-                let evTime = (tlangTimeWord.startsWith('++'))
-                    ? tlangDate(tlangTimeWord.slice(1), lastDate)
-                    : tlangDate(tlangTimeWord, startDate); // global startDate
-
-                // possibly adjust evTime with orlater(+0:00)/orsooner(xx:xx)
-                //     continue matching unless it fails
-                let nextTlangWord = ruleWords.shift();
-                while (nextTlangWord === 'or' && ruleWords.length > 0) {
-                    let nextTimeWord = ruleWords.shift();
-                    if (!nextTimeWord || nextTimeWord === '') {
-                        console.log("or fail - no time word");
-                        break;
-                    }
-
-                    let nextEvTime = (nextTimeWord.startsWith('++'))
-                        ? tlangDate(nextTimeWord.slice(1), lastDate)
-                        : tlangDate(nextTimeWord, startDate); // global startDate
-
-                    console.log("or ", nextTimeWord, nextEvTime);
-                    if (nextTimeWord[0] === '+') {
-                        // or later
-                        if (evTime > nextEvTime) {
-                            // fails, no more or
-                            break;
-                        }
-                        tlangTimeWord = nextTimeWord;
-                        evTime = nextEvTime;
-                    } else {
-                        // or sooner
-                        if (evTime < nextEvTime) {
-                            // fails, no more or
-                            break;
-                        }
-                        tlangTimeWord = nextTimeWord;
-                        evTime = nextEvTime;
-                    }
-                    nextTlangWord = ruleWords.shift();
-                }
-
-                // store event by timestamp for later extract in order
-                if (typeof lastDate !== 'undefined' && lastDate.valueOf() === evTime.valueOf()) {
-                    console.log("repeat event not added");
-                } else {
-                    let evVal = evTime.valueOf().toString();
-                    if (outEvents[evVal]) {
-                        outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
-                    } else {
-                        outEvents[evVal] = [];
-                        outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
-                    }
-                    lastDate = evTime;
-                }
-
-                // deal with any * (repeat) instructions
-
-            }
-            return(outEvents);
-        };
-        // reducer loop thru tasks
-        const tasksReduceToRules = (outRules: string[], wkTaskName: iSchedTask) => {
-            // globals startTlang, startDate
-            if (taskInfo[wkTaskName.evTaskId]) {
-                // find matching rule - loop backward through rules to find first match
-                let matchRule: string = '';
-                const tasklist = taskInfo[wkTaskName.evTaskId].schedRules.slice().reverse();
-
-                for (const wkRule of tasklist) {
-                    const ruleWords = wkRule.split(' ');
-                    switch(ruleWords[0]) {
-                        case "begin":
-                            // begin always matches
-                            matchRule = ruleWords.slice(1).join(' ');
-                            break;
-                        case "option":
-                            // option matches if all arguments are true
-                            let options = ruleWords[1].split('+');
-                            let matcher = true;
-                            for (const wkOption of options) {
-                                if (wkOption.startsWith('start:')) {
-                                    // todo ends with + should do date check
-                                    if (wkOption.slice(6) !== startTlang) { // global startTlang
-                                        matcher = false;
-                                        break;
-                                    }
-                                } else if (!optInfo[wkOption]) {
-                                    matcher = false;
-                                    break;
-                                }
-                            }
-                            if (matcher) {
-                                matchRule = ruleWords.slice(2).join(' ');
-                            }
-                            break;
-                        default:
-                            console.log("unknown word", ruleWords[0]);
-                        break;
-                    }
-                    if (matchRule !== '') {
-                        break; // out of for loop
-                    }
-                } // end of find matching rule
-
-                // add matching rule to output
-                if (matchRule !== '') {
-                    const outRule = wkTaskName.evTaskId + "." + matchRule
-                    outRules.push(outRule);
-                }
-            } else {
-                console.log(wkTaskName.evTaskId, " task not found");
-            }
-            return outRules;
-        }
-
-
-        // find the schedule and possibly start time
-        const schedParts = wksched.split('.');
-        let schedList: iSchedule[] = [];
-        if (wkgroup) {
-            schedList = wkgroup.schedNames.filter(item => item.schedName === schedParts[0]);
-        }
-        if (schedList.length !== 1) {
-            console.log("no unique schedule found ", schedList, schedParts[0]);
-            return wkEvents;
-        }
-        console.log("found iSchedule ", schedList[0].schedName, schedList[0]);
-
-        // find the starting time
-        var startTlang = 'now';
-        if (schedParts[1]) {
-            startTlang = schedParts[1];
-        } else if (schedList[0].begins) {
-                startTlang = schedList[0].begins;
-        }
-        var startDate = tlangDate(startTlang, currdate);
-        console.log("start tlang", startTlang, " date ", startDate);
-
-        // get appropriate rules from tasklist
-        let activeRules = [];
-
-        if (schedList[0].schedTasks.length > 0) {
-            activeRules = schedList[0].schedTasks.reduce(tasksReduceToRules, []);
-        } else {
-            // new
-            activeRules.push("new.23:23");
-            console.log("no tasks - added new rule");
-        }
-        console.log("active Rules", activeRules);
-
-        // convert rules to future events dict (to preserve order on mult event per timestamp)
-        const dictEvents = activeRules.reduce(rulesReduceToEvents, {});
-        // convert dictionary to wkEvents: iFutureEvent[]
-        for (const tmpTstamp of Object.keys(dictEvents).sort()) {
-            for (const tmpEv of dictEvents[tmpTstamp]) {
-                wkEvents.push(tmpEv);
-            }
-        }
-        console.log("active Events", wkEvents);
-        return wkEvents;
-    }
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
@@ -447,7 +144,7 @@ const HomePage = () => {
         let maindate = document.getElementById('maindate');
         if (maindate) {
             maindate.textContent = wkdate.toLocaleDateString(
-              "en-US", {day: "2-digit", month: "2-digit", weekday: "short"});
+              "en-US", {day: "2-digit", month: "short", weekday: "short"});
         } else {
             console.log("undefined maindate");
         }
@@ -466,6 +163,7 @@ const HomePage = () => {
         } else {
             console.log("clock pre-init");
         }
+        return () => {};
     }, [showClock]);
 
     // cleanly reset and rebuild future events using globals
@@ -498,61 +196,7 @@ const HomePage = () => {
             }
     };
 
-    // loops through nested scheduleGroup to build schedule buttons
-    const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
-        // loop through schedules looking for tasks
-        const optionSchedReduce = (outDict: iSchedButtons, item: iSchedule) => {
-            if (item.begins) {
-                const scheds = item.begins.split(',');
-                if (scheds.length > 1) {
-                    scheds.forEach((starttime: string) => {
-                        if (starttime && starttime !== '') {
-                            outDict[item.schedName + '.' + starttime] = (item.buttonName)
-                                ? item.buttonName + ' ' + starttime
-                                : item.schedName + ' ' + starttime;
-                        }
-                    });
-                } else {
-                    outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
-                }
-            } else {
-                outDict[item.schedName] = (item.buttonName)? item.buttonName: item.schedName;
-            }
-            return outDict;
-        }
-        return (wkSchedGroup.schedNames.reduce(optionSchedReduce, {}));
-    }
-    // loops through nested scheduleGroup looking for all possible options
-    const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSchedOptions => {
-        // loop through rules looking for opt statements
-        const optionRuleReduce = (outDict: iSchedOptions, item: string) => {
-            const optIndex = item.indexOf('option ');
-            if (optIndex >= 0) {
-                const ruleWords = item.slice(optIndex).split(' ');
-                if (ruleWords[1]) {
-                    ruleWords[1].split('+').forEach((item: string) => {
-                        if (!item.startsWith('start:')) {
-                            outDict[item] = false;
-                        }
-                    });
-                }
-            }
-            return outDict;
-        }
-        // loop through tasks looking for rules
-        const optionTaskReduce = (outDict: iSchedOptions, item: iSchedTask) => {
-            return (wkTasks[item.evTaskId])? wkTasks[item.evTaskId].schedRules.reduce(optionRuleReduce, outDict): outDict;
-        }
-        // loop through schedules looking for tasks
-        const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
-            return item.schedTasks.reduce(optionTaskReduce, outDict)
-        }
-        const starterOptions = {'tomorrow': false};
-
-        return (wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions));
-    }
-
-    // handle ui for optional schedule button presses
+    // change state handle ui for optional schedule button presses
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
@@ -562,7 +206,7 @@ const HomePage = () => {
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions);
         }
     }
-    // handle ui for schedule buttons
+    // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setHstatus("Loading");
@@ -575,7 +219,7 @@ const HomePage = () => {
             }
         }
     }
-    // change currGroup from choicelist
+    // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
         if (currSched !== "off") {
@@ -587,7 +231,7 @@ const HomePage = () => {
         }
     }
 
-    // update when currGroup updates
+    // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
         if (schedGroups[currGroup] && allTasks) {
             // set schedule buttons, example = {'test4': 'wake'}
@@ -601,10 +245,9 @@ const HomePage = () => {
             if (schedGroups[currGroup].descr && groupElement) {
                     groupElement.textContent = schedGroups[currGroup].descr;
             }
-
         }
 
-    }, [enqueueSnackbar, allTasks, schedGroups, currGroup]);
+    }, [allTasks, schedGroups, currGroup]);
 
     // init Data
     useEffect(() => {
@@ -693,148 +336,121 @@ const HomePage = () => {
 
     }, [enqueueSnackbar]);
 
-
-
     return(
-    <Layout>
-      <Seo title="Prototype 3 - Scottschedule" />
-      <PageTopper pname="Home" vdebug={vdebug}
-        helpPage="/help/home"
-      />
-      <Box mx={2} display="flex" flexWrap="wrap" justifyContent="space-between">
-      <Box display="flex" flexWrap="wrap">
+      <Layout><Seo title="Prototype 2.1 - Scottschedule" />
+      <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
+      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box>
-      <Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-      <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
-        { (showClock === "digital1") &&
-        <>
-        <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
-          <Typography variant='h1' sx={{color: 'black', padding: 0, margin: 0}} id='mainclock'>00:00</Typography>
-        </Button>
-        <Box mx={4} display='flex' justifyContent='space-between'>
-          <Typography mx={1} variant='h4' id='maindate'>01/01/00</Typography>
-          <Button onClick={() => setShowClock('scheduler')}>Close</Button>
-        </Box>
-        </>
-        }
-
-        {(currSched !== "off") &&
-        <Box ml={1} mb={1} display="flex">
-          <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
-          <Box mx={1}>
-            {currSched} - {schedGroups[currGroup].descr}
+        <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
+          { (showClock === "digital1") &&
+          <>
+          <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
+            <Typography variant='h1' id='mainclock'
+              sx={{fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
+          </Button>
+          <Box mx={4} display='flex' justifyContent='space-between'>
+            <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
+            <Button onClick={() => setShowClock('scheduler')}>Close</Button>
           </Box>
-        </Box>
-        }
-      </Box>
+          </>
+          }
 
-      {(showClock === 'scheduler') &&
-      <>
-      <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
-        <Box>
-          <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
+          {(currSched !== "off") &&
+          <Box ml={1} mb={1} display="flex">
+            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
+            <Box mx={1}>
+              {currSched} - {schedGroups[currGroup].descr}
+            </Box>
+          </Box>
+          }
         </Box>
-        <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
-          <Typography mx={1} variant='h5' id='maindate'>
-            01/01/00
-          </Typography><Typography mx={1} variant='caption' id='grouptitle'>
-            {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
-          </Typography>
-        </Box>
-        <Box id='status'>
+
+        {(showClock === 'scheduler') &&
+        <>
+        <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
+          <Box>
+            <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
+          </Box>
+          <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
+            <Typography mx={1} variant='h5' id='maindate'>
+              01/01/00
+            </Typography><Typography mx={1} variant='caption' id='grouptitle'>
+              {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
+            </Typography>
+          </Box>
+          <Box id='status'>
             <TextField margin="dense" type="text" variant="outlined" size="small"
               value={currGroup} onChange={changeGroup}
               label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
               inputProps={{'data-testid': 'schedgroup'}}
               select
-             >
+            >
               {(schedGroups)
                 ? Object.keys(schedGroups).map(item => {
-                    return(
-                      <MenuItem key={item} value={item}>{item}</MenuItem>
-                )})
+                  return(
+                    <MenuItem key={item} value={item}>{item}</MenuItem>
+                   )})
                 : <MenuItem value='new'>new</MenuItem>
               }
             </TextField>
+          </Box>
         </Box>
-      </Box>
 
-      <Box mx={1} mb={1}>
+        <Box mx={1} mb={1}>
           <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
+        </Box>
 
-      {Object.keys(schedOptions).filter(item => item !== 'tomorrow').map(item => {
-        return (
-          <Button key={item} variant={(schedOptions[item])? "contained": "outlined"}
-            color="primary" onClick={() => toggleOptions(item)}>
-            {item}
-          </Button>
-        )})}
-          <Button key={'tomorrow'} variant={(schedOptions['tomorrow'])? "contained": "outlined"}
-            color="primary" onClick={() => toggleOptions('tomorrow')}>
-            tomorrow
-          </Button>
-
-      </Box><Box mx={1} my={1}>
-      {Object.keys(schedButtons).map(item => {
+        <Box mx={1} my={1}>
+          {Object.keys(schedButtons).map(item => {
           return (
             <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
-      )})}
-      </Box>
+          )})}
+        </Box>
+        </>
+        }
 
-     </>
-     }
-
-     <Divider />
-     <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-       Default <audio className="audio-element" controls >
-         <source src={DefaultSound} type="audio/wav" />
-         Your browser doesn't support audio
-       </audio>
-     </Box>
+       <Divider />
+       <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
+         Default <audio className="audio-element" controls >
+           <source src={DefaultSound} type="audio/wav" />
+           Your browser doesn't support audio
+         </audio>
+       </Box>
      </Card></Box>
+
+   { (futureEvs.length > 0 || expiredEvs.length > 0) &&
+     <Box>
+       { (expiredEvs.length > 0) &&
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+         <Box mx={1}>
+           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+             <h4>Recent Events</h4>
+             <Button onClick={() => setExpiredEvs([])}>
+               Clear
+             </Button>
+           </Box>
+           { expiredEvs.map(item => <DisplayFutureEvent
+             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+             descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+           }
+         </Box>
+       </Card>
+       }
+
+       { (futureEvs.length > 0) &&
+         <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
+       }
      </Box>
+   }
 
-    { (futureEvs.length > 0 || expiredEvs.length > 0) &&
-      <Box>
-      { (expiredEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
-          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
-            <h4>Recent Events</h4>
-            <Button onClick={() => setExpiredEvs([])}>
-              Clear
-            </Button>
-          </Box>
-        { expiredEvs.map(item => <DisplayFutureEvent
-          key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-          descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
-        }
-        </Box>
-      </Card>
-      }
-
-      { (futureEvs.length > 0) &&
-      <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
-          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
-        <h4>Upcoming Events</h4>
-        { futureEvs.map(item => <DisplayFutureEvent
-          key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-          descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
-        }
-        </Box>
-      </Card>
-      }
-      </Box>
-    }
     </Box>
-
     <Backdrop sx={{ color: '#fff', zIndex: 3000 }} open={(hstatus === "Loading")} >
       <CircularProgress data-testid="dataBackdrop" color="inherit" />
     </Backdrop>
