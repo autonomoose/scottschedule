@@ -1,5 +1,5 @@
 // prototype
-//  execute events, eventTask, getNextEvent, killEventTask, useEffect(futureEvs)
+//  execute events, eventTask, killEventTask, useEffect(futureEvs)
 //  clock/cal, setNowDigital, useEffect(showClock),
 //  cleanRebuild futurevent
 //    toggleOptions(string), toggleScheds(string), changeGroup(choicelist event)
@@ -35,6 +35,13 @@ interface iSchedGroupList {
     };
 };
 
+interface iNextEvs {
+    evs: iFutureEvent[],
+    status: string,
+    sound?: iEvsSound,
+    warn?: iEvsWarn,
+};
+
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
@@ -47,6 +54,7 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [nextEvs, setNextEvs] = useState<iNextEvs>({evs: [], status: 'none'});
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
     const [allTasks, setAllTasks] = useState<iTask>({});
@@ -60,15 +68,29 @@ const HomePage = () => {
         setEventId(0);
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
+        console.log('quiet is', nextEvs.status);
 
+        // handle early alarms
+
+        // on or after event time
         // play sound unless quieted
-        const eventAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
-        if (eventAudio) {
-            eventAudio.play();
+        if (nextEvs.status !== 'ack') {
+            const eventAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
+            if (eventAudio) {
+                eventAudio.play();
+            } else {
+                console.log("no mooo");
+            }
+
+            //
+            // if alarm tones repeat, and aren't expired reschedule them here
+            //
+
         } else {
-            console.log("no mooo");
+            console.log("quieted mooo");
         }
 
+        // can't cleanup yet if repeating alarm tones
         // remove current events (and next 30 seconds worth) from
         currdate.setSeconds(currdate.getSeconds() + 30);
         let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
@@ -86,39 +108,54 @@ const HomePage = () => {
         }
     };
 
-    // use state futureEvs to find next afer current, return milliseconds
-    const getNextEvent = () => {
-        let ret_milli = 0;
-        let currdate = new Date().valueOf();
-        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
-
-        // return milliseconds until event
-        if (wkEvents.length > 0) {
-            ret_milli = wkEvents[0].evTstamp - currdate;
-        }
-        return (ret_milli);
-    };
     // use state eventId and clears it
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel timer');
+            console.log('Cancel alarm timer');
         }
     };
-    // when futureEvs change, maintain the next event timer, and update state eventId
-    useEffect(() => {
-        killEventTask();
 
-        // build new event task
+    // when nextEvs change, maintain the next event timer, and update state eventId
+    //   this makes sure target fun gets latest copy of nextEvs
+    useEffect(() => {
+        let currdate = new Date().valueOf();
+
+        killEventTask();
+        if (nextEvs.evs.length > 0) {
+            let next_evtime = nextEvs.evs[0].evTstamp
+            let next_milli = next_evtime - currdate; // ms until event
+
+            // exec function eventTask after timer
+            var timeoutId = setTimeout(eventTask, next_milli) as unknown as number;
+            setEventId(timeoutId);
+            console.log('restart alarm timer');
+        }
+
+    }, [nextEvs]);
+
+    // when futureEvs change, setup new nextEvs state
+    useEffect(() => {
+        setNextEvs({evs: [], status: 'none'});
+
         if (futureEvs.length > 0) {
-            //    find next event, and milliseconds until trigger
-            var nextEvent = getNextEvent();
-            if (nextEvent > 0) {
-                var timeoutId = setTimeout(eventTask, nextEvent) as unknown as number;
-                setEventId(timeoutId);
+            let currdate = new Date().valueOf();
+            let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
+            if (wkEvents.length > 0) {
+                // set nextEvs
+                //   evs: iFutureEvent[], status: string,
+                //   sound?: iEvsSound, warn?: iEvsWarn,
+
+                // filter out events that aren't next (within minute of event time)
+                let next_evtime = wkEvents[0].evTstamp
+                let wkevs = wkEvents.filter(item => item.evTstamp < next_evtime + 60000);
+
+                // save with a starting status
+                setNextEvs({status: 'pending', evs: wkevs});
+                console.log('nextEvs', wkevs);
             } else {
-                console.log('future events but no next event?');
+                console.log("all future events are old");
             }
         }
     }, [futureEvs]);
@@ -219,6 +256,12 @@ const HomePage = () => {
             }
         }
     }
+    // acknowledge the buttons
+    const acknowledgeEvent = () => {
+        const updNext = {...nextEvs, status: 'ack'};
+        setNextEvs(updNext);
+    }
+
     // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
@@ -424,8 +467,25 @@ const HomePage = () => {
        </Box>
      </Card></Box>
 
-   { (futureEvs.length > 0 || expiredEvs.length > 0) &&
+   { (futureEvs.length > 0 || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
+       { (nextEvs && nextEvs.evs.length > 0) &&
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+         <Box mx={1}>
+           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+             <h4>Next Events</h4>
+             <Button onClick={acknowledgeEvent}>Silence</Button>
+             {nextEvs.status}
+           </Box>
+           { nextEvs.evs.map(item => <DisplayFutureEvent
+             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+             descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+           }
+         </Box>
+       </Card>
+       }
+
        { (expiredEvs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>

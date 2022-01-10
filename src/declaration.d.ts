@@ -40,5 +40,16 @@ interface iSchedButtons {
     [name: string]: string; // button [name]=text
 };
 
+// next event group sound parms
+interface iEvsSound {
+    name?: string,
+    src?: string,
+    mRepeat?: number,
+};
 
+// next event group sound parms
+interface iEvsWarn {
+    mEarly?: number,
+    sound?: iEvsSound,
+};
 
