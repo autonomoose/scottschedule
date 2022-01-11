@@ -26,6 +26,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
 
 interface iSchedGroupList {
@@ -42,6 +43,66 @@ interface iNextEvs {
     warn?: iEvsWarn,
 };
 
+interface TempAudioProps {
+    ev: iFutureEvs,
+}
+// pre-loads audio with html id event-audio, warn-audio
+const NextEvAudio = (props: TempAudioProps) => {
+    let audioComp = [];
+    let evSrc = DefaultSound;
+    let evId = 'default-audio';
+
+    console.log('audio in ev', props.ev);
+    if (props.ev.sound && 'name' in props.ev.sound) {
+        if (props.ev.sound.name === '') {
+            evSrc = ''; // silence
+            evId = 'no-audio';
+            console.log('event silence');
+        } else if (props.ev.sound.name === 'bigbell') {
+            evSrc = BigBellSound;
+            evId = 'bigbell-audio';
+        }
+    }
+    if (evSrc !== '') {
+        audioComp.push({src: evSrc, id: evId});
+    }
+
+    let warnSrc = '';
+    evId = '';
+    if ('warn' in props.ev) {
+        warnSrc = DefaultSound;
+        evId = 'default';
+        console.log('warn on');
+
+        if (props.ev.warn && props.ev.warn.sound && 'name' in props.ev.warn.sound) {
+            if (props.ev.warn.sound.name === '') {
+                warnSrc = ''; // silence
+                evId = 'no-audio';
+                console.log('warn silence');
+            } else if (props.ev.warn.sound.name === 'bigbell') {
+                warnSrc = BigBellSound;
+                evId = 'bigbell-audio';
+                console.log('warn bigbell');
+            }
+        }
+    }
+
+    if (warnSrc !== '' && warnSrc !== evSrc) {
+        audioComp.push({src: warnSrc, id: evId});
+    }
+    console.log("audioList", audioComp);
+    return (
+      <>
+      { audioComp.map(item => {
+        return (
+          <audio key={item.id} id={item.id} controls >
+            <source src={item.src} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
+      )})}
+      </>
+)}
+
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
@@ -56,7 +117,7 @@ const HomePage = () => {
 
     const [nextEvs, setNextEvs] = useState<iNextEvs>({evs: [], status: 'none'});
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
-    const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+    const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [eventId, setEventId] = useState(0);
@@ -68,18 +129,26 @@ const HomePage = () => {
         setEventId(0);
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
-        console.log('quiet is', nextEvs.status);
+        console.log('nextEvs', nextEvs);
 
         // handle early alarms
 
         // on or after event time
         // play sound unless quieted
         if (nextEvs.status !== 'ack') {
-            const eventAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
-            if (eventAudio) {
-                eventAudio.play();
+            let sname = 'default';
+            if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
+                sname = nextEvs.sound.name;
+            }
+            if (sname) {
+                const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                if (eventAudio) {
+                    eventAudio.play();
+                } else {
+                    console.log("no mooo");
+                }
             } else {
-                console.log("no mooo");
+                console.log("silent mooo");
             }
 
             //
@@ -93,12 +162,12 @@ const HomePage = () => {
         // can't cleanup yet if repeating alarm tones
         // remove current events (and next 30 seconds worth) from
         currdate.setSeconds(currdate.getSeconds() + 30);
-        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
-        if (wkEvents.length !== futureEvs.length) {
-            let stripEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp <= currdate.valueOf());
+        let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
+        if (wkEvents.length !== futureEvs.evs.length) {
+            let stripEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp <= currdate.valueOf());
             setExpiredEvs(stripEvents);
 
-            setFutureEvs(wkEvents);
+            setFutureEvs({...futureEvs, evs: wkEvents});
             if (wkEvents.length === 0) {
                 setCurrSched("off");
                 setHstatus("Completed");
@@ -139,9 +208,9 @@ const HomePage = () => {
     useEffect(() => {
         setNextEvs({evs: [], status: 'none'});
 
-        if (futureEvs.length > 0) {
+        if (futureEvs.evs.length > 0) {
             let currdate = new Date().valueOf();
-            let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
+            let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate);
             if (wkEvents.length > 0) {
                 // set nextEvs
                 //   evs: iFutureEvent[], status: string,
@@ -152,8 +221,7 @@ const HomePage = () => {
                 let wkevs = wkEvents.filter(item => item.evTstamp < next_evtime + 60000);
 
                 // save with a starting status
-                setNextEvs({status: 'pending', evs: wkevs});
-                console.log('nextEvs', wkevs);
+                setNextEvs({...futureEvs, status: 'pending', evs: wkevs});
             } else {
                 console.log("all future events are old");
             }
@@ -208,7 +276,7 @@ const HomePage = () => {
             console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
 
-            let wkEvents: iFutureEvent[] = [];
+            let wkEvents: iFutureEvs = {evs: []};
             if (wksched !== "off") {
                 wkEvents = buildFutureEvents(wkgroup, wksched, allTasks, wkoptions);
                 }
@@ -217,11 +285,12 @@ const HomePage = () => {
             let currdate = new Date();
             currdate.setSeconds(currdate.getSeconds() + 30);
 
-            let stripEvents = wkEvents.filter(item => item.evTstamp <= currdate.valueOf());
+            let stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
             setExpiredEvs(stripEvents);
 
-            let finalEvents = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
-            setFutureEvs(finalEvents);
+            let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
+            setFutureEvs({...wkEvents, evs: finalEvents});
+
             if (finalEvents.length === 0) {
                 setHstatus("Ready");
                 if (wksched !== "off") {
@@ -329,7 +398,7 @@ const HomePage = () => {
                 'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
             ]},
             'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin 22:00,+1,+1',
+                'begin 22:00,++1,++1',
             ]},
         }
         setAllTasks(wkTasks);
@@ -347,15 +416,21 @@ const HomePage = () => {
                 ]},
             ]},
             'test': {descr:'test schedules', schedNames: [
-                {schedName: 'test1', schedTasks: [
+                {schedName: 'quick', schedTasks: [
                     {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
                 ]},
-                {schedName: 'test2', begins: 'now', schedTasks: [
+                {schedName: 'hourly', begins: 'now', schedTasks: [
                     {evTaskId: 'cuckoo97'},
                 ]},
-                {schedName: 'test3', begins: 'now', schedTasks: [
+                {schedName: 'test++', begins: 'now', schedTasks: [
                     {evTaskId: 'basetime'},
+                ]},
+                {schedName: 'silent', begins: 'now', sound: {name: ''}, schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'bigbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
+                    {evTaskId: 'twominute'},
                 ]},
                 {schedName: 'blank', begins: 'now', schedTasks: []},
             ]},
@@ -467,7 +542,7 @@ const HomePage = () => {
        </Box>
      </Card></Box>
 
-   { (futureEvs.length > 0 || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
+   { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
        { (nextEvs && nextEvs.evs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
@@ -483,6 +558,8 @@ const HomePage = () => {
              descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
            }
          </Box>
+
+         <NextEvAudio ev={nextEvs}/>
        </Card>
        }
 
@@ -504,8 +581,8 @@ const HomePage = () => {
        </Card>
        }
 
-       { (futureEvs.length > 0) &&
-         <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
+       { (futureEvs.evs.length > 0) &&
+         <DisplayFutureCard evs={futureEvs.evs} tasks={allTasks} />
        }
      </Box>
    }
