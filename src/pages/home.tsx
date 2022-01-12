@@ -90,7 +90,7 @@ const NextEvAudio = (props: TempAudioProps) => {
     if (warnSrc !== '' && warnSrc !== evSrc) {
         audioComp.push({src: warnSrc, id: evId});
     }
-    console.log("audioList", props.ev, audioComp);
+    // console.log("audioList", props.ev, audioComp);
     return (
       <>
       { audioComp.map(item => {
@@ -135,11 +135,17 @@ const HomePage = () => {
         // figure out when our exec time vs event time is
         //    postCleanup, postEvent, preEvent, preWarn
         const msRel = currdate.valueOf() - nextEvs.evs[0].evTstamp;
-        const msCleanup = 15000; // mseconds after event to cleanup
-        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
+        const msRepeat = 16000; // 14 seconds is longest permitted sound, +2 to spinup
+        let msCleanup = msRepeat; // mseconds after event to cleanup
+        if (nextEvs.status !== 'ack' && nextEvs.sound && nextEvs.sound.repeat && nextEvs.sound.repeat > 0) {
+            msCleanup += nextEvs.sound.repeat * msRepeat;
+            console.log("repeat ", msRepeat, msCleanup);
+        }
 
         // let next_evtime = nextEvs.evs[0].evTstamp
         // let resched = next_evtime - currdate.valueOf(); // ms until event
+
+        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
         console.log('relative to event', execPhase, msRel);
 
         if (execPhase === 'postCleanup') {
@@ -165,7 +171,7 @@ const HomePage = () => {
         // on or after event time
         if (execPhase === 'postEvent') {
             // reschedule cleanup = postAck offset, ie evt+15 seconds
-            resched = msCleanup - msRel;
+            resched = ((Math.floor(msRel/msRepeat) + 1) * msRepeat) - msRel;
 
             // play sound unless quieted
             if (nextEvs.status !== 'ack') {
@@ -431,7 +437,7 @@ const HomePage = () => {
                 'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
             ]},
             'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin 22:00,++1,++1',
+                'begin +2,++2,++2',
             ]},
         }
         setAllTasks(wkTasks);
@@ -456,7 +462,7 @@ const HomePage = () => {
                 {schedName: 'hourly', begins: 'now', schedTasks: [
                     {evTaskId: 'cuckoo97'},
                 ]},
-                {schedName: 'test++', begins: 'now', schedTasks: [
+                {schedName: 'test++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
                     {evTaskId: 'basetime'},
                 ]},
                 {schedName: 'silent', begins: 'now', sound: {name: ''}, schedTasks: [
