@@ -492,7 +492,7 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box><Card style={{maxWidth: 432, minWidth: 404, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 402, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
@@ -526,7 +526,7 @@ const HomePage = () => {
             <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
           </Box>
           <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
-            <Typography mx={1} variant='h5' id='maindate'>
+            <Typography mx={1} variant='h6' id='maindate'>
               01/01/00
             </Typography><Typography mx={1} variant='caption' id='grouptitle'>
               {(currGroup && schedGroups[currGroup]) ?schedGroups[currGroup].descr: 'group title'}
