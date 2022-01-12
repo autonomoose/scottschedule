@@ -46,7 +46,7 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   get the Task rules that match
 //   process rules into events dict w/ tstamp key
 //   convert dict to sorted array w/ earliest events first
-export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvent[] => {
+export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
     let currdate = new Date();
     console.log("buildFutureEvents", wkgroup.name, wksched, optInfo);
@@ -252,16 +252,17 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
     }
     if (schedList.length !== 1) {
         console.log("no unique schedule found ", schedList, schedParts[0]);
-        return wkEvents;
+        return {evs:wkEvents};
     }
-    console.log("found iSchedule ", schedList[0].schedName, schedList[0]);
+    let currSchedule = schedList[0];
+    console.log("found iSchedule ", currSchedule, currSchedule);
 
     // find the starting time
     var startTlang = 'now';
     if (schedParts[1]) {
         startTlang = schedParts[1];
-    } else if (schedList[0].begins) {
-            startTlang = schedList[0].begins;
+    } else if (currSchedule.begins) {
+            startTlang = currSchedule.begins;
     }
     var startDate = tlangDate(startTlang, currdate);
     console.log("start tlang", startTlang, " date ", startDate);
@@ -269,8 +270,8 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
     // get appropriate rules from tasklist
     let activeRules = [];
 
-    if (schedList[0].schedTasks.length > 0) {
-        activeRules = schedList[0].schedTasks.reduce(tasksReduceToRules, []);
+    if (currSchedule.schedTasks.length > 0) {
+        activeRules = currSchedule.schedTasks.reduce(tasksReduceToRules, []);
     } else {
         // new
         activeRules.push("new.23:23");
@@ -287,5 +288,15 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
         }
     }
     console.log("active Events", wkEvents);
-    return wkEvents;
+
+    // copy currSchedule arguments that need to be on futureEvs
+    // add another and this should be a set of fields processed by a loop
+    let schedArgs: iFutureEvs = {evs: wkEvents, begins: startDate.valueOf()};
+    if ('sound' in currSchedule) {
+        schedArgs['sound'] = currSchedule['sound'];
+    }
+    if ('warn' in currSchedule) {
+        schedArgs['warn'] = currSchedule['warn'];
+    }
+    return (schedArgs);
 };
