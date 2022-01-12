@@ -47,12 +47,12 @@ interface TempAudioProps {
     ev: iFutureEvs,
 }
 // pre-loads audio with html id event-audio, warn-audio
+// this runs every paint, if it gets expensive, move audiocomp to state
 const NextEvAudio = (props: TempAudioProps) => {
     let audioComp = [];
     let evSrc = DefaultSound;
     let evId = 'default-audio';
 
-    console.log('audio in ev', props.ev);
     if (props.ev.sound && 'name' in props.ev.sound) {
         if (props.ev.sound.name === '') {
             evSrc = ''; // silence
@@ -90,7 +90,7 @@ const NextEvAudio = (props: TempAudioProps) => {
     if (warnSrc !== '' && warnSrc !== evSrc) {
         audioComp.push({src: warnSrc, id: evId});
     }
-    console.log("audioList", audioComp);
+    console.log("audioList", props.ev, audioComp);
     return (
       <>
       { audioComp.map(item => {
@@ -126,55 +126,84 @@ const HomePage = () => {
     // execute event
     //
     const eventTask = () => {
-        setEventId(0);
+        setEventId(0);  // no longer able to cancel me
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
         console.log('nextEvs', nextEvs);
+        let resched = 0;  // ms to restart
 
-        // handle early alarms
+        // figure out when our exec time vs event time is
+        //    postCleanup, postEvent, preEvent, preWarn
+        const msRel = currdate.valueOf() - nextEvs.evs[0].evTstamp;
+        const msCleanup = 15000; // mseconds after event to cleanup
+        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
 
-        // on or after event time
-        // play sound unless quieted
-        if (nextEvs.status !== 'ack') {
-            let sname = 'default';
-            if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
-                sname = nextEvs.sound.name;
-            }
-            if (sname) {
-                const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
-                if (eventAudio) {
-                    eventAudio.play();
-                } else {
-                    console.log("no mooo");
+        // let next_evtime = nextEvs.evs[0].evTstamp
+        // let resched = next_evtime - currdate.valueOf(); // ms until event
+        console.log('relative to event', execPhase, msRel);
+
+        if (execPhase === 'postCleanup') {
+            // cleanup
+            // remove current events (and next 30 seconds worth) from
+            currdate.setSeconds(currdate.getSeconds() + 30);
+            let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
+            if (wkEvents.length !== futureEvs.evs.length) {
+                let stripEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp <= currdate.valueOf());
+                setExpiredEvs(stripEvents);
+
+                setFutureEvs({...futureEvs, evs: wkEvents});
+                if (wkEvents.length === 0) {
+                    setCurrSched("off");
+                    setHstatus("Completed");
                 }
             } else {
-                console.log("silent mooo");
+                console.log("no cleanup after event");
             }
+            return;
+        }
 
-            //
-            // if alarm tones repeat, and aren't expired reschedule them here
-            //
+        // on or after event time
+        if (execPhase === 'postEvent') {
+            // reschedule cleanup = postAck offset, ie evt+15 seconds
+            resched = msCleanup - msRel;
 
-        } else {
-            console.log("quieted mooo");
+            // play sound unless quieted
+            if (nextEvs.status !== 'ack') {
+                let sname = 'default';
+                if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
+                    sname = nextEvs.sound.name;
+                }
+                if (sname) {
+                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                    if (eventAudio) {
+                        eventAudio.play();
+                    } else {
+                        console.log("no mooo");
+                    }
+                } else {
+                    console.log("silent mooo");
+                }
+
+                //
+                // if alarm tones repeat, and aren't expired reschedule them here
+                // resched within postEv offset, ie ++15 seconds * 3 = 3 * 15 + 15 postAcK = 1 min
+                //
+            } else {
+                console.log("quieted mooo");
+            }
         }
 
         // can't cleanup yet if repeating alarm tones
-        // remove current events (and next 30 seconds worth) from
-        currdate.setSeconds(currdate.getSeconds() + 30);
-        let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
-        if (wkEvents.length !== futureEvs.evs.length) {
-            let stripEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp <= currdate.valueOf());
-            setExpiredEvs(stripEvents);
 
-            setFutureEvs({...futureEvs, evs: wkEvents});
-            if (wkEvents.length === 0) {
-                setCurrSched("off");
-                setHstatus("Completed");
-            }
+        if (resched > 0) {
+            // try again later
+            var timeoutId = setTimeout(eventTask, resched) as unknown as number;
+            setEventId(timeoutId);
+            console.log('another alarm timer', resched);
         } else {
-            console.log("no cleanup after event");
+            console.log('bad resched', resched);
         }
+
     };
 
     // use state eventId and clears it
@@ -191,13 +220,14 @@ const HomePage = () => {
     useEffect(() => {
         let currdate = new Date().valueOf();
 
+
         killEventTask();
         if (nextEvs.evs.length > 0) {
             let next_evtime = nextEvs.evs[0].evTstamp
             let next_milli = next_evtime - currdate; // ms until event
 
             // exec function eventTask after timer
-            var timeoutId = setTimeout(eventTask, next_milli) as unknown as number;
+            var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
             setEventId(timeoutId);
             console.log('restart alarm timer');
         }
