@@ -45,7 +45,7 @@ interface iNextEvs {
 
 interface TempAudioProps {
     ev: iFutureEvs,
-}
+};
 // pre-loads audio with html id event-audio, warn-audio
 // this runs every paint, if it gets expensive, move audiocomp to state
 const NextEvAudio = (props: TempAudioProps) => {
@@ -471,6 +471,8 @@ const HomePage = () => {
         setSchedGroups(wkSchedGroup);
 
         // post data init
+        setShowClock('scheduler');
+
         let wkGroup = (wkSchedGroup)? 'default': 'new';
         setCurrGroup(wkGroup);
 
@@ -478,17 +480,14 @@ const HomePage = () => {
         if (wkSchedGroup[wkGroup] && groupElement) {
                 groupElement.textContent = wkSchedGroup[wkGroup].descr;
         }
-        setShowClock('scheduler');
 
         // init completed
         setHstatus("Ready");
-        enqueueSnackbar(`init complete`,
-                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-
-    }, [enqueueSnackbar]);
+        console.log("init complete");
+    }, []);
 
     return(
-      <Layout><Seo title="Prototype 2.1 - Scottschedule" />
+      <Layout><Seo title="Prototype 2.2 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
