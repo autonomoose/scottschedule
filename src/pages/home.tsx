@@ -1,5 +1,5 @@
 // prototype
-//  execute events, eventTask, getNextEvent, killEventTask, useEffect(futureEvs)
+//  execute events, eventTask, killEventTask, useEffect(futureEvs)
 //  clock/cal, setNowDigital, useEffect(showClock),
 //  cleanRebuild futurevent
 //    toggleOptions(string), toggleScheds(string), changeGroup(choicelist event)
@@ -26,6 +26,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
 
 interface iSchedGroupList {
@@ -34,6 +35,73 @@ interface iSchedGroupList {
         schedNames: iSchedule[],
     };
 };
+
+interface iNextEvs {
+    evs: iFutureEvent[],
+    status: string,
+    sound?: iEvsSound,
+    warn?: iEvsWarn,
+};
+
+interface TempAudioProps {
+    ev: iFutureEvs,
+}
+// pre-loads audio with html id event-audio, warn-audio
+// this runs every paint, if it gets expensive, move audiocomp to state
+const NextEvAudio = (props: TempAudioProps) => {
+    let audioComp = [];
+    let evSrc = DefaultSound;
+    let evId = 'default-audio';
+
+    if (props.ev.sound && 'name' in props.ev.sound) {
+        if (props.ev.sound.name === '') {
+            evSrc = ''; // silence
+            evId = 'no-audio';
+            console.log('event silence');
+        } else if (props.ev.sound.name === 'bigbell') {
+            evSrc = BigBellSound;
+            evId = 'bigbell-audio';
+        }
+    }
+    if (evSrc !== '') {
+        audioComp.push({src: evSrc, id: evId});
+    }
+
+    let warnSrc = '';
+    evId = '';
+    if ('warn' in props.ev) {
+        warnSrc = DefaultSound;
+        evId = 'default';
+        console.log('warn on');
+
+        if (props.ev.warn && props.ev.warn.sound && 'name' in props.ev.warn.sound) {
+            if (props.ev.warn.sound.name === '') {
+                warnSrc = ''; // silence
+                evId = 'no-audio';
+                console.log('warn silence');
+            } else if (props.ev.warn.sound.name === 'bigbell') {
+                warnSrc = BigBellSound;
+                evId = 'bigbell-audio';
+                console.log('warn bigbell');
+            }
+        }
+    }
+
+    if (warnSrc !== '' && warnSrc !== evSrc) {
+        audioComp.push({src: warnSrc, id: evId});
+    }
+    console.log("audioList", props.ev, audioComp);
+    return (
+      <>
+      { audioComp.map(item => {
+        return (
+          <audio key={item.id} id={item.id} >
+            <source src={item.src} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
+      )})}
+      </>
+)}
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -47,8 +115,9 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [nextEvs, setNextEvs] = useState<iNextEvs>({evs: [], status: 'none'});
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
-    const [futureEvs, setFutureEvs] = useState<iFutureEvent[]>([]);
+    const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [eventId, setEventId] = useState(0);
@@ -57,68 +126,137 @@ const HomePage = () => {
     // execute event
     //
     const eventTask = () => {
-        setEventId(0);
+        setEventId(0);  // no longer able to cancel me
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
+        console.log('nextEvs', nextEvs);
+        let resched = 0;  // ms to restart
 
-        // play sound unless quieted
-        const eventAudio = document.getElementsByClassName("audio-element")[0] as HTMLVideoElement;
-        if (eventAudio) {
-            eventAudio.play();
-        } else {
-            console.log("no mooo");
-        }
+        // figure out when our exec time vs event time is
+        //    postCleanup, postEvent, preEvent, preWarn
+        const msRel = currdate.valueOf() - nextEvs.evs[0].evTstamp;
+        const msCleanup = 15000; // mseconds after event to cleanup
+        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
 
-        // remove current events (and next 30 seconds worth) from
-        currdate.setSeconds(currdate.getSeconds() + 30);
-        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate.valueOf());
-        if (wkEvents.length !== futureEvs.length) {
-            let stripEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp <= currdate.valueOf());
-            setExpiredEvs(stripEvents);
+        // let next_evtime = nextEvs.evs[0].evTstamp
+        // let resched = next_evtime - currdate.valueOf(); // ms until event
+        console.log('relative to event', execPhase, msRel);
 
-            setFutureEvs(wkEvents);
-            if (wkEvents.length === 0) {
-                setCurrSched("off");
-                setHstatus("Completed");
+        if (execPhase === 'postCleanup') {
+            // cleanup
+            // remove current events (and next 30 seconds worth) from
+            currdate.setSeconds(currdate.getSeconds() + 30);
+            let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
+            if (wkEvents.length !== futureEvs.evs.length) {
+                let stripEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp <= currdate.valueOf());
+                setExpiredEvs(stripEvents);
+
+                setFutureEvs({...futureEvs, evs: wkEvents});
+                if (wkEvents.length === 0) {
+                    setCurrSched("off");
+                    setHstatus("Completed");
+                }
+            } else {
+                console.log("no cleanup after event");
             }
+            return;
+        }
+
+        // on or after event time
+        if (execPhase === 'postEvent') {
+            // reschedule cleanup = postAck offset, ie evt+15 seconds
+            resched = msCleanup - msRel;
+
+            // play sound unless quieted
+            if (nextEvs.status !== 'ack') {
+                if (nextEvs.status === 'pending') {
+                    setNextEvs({...nextEvs, status: 'current'});
+                }
+                let sname = 'default';
+                if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
+                    sname = nextEvs.sound.name;
+                }
+                if (sname) {
+                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                    if (eventAudio) {
+                        eventAudio.play();
+                    } else {
+                        console.log("no mooo");
+                    }
+                } else {
+                    console.log("silent mooo");
+                }
+
+                //
+                // if alarm tones repeat, and aren't expired reschedule them here
+                // resched within postEv offset, ie ++15 seconds * 3 = 3 * 15 + 15 postAcK = 1 min
+                //
+            } else {
+                console.log("quieted mooo");
+            }
+        }
+
+        // can't cleanup yet if repeating alarm tones
+
+        if (resched > 0) {
+            // try again later
+            var timeoutId = setTimeout(eventTask, resched) as unknown as number;
+            setEventId(timeoutId);
+            console.log('another alarm timer', resched);
         } else {
-            console.log("no cleanup after event");
+            console.log('bad resched', resched);
         }
+
     };
 
-    // use state futureEvs to find next afer current, return milliseconds
-    const getNextEvent = () => {
-        let ret_milli = 0;
-        let currdate = new Date().valueOf();
-        let wkEvents: iFutureEvent[] = futureEvs.filter(item => item.evTstamp > currdate);
-
-        // return milliseconds until event
-        if (wkEvents.length > 0) {
-            ret_milli = wkEvents[0].evTstamp - currdate;
-        }
-        return (ret_milli);
-    };
     // use state eventId and clears it
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel timer');
+            console.log('Cancel alarm timer');
         }
     };
-    // when futureEvs change, maintain the next event timer, and update state eventId
-    useEffect(() => {
-        killEventTask();
 
-        // build new event task
-        if (futureEvs.length > 0) {
-            //    find next event, and milliseconds until trigger
-            var nextEvent = getNextEvent();
-            if (nextEvent > 0) {
-                var timeoutId = setTimeout(eventTask, nextEvent) as unknown as number;
+    // when nextEvs change, maintain the next event timer, and update state eventId
+    //   this makes sure target fun gets latest copy of nextEvs
+    //   ignore 'current' status, that is set/ignored by target fun
+    useEffect(() => {
+        if (nextEvs.status !== 'current') {
+            let currdate = new Date().valueOf();
+            killEventTask();
+            if (nextEvs.evs.length > 0) {
+                let next_evtime = nextEvs.evs[0].evTstamp
+                let next_milli = next_evtime - currdate; // ms until event
+
+                // exec function eventTask after timer
+                var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
+                console.log('restart alarm timer');
+            }
+        }
+    }, [nextEvs]);
+
+    // when futureEvs change, setup new nextEvs state
+    useEffect(() => {
+        setNextEvs({evs: [], status: 'none'});
+
+        if (futureEvs.evs.length > 0) {
+            let currdate = new Date().valueOf();
+            let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate);
+            if (wkEvents.length > 0) {
+                // set nextEvs
+                //   evs: iFutureEvent[], status: string,
+                //   sound?: iEvsSound, warn?: iEvsWarn,
+
+                // filter out events that aren't next (within minute of event time)
+                let next_evtime = wkEvents[0].evTstamp
+                let wkevs = wkEvents.filter(item => item.evTstamp < next_evtime + 60000);
+
+                // save with a starting status
+                setNextEvs({...futureEvs, status: 'pending', evs: wkevs});
             } else {
-                console.log('future events but no next event?');
+                console.log("all future events are old");
             }
         }
     }, [futureEvs]);
@@ -171,7 +309,7 @@ const HomePage = () => {
             console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
 
-            let wkEvents: iFutureEvent[] = [];
+            let wkEvents: iFutureEvs = {evs: []};
             if (wksched !== "off") {
                 wkEvents = buildFutureEvents(wkgroup, wksched, allTasks, wkoptions);
                 }
@@ -180,11 +318,12 @@ const HomePage = () => {
             let currdate = new Date();
             currdate.setSeconds(currdate.getSeconds() + 30);
 
-            let stripEvents = wkEvents.filter(item => item.evTstamp <= currdate.valueOf());
+            let stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
             setExpiredEvs(stripEvents);
 
-            let finalEvents = wkEvents.filter(item => item.evTstamp > currdate.valueOf());
-            setFutureEvs(finalEvents);
+            let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
+            setFutureEvs({...wkEvents, evs: finalEvents});
+
             if (finalEvents.length === 0) {
                 setHstatus("Ready");
                 if (wksched !== "off") {
@@ -219,6 +358,12 @@ const HomePage = () => {
             }
         }
     }
+    // acknowledge the buttons
+    const acknowledgeEvent = () => {
+        const updNext = {...nextEvs, status: 'ack'};
+        setNextEvs(updNext);
+    }
+
     // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
@@ -286,7 +431,7 @@ const HomePage = () => {
                 'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
             ]},
             'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin 22:00,+1,+1',
+                'begin 22:00,++1,++1',
             ]},
         }
         setAllTasks(wkTasks);
@@ -304,15 +449,21 @@ const HomePage = () => {
                 ]},
             ]},
             'test': {descr:'test schedules', schedNames: [
-                {schedName: 'test1', schedTasks: [
+                {schedName: 'quick', schedTasks: [
                     {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
                 ]},
-                {schedName: 'test2', begins: 'now', schedTasks: [
+                {schedName: 'hourly', begins: 'now', schedTasks: [
                     {evTaskId: 'cuckoo97'},
                 ]},
-                {schedName: 'test3', begins: 'now', schedTasks: [
+                {schedName: 'test++', begins: 'now', schedTasks: [
                     {evTaskId: 'basetime'},
+                ]},
+                {schedName: 'silent', begins: 'now', sound: {name: ''}, schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'bigbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
+                    {evTaskId: 'twominute'},
                 ]},
                 {schedName: 'blank', begins: 'now', schedTasks: []},
             ]},
@@ -417,15 +568,43 @@ const HomePage = () => {
 
        <Divider />
        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-         Default <audio className="audio-element" controls >
+         Test <audio className="audio-element" controls >
            <source src={DefaultSound} type="audio/wav" />
            Your browser doesn't support audio
          </audio>
        </Box>
      </Card></Box>
 
-   { (futureEvs.length > 0 || expiredEvs.length > 0) &&
+   { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
+       { (nextEvs && nextEvs.evs.length > 0) &&
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
+          background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+         <Box mx={1}>
+           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+             {(nextEvs.status === 'pending')
+               ? <Typography variant='h5'>
+                   Next Up
+                 </Typography>
+               : <Typography variant='h5' sx={{fontWeight: 600,}}>
+                   Active
+                 </Typography>
+             }
+
+             <Button color={(nextEvs.status === 'current')? 'error': 'primary'} onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>Silence</Button>
+             {(nextEvs.status === 'ack')? 'quiet': nextEvs.status}
+           </Box>
+           { nextEvs.evs.map(item => <DisplayFutureEvent
+             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+             descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+           }
+         </Box>
+
+         <NextEvAudio ev={nextEvs}/>
+       </Card>
+       }
+
        { (expiredEvs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
@@ -444,8 +623,8 @@ const HomePage = () => {
        </Card>
        }
 
-       { (futureEvs.length > 0) &&
-         <DisplayFutureCard evs={futureEvs} tasks={allTasks} />
+       { (futureEvs.evs.length > 0) &&
+         <DisplayFutureCard evs={futureEvs.evs} tasks={allTasks} />
        }
      </Box>
    }

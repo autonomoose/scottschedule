@@ -17,6 +17,8 @@ interface iSchedule {
     schedTasks: iSchedTask[],
     begins?: string,
     buttonName?: string,
+    sound?: iEvsSound,
+    warn?: iEvsWarn,
 }
 
 interface iSchedGroup {
@@ -30,15 +32,33 @@ interface iSchedOptions {
     [name: string]: boolean;
 };
 
-interface iFutureEvent {
-    evTstamp: number,
-    evTaskId: string,
-};
-
 // schedule buttons
 interface iSchedButtons {
     [name: string]: string; // button [name]=text
 };
 
+// next event group sound parms
+interface iEvsSound {
+    name?: string,
+    src?: string,
+    mRepeat?: number,
+};
 
+// next event group sound parms
+interface iEvsWarn {
+    mEarly?: number,
+    sound?: iEvsSound,
+};
+
+interface iFutureEvent {
+    evTstamp: number,
+    evTaskId: string,
+};
+
+interface iFutureEvs {
+    evs: iFutureEvent[],
+    begins?: number,
+    sound?: iEvsSound,
+    warn?: iEvsWarn,
+};
 
