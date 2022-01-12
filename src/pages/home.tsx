@@ -95,7 +95,7 @@ const NextEvAudio = (props: TempAudioProps) => {
       <>
       { audioComp.map(item => {
         return (
-          <audio key={item.id} id={item.id} controls >
+          <audio key={item.id} id={item.id} >
             <source src={item.src} type="audio/wav" />
             Your browser doesn't support audio
           </audio>
@@ -568,7 +568,7 @@ const HomePage = () => {
 
        <Divider />
        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-         Default <audio className="audio-element" controls >
+         Test <audio className="audio-element" controls >
            <source src={DefaultSound} type="audio/wav" />
            Your browser doesn't support audio
          </audio>
