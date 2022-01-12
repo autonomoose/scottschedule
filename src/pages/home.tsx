@@ -169,6 +169,9 @@ const HomePage = () => {
 
             // play sound unless quieted
             if (nextEvs.status !== 'ack') {
+                if (nextEvs.status === 'pending') {
+                    setNextEvs({...nextEvs, status: 'current'});
+                }
                 let sname = 'default';
                 if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
                     sname = nextEvs.sound.name;
@@ -217,21 +220,21 @@ const HomePage = () => {
 
     // when nextEvs change, maintain the next event timer, and update state eventId
     //   this makes sure target fun gets latest copy of nextEvs
+    //   ignore 'current' status, that is set/ignored by target fun
     useEffect(() => {
-        let currdate = new Date().valueOf();
+        if (nextEvs.status !== 'current') {
+            let currdate = new Date().valueOf();
+            killEventTask();
+            if (nextEvs.evs.length > 0) {
+                let next_evtime = nextEvs.evs[0].evTstamp
+                let next_milli = next_evtime - currdate; // ms until event
 
-
-        killEventTask();
-        if (nextEvs.evs.length > 0) {
-            let next_evtime = nextEvs.evs[0].evTstamp
-            let next_milli = next_evtime - currdate; // ms until event
-
-            // exec function eventTask after timer
-            var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
-            setEventId(timeoutId);
-            console.log('restart alarm timer');
+                // exec function eventTask after timer
+                var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
+                setEventId(timeoutId);
+                console.log('restart alarm timer');
+            }
         }
-
     }, [nextEvs]);
 
     // when futureEvs change, setup new nextEvs state
@@ -575,13 +578,22 @@ const HomePage = () => {
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
        { (nextEvs && nextEvs.evs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
+          background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
-             <h4>Next Events</h4>
-             <Button onClick={acknowledgeEvent}>Silence</Button>
-             {nextEvs.status}
+             {(nextEvs.status === 'pending')
+               ? <Typography variant='h5'>
+                   Next Up
+                 </Typography>
+               : <Typography variant='h5' sx={{fontWeight: 600,}}>
+                   Active
+                 </Typography>
+             }
+
+             <Button color={(nextEvs.status === 'current')? 'error': 'primary'} onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>Silence</Button>
+             {(nextEvs.status === 'ack')? 'quiet': nextEvs.status}
            </Box>
            { nextEvs.evs.map(item => <DisplayFutureEvent
              key={`${item.evTstamp}:${item.evTaskId}`} item={item}
