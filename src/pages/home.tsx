@@ -94,10 +94,18 @@ const NextEvAudio = (props: TempAudioProps) => {
       <>
       { audioComp.map(item => {
         return (
-          <audio key={item.id} id={item.id} >
-            <source src={item.src} type="audio/wav" />
-            Your browser doesn't support audio
-          </audio>
+          <>
+          {(props.ev.status === 'current' || props.ev.status === 'soon')
+            ? <audio key={item.id} id={item.id} controls>
+                <source src={item.src} type="audio/wav" />
+                Your browser doesn't support audio
+              </audio>
+            : <audio key={item.id} id={item.id}>
+                <source src={item.src} type="audio/wav" />
+                Your browser doesn't support audio
+              </audio>
+          }
+          </>
       )})}
       </>
 )}
@@ -204,8 +212,15 @@ const HomePage = () => {
             if (nextEvs.status !== 'ack') {
                 if ('warn' in nextEvs) {
                     // console.log("found warn");
+                    if (nextEvs.status === 'pending') {
+                        setNextEvs({...nextEvs, status: 'soon'});
+                    }
+
                     const msWarnRepeat = 60000; // repeat every minute
                     resched += Math.ceil(msRel/msWarnRepeat) * msWarnRepeat;
+                    if (resched < 30000) {
+                        resched += msWarnRepeat;
+                    }
 
                     let sname = 'default';
                     if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound && typeof(nextEvs.warn.sound.name) !== 'undefined') {
@@ -231,7 +246,7 @@ const HomePage = () => {
             // try again later
             var timeoutId = setTimeout(eventTask, resched) as unknown as number;
             setEventId(timeoutId);
-            // console.log('another alarm timer', resched);
+            console.log('another alarm timer', resched);
         } else {
             console.log('bad resched', resched);
         }
@@ -249,9 +264,9 @@ const HomePage = () => {
 
     // when nextEvs change, maintain the next event timer, and update state eventId
     //   this makes sure target fun gets latest copy of nextEvs
-    //   ignore 'current' status, that is set/ignored by target fun
+    //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
-        if (nextEvs.status !== 'current') {
+        if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
             let currdate = new Date().valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
@@ -508,12 +523,14 @@ const HomePage = () => {
         setSchedGroups(wkSchedGroup);
 
         // post data init
+        killEventTask();
+        setNextEvs({evs: [], status: 'none'});
+        setFutureEvs({evs: []});
         setShowClock('scheduler');
 
         let wkGroup = (wkSchedGroup)? 'default': 'new';
         setCurrGroup(wkGroup);
         setCurrSched('off');
-
         let groupElement =  document.getElementById('grouptitle');
         if (wkSchedGroup[wkGroup] && groupElement) {
                 groupElement.textContent = wkSchedGroup[wkGroup].descr;
@@ -624,13 +641,20 @@ const HomePage = () => {
                ? <Typography variant='h5'>
                    Next Up
                  </Typography>
-               : <Typography variant='h5' sx={{fontWeight: 600,}}>
-                   Active
-                 </Typography>
+               : <>
+                 {(nextEvs.status === 'soon')
+                 ? <Typography variant='h5'>
+                     Next Up (soon)
+                   </Typography>
+                 : <Typography variant='h5' sx={{fontWeight: 600,}}>
+                     Active
+                   </Typography>
+                 }
+                 </>
              }
 
              <Button variant='outlined'
-               color={(nextEvs.status === 'current')? 'error': 'primary'}
+               color={(nextEvs.status === 'current' || nextEvs.status === 'soon')? 'error': 'primary'}
                onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>
                Silence
              </Button>
