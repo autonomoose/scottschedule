@@ -537,7 +537,7 @@ const HomePage = () => {
           <>
           <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
             <Typography variant='h1' id='mainclock'
-              sx={{fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
+              sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
           <Box mx={4} display='flex' justifyContent='space-between'>
             <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
