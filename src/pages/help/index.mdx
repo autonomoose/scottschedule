@@ -19,5 +19,50 @@ Frequently Asked Questions
 
 ## Reference
 
+### Tlang statements
+Statements must start with one of the following:
+- begin - standard event scheduler
+- option - specify any effects from options specified by user
+- action - future use for event action
+- actopt - future use
+
+#### Compound statements
+make compound statements using a comma to separate times
+An example would be an event that occurs 3 times
+begin 9:00,13:00,18:00
+
+### Tlang times
+- Zero padding (ie 08 instead of 8) is OK for any time.
+
+#### Common Tlang times:
+- h:m - basic time hour and minute,range 0:0 to 23:59
+- m -  startHour:m as an exact number of minutes rather than an offset
+- +h:m - offset hours and minutes from start
+- +m - offset minutes from start
+- timewords (now,...)
+
+#### Special cases:
+| time | descr | rule statements |
+| --- | --------------- | ------------ |
+| ++h:m | offset hours and minutes from last event | 'or', 'repeat' |
+| h:m- | basic time hour and minute also matches all times sooner | 'start','repeat' |
+| h:m+ | basic time hour and minute also matches all times later | 'start' |
+
+
+#### Complex times
+
+Using 'or':
+- 'or' segments can be stacked, time returned is last check passed
+- offset times(+h:m) also match later times (they are technically +h:m+)
+- basic times(h:m) also match sooner times (they are technically h:m-)
+- alternate basic and offset times to provide complex adjustments
+
+An example would be event between 11-12am depending upon start time:
+begin 11:00 or +3:00 or 12:00
+- If started at 7:15, +3 hours = 10:15 (or later than 11:00-fail) would yield task at 11:00
+- If started at 8:15, +3 hours = 11:15 (later-pass), 12:00 (or sooner than 11:15-fail) would yield task at 11:15
+- If started at 9:15, +3 hours = 12:15 (later-pass), 12:00 (or sooner than 12:15-pass) would yield task at 12:00
+The description of this would be:
+ Event 3 hours after x but no sooner than 11:00am and no later than 12:00pm.
 
 

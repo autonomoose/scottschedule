@@ -17,9 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
 import StarIcon from '@mui/icons-material/Star';
 
 interface ListItemMenuBasics {
@@ -97,24 +95,25 @@ const Header = ({uname}: HeaderProps) => {
           boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
       >
         <Toolbar sx={{ justifyContent: 'space-around'}}>
-
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
-            <MenuIcon /> M
+            <svg viewBox="0 0 100 80" width="40" height="40">
+              <rect x="10" y="10" width="80" height="10"></rect>
+              <rect x="10" y="30" width="80" height="10"></rect>
+              <rect x="10" y="50" width="80" height="10"></rect>
+            </svg>
           </IconButton>
 
           <Link to={homePage}>
-            <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"
-            /><Typography variant='body'>
-            Scottschedule
-            </Typography>
+            <Box display='flex'>
+            <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"/>
+            <Typography variant='body1'>Scottschedule</Typography>
+            </Box>
           </Link>
 
           { (uname !== '') ?
-              <Box sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
+              <Box display='flex' alignItems='center' sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
                   <Link to="/usermaint" style={{ marginRight: `1em`}} >
-                    <Typography variant='body'>
-                    {uname}
-                    </Typography>
+                    <Typography variant='body1'>{uname}</Typography>
 
                   </Link>
                   <Button variant="outlined" onClick={signOut}>
@@ -138,12 +137,16 @@ const Header = ({uname}: HeaderProps) => {
         <div style={{ width:"178px", height: (uname !== '')? "39px": "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)', padding: '8px 8px',
               boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
         >
-
-          <strong>Main Menu</strong>
-
+          <Box ml={4} display='flex' alignItems='center'>
+          <Typography variant='subtitle1'>
+            Main&nbsp;Menu
+          </Typography>
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
-              <ChevronLeftIcon /> C
+            <svg viewBox="0 0 100 80" width="40" height="40">
+              <polygon points="70 10,10 35, 70 65"></polygon>
+            </svg>
           </IconButton>
+          </Box>
         </div>
         <Divider />
 
