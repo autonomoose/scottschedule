@@ -328,7 +328,7 @@ const HomePage = () => {
 
             return () => {clearInterval(intervalId)};
         } else {
-            console.log("clock pre-init");
+            console.log("clock not defined");
         }
         return () => {};
     }, [showClock]);
@@ -483,20 +483,20 @@ const HomePage = () => {
                 ]},
             ]},
             'test': {descr:'test schedules', schedNames: [
-                {schedName: 'quick', schedTasks: [
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'twominute'},
-                ]},
                 {schedName: 'hourly', begins: 'now', schedTasks: [
                     {evTaskId: 'cuckoo97'},
                 ]},
-                {schedName: 'silent', begins: 'now', sound: {name: ''}, schedTasks: [
+                {schedName: 'quick2', schedTasks: [
+                    {evTaskId: 'back2bed'},
                     {evTaskId: 'twominute'},
                 ]},
-                {schedName: 'bigbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
+                {schedName: 'qsilent', begins: 'now', sound: {name: ''}, schedTasks: [
                     {evTaskId: 'twominute'},
                 ]},
-                {schedName: 'test++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
+                {schedName: 'qbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'qtest++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
                     {evTaskId: 'basetime'},
                 ]},
                 {schedName: 'warn', begins: 'now', sound: {name: 'bigbell', repeat: 3}, warn: {}, schedTasks: [
@@ -512,6 +512,7 @@ const HomePage = () => {
 
         let wkGroup = (wkSchedGroup)? 'default': 'new';
         setCurrGroup(wkGroup);
+        setCurrSched('off');
 
         let groupElement =  document.getElementById('grouptitle');
         if (wkSchedGroup[wkGroup] && groupElement) {
@@ -628,8 +629,11 @@ const HomePage = () => {
                  </Typography>
              }
 
-             <Button color={(nextEvs.status === 'current')? 'error': 'primary'} onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>Silence</Button>
-             {(nextEvs.status === 'ack')? 'quiet': nextEvs.status}
+             <Button variant='outlined'
+               color={(nextEvs.status === 'current')? 'error': 'primary'}
+               onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>
+               Silence
+             </Button>
            </Box>
            { nextEvs.evs.map(item => <DisplayFutureEvent
              key={`${item.evTstamp}:${item.evTaskId}`} item={item}
