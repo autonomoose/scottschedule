@@ -40,8 +40,8 @@ interface iSchedButtons {
 // next event group sound parms
 interface iEvsSound {
     name?: string,
-    src?: string,
-    mRepeat?: number,
+    repeat?: number,
+    src?: string, // not implemented yet
 };
 
 // next event group sound parms

@@ -71,8 +71,7 @@ const NextEvAudio = (props: TempAudioProps) => {
     evId = '';
     if ('warn' in props.ev) {
         warnSrc = DefaultSound;
-        evId = 'default';
-        console.log('warn on');
+        evId = 'default-audio';
 
         if (props.ev.warn && props.ev.warn.sound && 'name' in props.ev.warn.sound) {
             if (props.ev.warn.sound.name === '') {
@@ -90,7 +89,7 @@ const NextEvAudio = (props: TempAudioProps) => {
     if (warnSrc !== '' && warnSrc !== evSrc) {
         audioComp.push({src: warnSrc, id: evId});
     }
-    console.log("audioList", props.ev, audioComp);
+    // console.log("audioList", props.ev, audioComp);
     return (
       <>
       { audioComp.map(item => {
@@ -135,11 +134,17 @@ const HomePage = () => {
         // figure out when our exec time vs event time is
         //    postCleanup, postEvent, preEvent, preWarn
         const msRel = currdate.valueOf() - nextEvs.evs[0].evTstamp;
-        const msCleanup = 15000; // mseconds after event to cleanup
-        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
+        const msRepeat = 16000; // 14 seconds is longest permitted sound, +2 to spinup
+        let msCleanup = msRepeat; // mseconds after event to cleanup
+        if (nextEvs.status !== 'ack' && nextEvs.sound && nextEvs.sound.repeat && nextEvs.sound.repeat > 0) {
+            msCleanup += nextEvs.sound.repeat * msRepeat;
+            // console.log("repeat ", msRepeat, msCleanup);
+        }
 
         // let next_evtime = nextEvs.evs[0].evTstamp
         // let resched = next_evtime - currdate.valueOf(); // ms until event
+
+        let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
         console.log('relative to event', execPhase, msRel);
 
         if (execPhase === 'postCleanup') {
@@ -165,7 +170,7 @@ const HomePage = () => {
         // on or after event time
         if (execPhase === 'postEvent') {
             // reschedule cleanup = postAck offset, ie evt+15 seconds
-            resched = msCleanup - msRel;
+            resched = ((Math.floor(msRel/msRepeat) + 1) * msRepeat) - msRel;
 
             // play sound unless quieted
             if (nextEvs.status !== 'ack') {
@@ -186,23 +191,47 @@ const HomePage = () => {
                 } else {
                     console.log("silent mooo");
                 }
-
-                //
-                // if alarm tones repeat, and aren't expired reschedule them here
-                // resched within postEv offset, ie ++15 seconds * 3 = 3 * 15 + 15 postAcK = 1 min
-                //
             } else {
                 console.log("quieted mooo");
             }
         }
 
-        // can't cleanup yet if repeating alarm tones
+        // early to the party
+        if (execPhase === 'preEvent') {
+            resched = msRel * -1; // ms until event time
+
+            // play warn sound unless quieted
+            if (nextEvs.status !== 'ack') {
+                if ('warn' in nextEvs) {
+                    // console.log("found warn");
+                    const msWarnRepeat = 60000; // repeat every minute
+                    resched += Math.ceil(msRel/msWarnRepeat) * msWarnRepeat;
+
+                    let sname = 'default';
+                    if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound && typeof(nextEvs.warn.sound.name) !== 'undefined') {
+                        sname = nextEvs.warn.sound.name;
+                    }
+                    if (sname) {
+                        const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                        if (eventAudio) {
+                            eventAudio.play();
+                        } else {
+                            console.log("no warn mooo");
+                        }
+                    } else {
+                        console.log("silent warn mooo");
+                    }
+                }
+            } else {
+                console.log("quieted or no warn mooo");
+            }
+        }
 
         if (resched > 0) {
             // try again later
             var timeoutId = setTimeout(eventTask, resched) as unknown as number;
             setEventId(timeoutId);
-            console.log('another alarm timer', resched);
+            // console.log('another alarm timer', resched);
         } else {
             console.log('bad resched', resched);
         }
@@ -227,7 +256,7 @@ const HomePage = () => {
             killEventTask();
             if (nextEvs.evs.length > 0) {
                 let next_evtime = nextEvs.evs[0].evTstamp
-                let next_milli = next_evtime - currdate; // ms until event
+                let next_milli = next_evtime - currdate - 300000; // ms until event - 5 min warning
 
                 // exec function eventTask after timer
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
@@ -299,7 +328,7 @@ const HomePage = () => {
 
             return () => {clearInterval(intervalId)};
         } else {
-            console.log("clock pre-init");
+            console.log("clock not defined");
         }
         return () => {};
     }, [showClock]);
@@ -431,7 +460,10 @@ const HomePage = () => {
                 'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
             ]},
             'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin 22:00,++1,++1',
+                'begin +2,++2,++2',
+            ]},
+            'slowbase' : {descr:'testing ++ and repeat', schedRules: [
+                'begin +6,++7,++7',
             ]},
         }
         setAllTasks(wkTasks);
@@ -439,7 +471,9 @@ const HomePage = () => {
         // setup scheduleGroup
         const wkSchedGroup: iSchedGroupList = {
             'default': {descr:'main schedule', schedNames: [
-                {schedName: 'main', buttonName: ' ', begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
+                {schedName: 'main', buttonName: ' ',
+                  sound: {name: 'bigbell', repeat: 3}, warn: {},
+                  begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
                     {evTaskId: 'miralax'},
                     {evTaskId: 'therapy'},
                     {evTaskId: 'back2bed'},
@@ -449,21 +483,24 @@ const HomePage = () => {
                 ]},
             ]},
             'test': {descr:'test schedules', schedNames: [
-                {schedName: 'quick', schedTasks: [
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'twominute'},
-                ]},
                 {schedName: 'hourly', begins: 'now', schedTasks: [
                     {evTaskId: 'cuckoo97'},
                 ]},
-                {schedName: 'test++', begins: 'now', schedTasks: [
+                {schedName: 'quick2', schedTasks: [
+                    {evTaskId: 'back2bed'},
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'qsilent', begins: 'now', sound: {name: ''}, schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'qbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
+                    {evTaskId: 'twominute'},
+                ]},
+                {schedName: 'qtest++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
                     {evTaskId: 'basetime'},
                 ]},
-                {schedName: 'silent', begins: 'now', sound: {name: ''}, schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'bigbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
-                    {evTaskId: 'twominute'},
+                {schedName: 'warn', begins: 'now', sound: {name: 'bigbell', repeat: 3}, warn: {}, schedTasks: [
+                    {evTaskId: 'slowbase'},
                 ]},
                 {schedName: 'blank', begins: 'now', schedTasks: []},
             ]},
@@ -475,6 +512,7 @@ const HomePage = () => {
 
         let wkGroup = (wkSchedGroup)? 'default': 'new';
         setCurrGroup(wkGroup);
+        setCurrSched('off');
 
         let groupElement =  document.getElementById('grouptitle');
         if (wkSchedGroup[wkGroup] && groupElement) {
@@ -491,7 +529,7 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box><Card style={{maxWidth: 432, minWidth: 402, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
@@ -499,7 +537,7 @@ const HomePage = () => {
           <>
           <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
             <Typography variant='h1' id='mainclock'
-              sx={{fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
+              sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
           <Box mx={4} display='flex' justifyContent='space-between'>
             <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
@@ -562,22 +600,22 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
+        <Divider />
+        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
+          Test <audio className="audio-element" controls >
+            <source src={DefaultSound} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
+        </Box>
         </>
         }
 
-       <Divider />
-       <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-         Test <audio className="audio-element" controls >
-           <source src={DefaultSound} type="audio/wav" />
-           Your browser doesn't support audio
-         </audio>
-       </Box>
      </Card></Box>
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
        { (nextEvs && nextEvs.evs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
           background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
@@ -591,8 +629,11 @@ const HomePage = () => {
                  </Typography>
              }
 
-             <Button color={(nextEvs.status === 'current')? 'error': 'primary'} onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>Silence</Button>
-             {(nextEvs.status === 'ack')? 'quiet': nextEvs.status}
+             <Button variant='outlined'
+               color={(nextEvs.status === 'current')? 'error': 'primary'}
+               onClick={acknowledgeEvent} disabled={(nextEvs.status === 'ack')}>
+               Silence
+             </Button>
            </Box>
            { nextEvs.evs.map(item => <DisplayFutureEvent
              key={`${item.evTstamp}:${item.evTaskId}`} item={item}
@@ -605,11 +646,13 @@ const HomePage = () => {
        }
 
        { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
-             <h4>Recent Events</h4>
+             <Typography variant='h6'>
+               Recent Events
+             </Typography>
              <Button onClick={() => setExpiredEvs([])}>
                Clear
              </Button>
