@@ -44,7 +44,7 @@ interface iNextEvs {
 };
 
 interface TempAudioProps {
-    ev: iFutureEvs,
+    ev: iNextEvs,
 };
 // pre-loads audio with html id event-audio, warn-audio
 // this runs every paint, if it gets expensive, move audiocomp to state
