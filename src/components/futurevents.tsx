@@ -2,6 +2,7 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
 
 interface iFutureDict {
     [evTstampKey: string]: iFutureEvent[],
@@ -29,8 +30,10 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
           background: '#F5F5E6', boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
-          <h4>Upcoming Events</h4>
-          { props.evs.map(item => <DisplayFutureEvent
+          <Typography variant='h6'>
+            Upcoming Events
+          </Typography>
+          { props.evs.slice(1).map(item => <DisplayFutureEvent
             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
             descr={(props.tasks[item.evTaskId])? props.tasks[item.evTaskId].descr: 'system'}/>)
           }

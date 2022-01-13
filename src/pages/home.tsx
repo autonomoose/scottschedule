@@ -203,7 +203,7 @@ const HomePage = () => {
             // play warn sound unless quieted
             if (nextEvs.status !== 'ack') {
                 if ('warn' in nextEvs) {
-                    console.log("found warn");
+                    // console.log("found warn");
                     const msWarnRepeat = 60000; // repeat every minute
                     resched += Math.ceil(msRel/msWarnRepeat) * msWarnRepeat;
 
@@ -528,7 +528,7 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box><Card style={{maxWidth: 432, minWidth: 402, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
@@ -599,22 +599,22 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
+        <Divider />
+        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
+          Test <audio className="audio-element" controls >
+            <source src={DefaultSound} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
+        </Box>
         </>
         }
 
-       <Divider />
-       <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-         Test <audio className="audio-element" controls >
-           <source src={DefaultSound} type="audio/wav" />
-           Your browser doesn't support audio
-         </audio>
-       </Box>
      </Card></Box>
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
        { (nextEvs && nextEvs.evs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
           background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
@@ -642,11 +642,13 @@ const HomePage = () => {
        }
 
        { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
-             <h4>Recent Events</h4>
+             <Typography variant='h6'>
+               Recent Events
+             </Typography>
              <Button onClick={() => setExpiredEvs([])}>
                Clear
              </Button>
