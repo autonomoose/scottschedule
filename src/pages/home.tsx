@@ -94,18 +94,10 @@ const NextEvAudio = (props: TempAudioProps) => {
       <>
       { audioComp.map(item => {
         return (
-          <>
-          {(props.ev.status === 'current' || props.ev.status === 'soon')
-            ? <audio key={item.id} id={item.id} controls>
-                <source src={item.src} type="audio/wav" />
-                Your browser doesn't support audio
-              </audio>
-            : <audio key={item.id} id={item.id}>
-                <source src={item.src} type="audio/wav" />
-                Your browser doesn't support audio
-              </audio>
-          }
-          </>
+          <audio key={item.id} id={item.id} controls>
+            <source src={item.src} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
       )})}
       </>
 )}
@@ -664,8 +656,9 @@ const HomePage = () => {
              descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
            }
          </Box>
-
-         <NextEvAudio ev={nextEvs}/>
+         {(nextEvs.status !== 'ack') &&
+           <NextEvAudio ev={nextEvs}/>
+         }
        </Card>
        }
 
