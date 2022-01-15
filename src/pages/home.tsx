@@ -1,10 +1,4 @@
-// prototype
-//  execute events, eventTask, killEventTask, useEffect(futureEvs)
-//  clock/cal, setNowDigital, useEffect(showClock),
-//  cleanRebuild futurevent
-//    toggleOptions(string), toggleScheds(string), changeGroup(choicelist event)
-//    useEffect(currGroup,schedGroups,allTasks) - build buttons, options, update screen
-//  useEffect() data init
+// prototype scottscheduler home page
 
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
@@ -44,7 +38,7 @@ interface iNextEvs {
 };
 
 interface TempAudioProps {
-    ev: iFutureEvs,
+    ev: iNextEvs,
 };
 // pre-loads audio with html id event-audio, warn-audio
 // this runs every paint, if it gets expensive, move audiocomp to state
@@ -57,7 +51,6 @@ const NextEvAudio = (props: TempAudioProps) => {
         if (props.ev.sound.name === '') {
             evSrc = ''; // silence
             evId = 'no-audio';
-            console.log('event silence');
         } else if (props.ev.sound.name === 'bigbell') {
             evSrc = BigBellSound;
             evId = 'bigbell-audio';
@@ -77,11 +70,9 @@ const NextEvAudio = (props: TempAudioProps) => {
             if (props.ev.warn.sound.name === '') {
                 warnSrc = ''; // silence
                 evId = 'no-audio';
-                console.log('warn silence');
             } else if (props.ev.warn.sound.name === 'bigbell') {
                 warnSrc = BigBellSound;
                 evId = 'bigbell-audio';
-                console.log('warn bigbell');
             }
         }
     }
@@ -94,18 +85,10 @@ const NextEvAudio = (props: TempAudioProps) => {
       <>
       { audioComp.map(item => {
         return (
-          <>
-          {(props.ev.status === 'current' || props.ev.status === 'soon')
-            ? <audio key={item.id} id={item.id} controls>
-                <source src={item.src} type="audio/wav" />
-                Your browser doesn't support audio
-              </audio>
-            : <audio key={item.id} id={item.id}>
-                <source src={item.src} type="audio/wav" />
-                Your browser doesn't support audio
-              </audio>
-          }
-          </>
+          <audio key={item.id} id={item.id} controls>
+            <source src={item.src} type="audio/wav" />
+            Your browser doesn't support audio
+          </audio>
       )})}
       </>
 )}
@@ -196,11 +179,7 @@ const HomePage = () => {
                     } else {
                         console.log("no mooo");
                     }
-                } else {
-                    console.log("silent mooo");
                 }
-            } else {
-                console.log("quieted mooo");
             }
         }
 
@@ -233,12 +212,8 @@ const HomePage = () => {
                         } else {
                             console.log("no warn mooo");
                         }
-                    } else {
-                        console.log("silent warn mooo");
                     }
                 }
-            } else {
-                console.log("quieted or no warn mooo");
             }
         }
 
@@ -266,6 +241,7 @@ const HomePage = () => {
     //   this makes sure target fun gets latest copy of nextEvs
     //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
+        console.log('useeffect nextevs');
         if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
             let currdate = new Date().valueOf();
             killEventTask();
@@ -283,16 +259,13 @@ const HomePage = () => {
 
     // when futureEvs change, setup new nextEvs state
     useEffect(() => {
+        console.log('useeffect futureevs');
         setNextEvs({evs: [], status: 'none'});
 
         if (futureEvs.evs.length > 0) {
             let currdate = new Date().valueOf();
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate);
             if (wkEvents.length > 0) {
-                // set nextEvs
-                //   evs: iFutureEvent[], status: string,
-                //   sound?: iEvsSound, warn?: iEvsWarn,
-
                 // filter out events that aren't next (within minute of event time)
                 let next_evtime = wkEvents[0].evTstamp
                 let wkevs = wkEvents.filter(item => item.evTstamp < next_evtime + 60000);
@@ -314,21 +287,24 @@ const HomePage = () => {
 
         let mainclock = document.getElementById('mainclock');
         if (mainclock) {
-            // pad hours with space, minutes with 0 for readability
-            let hours = (wkdate.getHours() < 10)? " " + wkdate.getHours(): wkdate.getHours();
-            let minutes = (wkdate.getMinutes() < 10? "0" + wkdate.getMinutes(): wkdate.getMinutes());
+            const localTime = wkdate.toLocaleTimeString(
+              "en-US", {hour: '2-digit', minute: '2-digit'});
 
-            mainclock.textContent = hours + ":" + minutes;
-        } else {
-            console.log("undefined mainclock");
+            mainclock.textContent = localTime.split(' ')[0];
+            let mainpm = document.getElementById('mainpm');
+            if (mainpm) {
+                if (localTime.split(' ')[1] === 'PM') {
+                    mainpm.textContent = localTime.split(' ')[1];
+                } else {
+                    mainpm.textContent = '  ';
+                }
+            }
         }
 
         let maindate = document.getElementById('maindate');
         if (maindate) {
             maindate.textContent = wkdate.toLocaleDateString(
               "en-US", {day: "2-digit", month: "short", weekday: "short"});
-        } else {
-            console.log("undefined maindate");
         }
     }
     // maintain selected clock
@@ -337,9 +313,9 @@ const HomePage = () => {
         // cleanup on useeffect return
 
         if (showClock && showClock !== '') {
-            console.log("restart clock");
             setNowDigital();
             var intervalId = setInterval(() => {setNowDigital()}, 10000);
+            console.log("restart clock useeffect", intervalId);
 
             return () => {clearInterval(intervalId)};
         } else {
@@ -422,6 +398,7 @@ const HomePage = () => {
 
     // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
+        console.log("useeffect currGroup - schedGroups, allTasks");
         if (schedGroups[currGroup] && allTasks) {
             // set schedule buttons, example = {'test4': 'wake'}
             setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
@@ -441,6 +418,7 @@ const HomePage = () => {
     // init Data
     useEffect(() => {
         // setup events
+        console.log("useeffect init");
         const wkTasks: iTask = {
             'therapy' : {descr:'therapy time, vest nebie', schedRules: [
                 'begin +2:30',
@@ -538,11 +516,10 @@ const HomePage = () => {
 
         // init completed
         setHstatus("Ready");
-        console.log("init complete");
     }, []);
 
     return(
-      <Layout><Seo title="Prototype 2.2 - Scottschedule" />
+      <Layout><Seo title="Prototype 2.3 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
@@ -556,6 +533,9 @@ const HomePage = () => {
             <Typography variant='h1' id='mainclock'
               sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
+          <Typography variant='subtitle' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
+            PM
+          </Typography>
           <Box mx={4} display='flex' justifyContent='space-between'>
             <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
             <Button onClick={() => setShowClock('scheduler')}>Close</Button>
@@ -576,8 +556,15 @@ const HomePage = () => {
         {(showClock === 'scheduler') &&
         <>
         <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
-          <Box>
-            <Button onClick={() => setShowClock('digital1')}><Typography variant='h3' id='mainclock' sx={{color:'#000000'}}>00:00</Typography></Button>
+          <Box display="flex" alignItems="baseline">
+            <Button onClick={() => setShowClock('digital1')}>
+              <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600, color: 'black'}}>
+                00:00
+              </Typography>
+            </Button>
+            <Typography variant='subtitle' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+              PM
+            </Typography>
           </Box>
           <Box display='flex' justifyContent='center' alignContent='flex-start' flexWrap='wrap' m={0} p={0} >
             <Typography mx={1} variant='h6' id='maindate'>
@@ -664,8 +651,9 @@ const HomePage = () => {
              descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
            }
          </Box>
-
-         <NextEvAudio ev={nextEvs}/>
+         {(nextEvs.status !== 'ack') &&
+           <NextEvAudio ev={nextEvs}/>
+         }
        </Card>
        }
 
