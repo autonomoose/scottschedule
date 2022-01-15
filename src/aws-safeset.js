@@ -11,8 +11,8 @@ export const apiconfig = {API:
     {endpoints:
     [{
         name: 'apscottschedule',
-        // endpoint: 'https://api.scottsched.wernerdigital.com/core',
-        endpoint: 'https://api.scottsched.wernerdigital.com/core-test',
+        // endpoint: 'https://api.scottschedule.wernerdigital.com/core',
+        endpoint: 'https://api.scottschedule.wernerdigital.com/core-test',
         custom_header: getIdToken,
     }],
     }

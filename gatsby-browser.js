@@ -6,14 +6,13 @@
 
 import React from 'react';
 import Amplify from 'aws-amplify';
+import awsconfig, { apiconfig } from './src/aws-safeset';
 // import awsconfig, { apiconfig, storageconfig } from './src/aws-safeset';
-import awsconfig from './src/aws-safeset';
 import { SnackbarProvider } from 'notistack';
 require('typeface-roboto');
 
 Amplify.configure(awsconfig)
-// setup in aws-safeset before enabling
-// Amplify.configure(apiconfig);
+Amplify.configure(apiconfig);
 // setup in aws-safeset before enabling
 // Amplify.configure(storageconfig);
 
