@@ -519,7 +519,7 @@ const HomePage = () => {
     }, []);
 
     return(
-      <Layout><Seo title="Prototype 2.2 - Scottschedule" />
+      <Layout><Seo title="Prototype 2.3 - Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
