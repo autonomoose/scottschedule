@@ -80,15 +80,6 @@ interface LayoutProps {
         vdebug?: string,
 }
 
-// this should come from graphql def
-export interface IgetCurrentUser {
-         userid?: string,
-         perm?: string,
-         nname?: string,
-         adisable?: string,
-         agroups?: string,
- }
-
 interface GetDataValues extends IgetCurrentUser {
                 loading?: "true" | "false" | null,
                 progError?: string | null,
