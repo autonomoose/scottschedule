@@ -144,10 +144,8 @@ interface HdataValues {
              const result: any = await API.graphql({query: currUsersInfo});
              if (vdebug) { console.log(result); }
              setHdata(result);
-             console.log("got db user", result);
              } catch (error) {
                setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
-             console.log("db user err ", error);
              }
            };
 
