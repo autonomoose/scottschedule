@@ -348,7 +348,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
                       >
                         <label
-                          class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1kty9di-MuiFormLabel-root-MuiInputLabel-root"
+                          class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                           data-shrink="true"
                           for="schedgroup"
                           id="schedgroup-label"
