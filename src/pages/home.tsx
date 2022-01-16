@@ -438,10 +438,10 @@ const HomePage = () => {
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const result = await API.graphql({query: listEventsFull})
+              const result: any = await API.graphql({query: listEventsFull})
               console.log("events:", result.data.listEvents.items.length);
 
-              const compactTasks = result.data.listEvents.items.reduce((resdict, item) => {
+              const compactTasks = result.data.listEvents.items.reduce((resdict : iTask, item: iTaskDb) => {
                   const evkeys = item.evnames.split('!');
                   if (!resdict[evkeys[0]]) {
                       resdict[evkeys[0]] = {descr: '', schedRules: []};
@@ -468,49 +468,6 @@ const HomePage = () => {
     }, [enqueueSnackbar] );
 
     useEffect(() => {
-        // setup events
-        const wkTasks: iTask = {
-            'therapy' : {descr:'therapy time, vest nebie', schedRules: [
-                'begin +2:30',
-                'option sunday 14:00 or +5:00',
-            ]},
-            'miralax' : {descr:'miralax treatment', schedRules: [
-                'option miralax +2:15',
-                'option miralax+sunday 13:45 or +4:45',
-            ]},
-            'back2bed' : {descr:'Back to Bed', schedRules: [
-                'begin +2:00,16:00 or +7:00,18:45 or +7:30',
-            ]},
-            'backdown' : {descr:'lay back down', schedRules: [
-                'begin +4:30',
-                'option sunday +5:00 or 13:30 or +4:30',
-            ]},
-            'hook1can' : {descr:'hookup 1 can', schedRules: [
-                'begin +2:30,17:00 or +7:30',
-                'option sunday +0:00,+3:00 or 11:45 or +2:45',
-                'option sunday+start:9:30 +0:00,+4:15',
-                'option sunday+start:9:45 +0:00,+4:15',
-                'option sunday+start:10:00 +0:00,+4:15',
-            ]},
-            'hook125' : {descr:'hookup 1.25 can', schedRules: [
-                'begin +0:0,14:00 or +5:00',
-                'option sunday 14:00 or +5:00,17:00 or +7:30',
-            ]},
-            'twominute' : {descr:'quick 2 min test ev', schedRules: [
-                'begin +0:2,+0:04,+0:06',
-            ]},
-            'cuckoo97' : {descr:'top of the hour 9am-7pm', schedRules: [
-                'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
-            ]},
-            'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +2,++2,++2',
-            ]},
-            'slowbase' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +6,++7,++7',
-            ]},
-        }
-        // setAllTasks(wkTasks);
-
         // setup scheduleGroup
         const wkSchedGroup: iSchedGroupList = {
             'default': {descr:'main schedule', schedNames: [
