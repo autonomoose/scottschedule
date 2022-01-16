@@ -62,3 +62,11 @@ interface iFutureEvs {
     warn?: iEvsWarn,
 };
 
+interface iSchedGroupList {
+    [name: string]: {
+        descr: string,
+        schedNames: iSchedule[],
+    };
+};
+
+

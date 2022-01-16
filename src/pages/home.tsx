@@ -8,6 +8,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
+import { API } from 'aws-amplify';
 
 import Layout from '../components/layout';
 import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../components/futurevents';
@@ -26,15 +27,10 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { listEventsFull } from '../graphql/queries';
+
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
-
-interface iSchedGroupList {
-    [name: string]: {
-        descr: string,
-        schedNames: iSchedule[],
-    };
-};
 
 interface iNextEvs {
     evs: iFutureEvent[],
@@ -440,6 +436,38 @@ const HomePage = () => {
 
     // init Data
     useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const result = await API.graphql({query: listEventsFull})
+              console.log("events:", result.data.listEvents.items.length);
+
+              const compactTasks = result.data.listEvents.items.reduce((resdict, item) => {
+                  const evkeys = item.evnames.split('!');
+                  if (!resdict[evkeys[0]]) {
+                      resdict[evkeys[0]] = {descr: '', schedRules: []};
+                  }
+                  if (evkeys[1] === 'args') {
+                      resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
+                  } else {
+                      resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
+                  }
+                  return resdict;
+              }, {});
+              console.log('new tasks', compactTasks);
+
+              enqueueSnackbar(`loaded events`,
+                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+              setAllTasks(compactTasks);
+          } catch (result) {
+              enqueueSnackbar(`error retrieving main sku info`, {variant: 'error'});
+              console.log("got error", result);
+          }
+      };
+
+      fetchData();
+    }, [enqueueSnackbar] );
+
+    useEffect(() => {
         // setup events
         const wkTasks: iTask = {
             'therapy' : {descr:'therapy time, vest nebie', schedRules: [
@@ -481,7 +509,7 @@ const HomePage = () => {
                 'begin +6,++7,++7',
             ]},
         }
-        setAllTasks(wkTasks);
+        // setAllTasks(wkTasks);
 
         // setup scheduleGroup
         const wkSchedGroup: iSchedGroupList = {

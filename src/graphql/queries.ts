@@ -18,3 +18,15 @@ export const currUsersInfo = `query queryUsers {
       agroups
  } }`;
 
+export const listEventsFull = `query queryEvents {
+  listEvents {
+    items {
+      descr
+      evnames
+      rules
+    }
+    nextToken
+
+ } }`;
+
+
