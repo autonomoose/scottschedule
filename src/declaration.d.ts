@@ -74,4 +74,8 @@ interface iSchedGroupList {
     };
 };
 
+interface iGrpSchedTask {
+    [name: string]: iSchedTask[],
+};
+
 

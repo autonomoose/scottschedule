@@ -29,4 +29,27 @@ export const listEventsFull = `query queryEvents {
 
  } }`;
 
+export interface iSchedGroupListDB {
+      begins: string,
+      button?: string,
+      descr?: string,
+      evnames: string,
+      sound?: string,
+      soundrepeat?: string,
+      warn?: string,
+}
+export const listSchedGroupsFull = `query queryEvents {
+  listSchedGroups {
+    items {
+      begins
+      button
+      descr
+      evnames
+      sound
+      soundrepeat
+      warn
+    }
+    nextToken
+
+ } }`;
 
