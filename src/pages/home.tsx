@@ -9,6 +9,7 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
+import { fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -21,7 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { listEventsFull, listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
+import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
 
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
@@ -412,31 +413,21 @@ const HomePage = () => {
     }, [allTasks, schedGroups, currGroup]);
 
     // init Data
+
+    // load allTasks
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const result: any = await API.graphql({query: listEventsFull})
-              console.log("events:", result.data.listEvents.items.length);
-
-              const compactTasks = result.data.listEvents.items.reduce((resdict : iTask, item: iTaskDb) => {
-                  const evkeys = item.evnames.split('!');
-                  if (!resdict[evkeys[0]]) {
-                      resdict[evkeys[0]] = {descr: '', schedRules: []};
-                  }
-                  if (evkeys[1] === 'args') {
-                      resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
-                  } else {
-                      resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
-                  }
-                  return resdict;
-              }, {});
-              console.log('new tasks', compactTasks);
-
-              enqueueSnackbar(`loaded events`,
-                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-              setAllTasks(compactTasks);
+              const newTasks = await fetchEventsDB();
+              if (newTasks) {
+                  enqueueSnackbar(`loaded events`,
+                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                  setAllTasks(newTasks);
+              } else {
+                  enqueueSnackbar(`no events found`, {variant: 'error'});
+              }
           } catch (result) {
-              enqueueSnackbar(`error retrieving main sku info`, {variant: 'error'});
+              enqueueSnackbar(`error retrieving events`, {variant: 'error'});
               console.log("got error", result);
           }
       };
@@ -565,7 +556,7 @@ const HomePage = () => {
             <Typography variant='h1' id='mainclock'
               sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
-          <Typography variant='subtitle' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
+          <Typography variant='subtitle1' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
             PM
           </Typography>
           <Box mx={4} display='flex' justifyContent='space-between'>
@@ -594,7 +585,7 @@ const HomePage = () => {
                 00:00
               </Typography>
             </Button>
-            <Typography variant='subtitle' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12, color: 'black'}}>
               PM
             </Typography>
           </Box>
