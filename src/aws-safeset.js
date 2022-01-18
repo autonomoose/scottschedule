@@ -7,17 +7,18 @@ const getIdToken = async () => ({
 });
 
 // start config
-// export const apiconfig = {API: {endpoints: []}};
-// add endpoints like so
-//     {
-//         name: 'apwbench',
-//         endpoint: 'https://api.wbench.wernerdigital.com/core-test',
-//         custom_header: getIdToken,
-//     }
-export const apiconfig = {API: {endpoints: []}};
+export const apiconfig = {API:
+    {endpoints:
+    [{
+        name: 'apscottschedule',
+        // endpoint: 'https://api.scottschedule.wernerdigital.com/core',
+        endpoint: 'https://api.scottschedule.wernerdigital.com/core-test',
+        custom_header: getIdToken,
+    }],
+    }
+}
 
-// export const storageconfig = {Storage: {bucket:"",region:"us-east-1"},}
-export const storageconfig = {Storage: {bucket:"",region:"us-east-1"},}
+export const storageconfig = {Storage: {bucket:"scottsched",region:"us-east-1"},}
 
 // static picture of awsexports w/ any foreign settings
 const awsmobile = {
@@ -44,18 +45,14 @@ const awsmobile = {
         "EMAIL"
     ],
 
-    // This section overrides the amplify prod/dev selection, and should be set appropriately in git
-    // appsync - uncomment for prod versions
-    // "aws_appsync_graphqlEndpoint": "https://rrnef36dzjc2ri2bymuc7lhwvu.appsync-api.us-east-1.amazonaws.com/graphql",
-    // appsync wbenchTest - uncomment for test versions
-    // "aws_appsync_graphqlEndpoint": "https://rwikl2suhjgxbhnknpmsk7w3i4.appsync-api.us-east-1.amazonaws.com/graphql",
-    // prod and  test settings
+    //  prod versions
+    // "aws_appsync_graphqlEndpoint": "https://gyolw776gvhqvpcjkagtmmvkoa.appsync-api.us-east-1.amazonaws.com/graphql",
+    // test versions
+    "aws_appsync_graphqlEndpoint": "https://iknysjhzmzfd5nddlaljxl5cgy.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_appsync_region": "us-east-1",
     "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
     "aws_appsync_apiKey": "null",
     "graphql_headers": getIdToken,
-    // "aws_user_files_s3_bucket": "file-locker",
-    // "aws_user_files_s3_bucket_region": "us-east-1"
 };
 
 export default awsmobile;

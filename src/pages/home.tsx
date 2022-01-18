@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
+import { API } from 'aws-amplify';
 
 import Layout from '../components/layout';
 import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../components/futurevents';
@@ -20,15 +21,10 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import { listEventsFull, listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
+
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
-
-interface iSchedGroupList {
-    [name: string]: {
-        descr: string,
-        schedNames: iSchedule[],
-    };
-};
 
 interface iNextEvs {
     evs: iFutureEvent[],
@@ -417,106 +413,142 @@ const HomePage = () => {
 
     // init Data
     useEffect(() => {
-        // setup events
-        console.log("useeffect init");
-        const wkTasks: iTask = {
-            'therapy' : {descr:'therapy time, vest nebie', schedRules: [
-                'begin +2:30',
-                'option sunday 14:00 or +5:00',
-            ]},
-            'miralax' : {descr:'miralax treatment', schedRules: [
-                'option miralax +2:15',
-                'option miralax+sunday 13:45 or +4:45',
-            ]},
-            'back2bed' : {descr:'Back to Bed', schedRules: [
-                'begin +2:00,16:00 or +7:00,18:45 or +7:30',
-            ]},
-            'backdown' : {descr:'lay back down', schedRules: [
-                'begin +4:30',
-                'option sunday +5:00 or 13:30 or +4:30',
-            ]},
-            'hook1can' : {descr:'hookup 1 can', schedRules: [
-                'begin +2:30,17:00 or +7:30',
-                'option sunday +0:00,+3:00 or 11:45 or +2:45',
-                'option sunday+start:9:30 +0:00,+4:15',
-                'option sunday+start:9:45 +0:00,+4:15',
-                'option sunday+start:10:00 +0:00,+4:15',
-            ]},
-            'hook125' : {descr:'hookup 1.25 can', schedRules: [
-                'begin +0:0,14:00 or +5:00',
-                'option sunday 14:00 or +5:00,17:00 or +7:30',
-            ]},
-            'twominute' : {descr:'quick 2 min test ev', schedRules: [
-                'begin +0:2,+0:04,+0:06',
-            ]},
-            'cuckoo97' : {descr:'top of the hour 9am-7pm', schedRules: [
-                'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
-            ]},
-            'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +2,++2,++2',
-            ]},
-            'slowbase' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +6,++7,++7',
-            ]},
-        }
-        setAllTasks(wkTasks);
+      const fetchData = async () => {
+          try {
+              const result: any = await API.graphql({query: listEventsFull})
+              console.log("events:", result.data.listEvents.items.length);
 
-        // setup scheduleGroup
-        const wkSchedGroup: iSchedGroupList = {
-            'default': {descr:'main schedule', schedNames: [
-                {schedName: 'main', buttonName: ' ',
-                  sound: {name: 'bigbell', repeat: 3}, warn: {},
-                  begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
-                    {evTaskId: 'miralax'},
-                    {evTaskId: 'therapy'},
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'backdown'},
-                    {evTaskId: 'hook1can'},
-                    {evTaskId: 'hook125'},
-                ]},
-            ]},
-            'test': {descr:'test schedules', schedNames: [
-                {schedName: 'hourly', begins: 'now', schedTasks: [
-                    {evTaskId: 'cuckoo97'},
-                ]},
-                {schedName: 'quick2', schedTasks: [
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qsilent', begins: 'now', sound: {name: ''}, schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qtest++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
-                    {evTaskId: 'basetime'},
-                ]},
-                {schedName: 'warn', begins: 'now', sound: {name: 'bigbell', repeat: 3}, warn: {}, schedTasks: [
-                    {evTaskId: 'slowbase'},
-                ]},
-                {schedName: 'blank', begins: 'now', schedTasks: []},
-            ]},
-        }
-        setSchedGroups(wkSchedGroup);
+              const compactTasks = result.data.listEvents.items.reduce((resdict : iTask, item: iTaskDb) => {
+                  const evkeys = item.evnames.split('!');
+                  if (!resdict[evkeys[0]]) {
+                      resdict[evkeys[0]] = {descr: '', schedRules: []};
+                  }
+                  if (evkeys[1] === 'args') {
+                      resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
+                  } else {
+                      resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
+                  }
+                  return resdict;
+              }, {});
+              console.log('new tasks', compactTasks);
 
+              enqueueSnackbar(`loaded events`,
+                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+              setAllTasks(compactTasks);
+          } catch (result) {
+              enqueueSnackbar(`error retrieving main sku info`, {variant: 'error'});
+              console.log("got error", result);
+          }
+      };
+
+      fetchData();
+    }, [enqueueSnackbar] );
+
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const result: any = await API.graphql({query: listSchedGroupsFull})
+              console.log("schedgroups records:", result.data.listSchedGroups.items.length);
+
+              const compactEvents = result.data.listSchedGroups.items.reduce((resdict: iGrpSchedTask, item: iSchedGroupListDB) => {
+                  const evkeys = item.evnames.split('!');
+                  // group,sched,ev
+                  let wkGroup = evkeys[0];
+                  let wkSched = evkeys[1];
+
+                  if (wkSched !== 'args' && evkeys[2] && evkeys[2] !== 'args') {
+                      if (!resdict[wkGroup+"!"+wkSched]) {
+                          resdict[wkGroup+"!"+wkSched] = [];
+                      }
+                      resdict[wkGroup+"!"+wkSched].push({evTaskId: evkeys[2]});
+                  }
+                  return resdict;
+              }, {});
+
+              // console.log("eventlist", compactEvents);
+              const compactGroups = result.data.listSchedGroups.items.reduce((resdict: iSchedGroupList, item: iSchedGroupListDB) => {
+                  const evkeys = item.evnames.split('!');
+                  // group,sched,ev
+                  let wkGroup = evkeys[0];
+                  if (!resdict[wkGroup]) {
+                      // setup basic group
+                      resdict[wkGroup] = {descr: '', schedNames: []};
+                  }
+                  if (evkeys[1] === 'args') {
+                      // group args
+                      resdict[wkGroup].descr = (item.descr)? item.descr: '';
+                  } else if (evkeys[2] === 'args') {
+                      // schedule args
+                      const wkSched = evkeys[1];
+                      let schedArgs: iSchedule = {schedName: wkSched, schedTasks: []};
+                      let wkSound: iEvsSound = {};
+
+                      if (compactEvents[wkGroup+"!"+wkSched]) {
+                          schedArgs.schedTasks = compactEvents[wkGroup+"!"+wkSched];
+                      } else {
+                          schedArgs.schedTasks = [];
+                      }
+                      if (item.begins) {
+                          schedArgs.begins = item.begins;
+                      }
+                      if (item.button) {
+                          schedArgs.buttonName = item.button;
+                      }
+                      if (item.sound) {
+                          wkSound['name'] = item.sound;
+                          console.log('sound', item.sound);
+                      }
+                      if (item.soundrepeat) {
+                          wkSound['repeat'] = parseInt(item.soundrepeat, 10);
+                          console.log('soundrepeat', item.soundrepeat);
+                      }
+                      if (item.warn || item.warn === '') {
+                          console.log('warn', item.warn);
+                          schedArgs['warn'] = {};
+                      }
+                      if (wkSound && Object.keys(wkSound).length > 0) {
+                          schedArgs['sound'] = wkSound;
+                      }
+                      resdict[wkGroup].schedNames.push(schedArgs)
+                  }
+                  return resdict;
+              }, {});
+
+              enqueueSnackbar(`loaded schedules`,
+                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+              setSchedGroups(compactGroups);
+          } catch (result) {
+              enqueueSnackbar(`error retrieving schedule groups`, {variant: 'error'});
+              console.log("got error", result);
+          }
+      };
+
+      fetchData();
+    }, [enqueueSnackbar] );
+
+    useEffect(() => {
         // post data init
-        killEventTask();
-        setNextEvs({evs: [], status: 'none'});
-        setFutureEvs({evs: []});
-        setShowClock('scheduler');
+        if (schedGroups) {
+            killEventTask();
+            setNextEvs({evs: [], status: 'none'});
+            setFutureEvs({evs: []});
+            setShowClock('scheduler');
 
-        let wkGroup = (wkSchedGroup)? 'default': 'new';
-        setCurrGroup(wkGroup);
-        setCurrSched('off');
-        let groupElement =  document.getElementById('grouptitle');
-        if (wkSchedGroup[wkGroup] && groupElement) {
-                groupElement.textContent = wkSchedGroup[wkGroup].descr;
+            let wkGroup = 'default';
+            setCurrGroup(wkGroup);
+            setCurrSched('off');
+
+            let groupElement =  document.getElementById('grouptitle');
+            if (schedGroups[wkGroup] && groupElement) {
+                    groupElement.textContent = schedGroups[wkGroup].descr;
         }
 
         // init completed
         setHstatus("Ready");
-    }, []);
+        console.log("init complete");
+        }
+
+    }, [schedGroups]);
 
     return(
       <Layout><Seo title="Prototype 2.3 - Scottschedule" />

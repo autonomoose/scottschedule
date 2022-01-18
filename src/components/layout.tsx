@@ -1,8 +1,7 @@
 // import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import React, { useState, useEffect, useCallback, Component } from 'react';
 import { Link } from 'gatsby';
-// import { Auth, API, Hub } from "aws-amplify"
-import { Auth, Hub } from "aws-amplify"
+import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
 import { useSnackbar } from 'notistack';
@@ -13,7 +12,7 @@ import Typography from '@mui/material/Typography';
 
 import Header from './header';
 
-// import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
+import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
 import './layout.scss';
 
 interface EboundaryState {
@@ -81,15 +80,6 @@ interface LayoutProps {
         vdebug?: string,
 }
 
-// this should come from graphql def
-export interface IgetCurrentUser {
-         userid?: string,
-         perm?: string,
-         nname?: string,
-         adisable?: string,
-         agroups?: string,
- }
-
 interface GetDataValues extends IgetCurrentUser {
                 loading?: "true" | "false" | null,
                 progError?: string | null,
@@ -103,9 +93,7 @@ interface HdataValues {
      const [uname, setUname] = useState('')
      const [uid, setUid] = useState('')
 
-     // set this to show a pre-fetch (uncomment useeffect below)
-     // const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
-     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{userid: "000TEST00000000000000000000000"}}});
+     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
 
      // const vdebug = true;    // test and dev settings
      const vdebug = (props.vdebug || false);  // production settings
@@ -150,21 +138,21 @@ interface HdataValues {
 
      // get the user record from dynamodb
      // everytime the user changes to a valid name
-     // useEffect(() => {
-     //     async function fetchUser() {
-     //       try {
-     //         const result: any = await API.graphql({query: currUsersInfo});
-     //         if (vdebug) { console.log(result); }
-     //         setHdata(result);
-     //         } catch (error) {
-     //           setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
-     //         }
-     //       };
-     //
-     //     if (uname !== 'no user' && uname !=='') {
-     //         fetchUser();
-     //   }
-     // }, [uname, vdebug]);
+     useEffect(() => {
+         async function fetchUser() {
+           try {
+             const result: any = await API.graphql({query: currUsersInfo});
+             if (vdebug) { console.log(result); }
+             setHdata(result);
+             } catch (error) {
+               setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
+             }
+           };
+
+         if (uname !== 'no user' && uname !=='') {
+             fetchUser();
+       }
+     }, [uname, vdebug]);
 
    // subscribe to any changes in auth status
    useEffect(() => {

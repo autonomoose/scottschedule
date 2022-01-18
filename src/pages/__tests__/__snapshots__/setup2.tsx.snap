@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Layout renders snapshot correctly 1`] = `
+exports[`SetupStep2Page renders snapshot correctly 1`] = `
 <amplify-authenticator>
   <div
     style="text-align: center;"
@@ -259,9 +259,105 @@ exports[`Layout renders snapshot correctly 1`] = `
           >
              
             <div
-              data-testid="test"
+              class="MuiBox-root css-1yp4ln"
             >
-              Test
+              <div
+                class="MuiBox-root css-d0uhtl"
+              >
+                <img
+                  alt=""
+                  aria-labelledby="page-name"
+                  loading="eager"
+                  src="../images/wernerdigital-hosted.png"
+                  width="160"
+                />
+              </div>
+              <div
+                class="MuiBox-root css-1py79td"
+              >
+                <h1
+                  id="page-name"
+                >
+                  WBench Signup
+                </h1>
+                <div
+                  class="MuiBox-root css-95qj54"
+                >
+                  <span
+                    style="color: rgb(119, 119, 119);"
+                  >
+                    Step 1: Create account (Done!)
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-vx5vr9"
+                >
+                  Step 2: Please read and accept our 
+                  <a
+                    href="https://www.wernerdigital.com/terms"
+                    style="color: rgb(0, 0, 238); text-decoration: underline;"
+                  >
+                     Terms of Service 
+                  </a>
+                  <div
+                    class="MuiBox-root css-d0uhtl"
+                  >
+                    <form>
+                      <br />
+                       
+                      <label
+                        aria-label="acceptbox"
+                        class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-j204z7-MuiFormControlLabel-root"
+                      >
+                        <span
+                          class="MuiCheckbox-root MuiCheckbox-colorPrimary MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root"
+                        >
+                          <input
+                            class="PrivateSwitchBase-input css-1m9pwf3"
+                            data-indeterminate="false"
+                            name="acceptbox"
+                            type="checkbox"
+                          />
+                          <svg
+                            aria-hidden="true"
+                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                            data-testid="CheckBoxOutlineBlankIcon"
+                            focusable="false"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+                            />
+                          </svg>
+                          <span
+                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                          />
+                        </span>
+                        <span
+                          class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-ahj2mt-MuiTypography-root"
+                        >
+                          I accept!
+                        </span>
+                      </label>
+                      <button
+                        class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+                        disabled=""
+                        tabindex="-1"
+                        type="submit"
+                      >
+                         Submit
+                      </button>
+                      <br />
+                      <br />
+                    </form>
+                  </div>
+                </div>
+                <div
+                  class="MuiBox-root css-95qj54"
+                >
+                  Step 3: Build/import schedules (or just run the clocks!)
+                </div>
+              </div>
             </div>
              
           </div>

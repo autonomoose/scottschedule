@@ -39,7 +39,7 @@ describe("Layout", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('checks Error Boundary', async () => {
+  it.skip('checks Error Boundary', async () => {
     const ThrowError = () => {
       throw new Error('Test error throw');
       return(<div>Mock Error</div>);
@@ -58,7 +58,7 @@ describe("Layout", () => {
 
   });
 
-  it('checks auth Hub listener', async () => {
+  it.skip('checks auth Hub listener', async () => {
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('test')).toBeVisible();
@@ -92,7 +92,7 @@ describe("Layout", () => {
       consoleWarnFn.mockRestore();
       consoleLogFn.mockRestore();
   });
-  it('handles auth currentSession error throw', async () => {
+  it.skip('handles auth currentSession error throw', async () => {
       // patch in error
       const prevSession = Auth.currentSession;
       Auth.currentSession = jest.fn(() => Promise.reject('mockReject'));
@@ -105,7 +105,7 @@ describe("Layout", () => {
       Auth.currentSession = prevSession;
   });
 
-  it('handles dberror during user lookup', async () => {
+  it.skip('handles dberror during user lookup', async () => {
       const prevAPIgraphql = API.graphql;
       API.graphql = jest.fn(() => Promise.reject('mockRejected'));
       const utils = render(mytest);
@@ -116,7 +116,7 @@ describe("Layout", () => {
 
   });
 
-  it('handles null lookup (new user)', async () => {
+  it.skip('handles null lookup (new user)', async () => {
       const prevAPIgraphql = API.graphql;
       API.graphql = jest.fn(() => Promise.resolve({'data': {'getCurrentUser':{}}}));
       const utils = render(mytest);
