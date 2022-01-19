@@ -589,22 +589,22 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h5'>
+               <Typography variant='h6'>
                  Next Up
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h5'>
+               <Typography variant='h6'>
                  Next Up (soon)
                </Typography>
              }
              {(nextEvs.status === 'current') &&
-               <Typography variant='h5' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}}>
                  Active
                </Typography>
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h5' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}}>
                  Current
                </Typography>
              }
