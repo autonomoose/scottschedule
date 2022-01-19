@@ -5,7 +5,7 @@ import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
 export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     try {
         const result: any = await API.graphql({query: listSchedGroupsFull})
-        //console.log("schedgroups records:", result.data.listSchedGroups.items.length);
+        console.log("loaded schedgroups dbrecords:", result.data.listSchedGroups.items.length);
 
         const compactEvents = result.data.listSchedGroups.items.reduce((resdict: iGrpSchedTask, item: iSchedGroupListDB) => {
             const evkeys = item.evnames.split('!');

@@ -36,7 +36,7 @@ const DisplayEvent = (props: DisplayEventProps) => {
 export const fetchEventsDB = async (): Promise<iTask> => {
     try {
         const result: any = await API.graphql({query: listEventsFull})
-        console.log("events:", result.data.listEvents.items.length);
+        console.log("events loaded:", result.data.listEvents.items.length);
 
         const compactTasks = result.data.listEvents.items.reduce((resdict: iTask, item: iTaskDb) => {
             const evkeys = item.evnames.split('!');

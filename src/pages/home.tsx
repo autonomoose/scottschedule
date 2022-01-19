@@ -37,7 +37,6 @@ interface iAudioComp {
     src: string,
 };
 
-
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
@@ -57,7 +56,6 @@ const HomePage = () => {
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [eventId, setEventId] = useState(0);
-
 
     // execute event
     //  globals nextEvs, futureEvs
@@ -188,11 +186,11 @@ const HomePage = () => {
     //   this makes sure target fun gets latest copy of nextEvs
     //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
-        console.log('useeffect nextevs');
         if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
             let currdate = new Date().valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
+                console.log('useeffect nextevs - update event task');
                 let next_evtime = nextEvs.evs[0].evTstamp
                 let next_milli = next_evtime - currdate - 300000; // ms until event - 5 min warning
 
@@ -200,7 +198,11 @@ const HomePage = () => {
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
                 console.log('restart alarm timer', timeoutId);
+            } else {
+                console.log('useeffect nextevs - trigger');
             }
+        } else {
+            console.log('useeffect nextevs - current/soon');
         }
 
         // set necessary audio components for nextev
@@ -287,6 +289,8 @@ const HomePage = () => {
                     mainpm.textContent = '  ';
                 }
             }
+        } else {
+            console.log("no mainclock on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -300,17 +304,17 @@ const HomePage = () => {
         // every ten seconds, get the time and update clock
         // cleanup on useeffect return
 
-        if (showClock && showClock !== '') {
+        if (showClock && showClock !== '' && hstatus !== 'Loading') {
             setNowDigital();
             var intervalId = setInterval(() => {setNowDigital()}, 10000);
-            console.log("restart clock useeffect", intervalId);
+            console.log("restart clock useeffect id", intervalId);
 
-            return () => {clearInterval(intervalId)};
+            return () => {clearInterval(intervalId);console.log('clear id', intervalId);};
         } else {
             console.log("clock not defined");
         }
         return () => {};
-    }, [showClock]);
+    }, [showClock, hstatus]);
 
     // cleanly reset and rebuild future events using globals
     //  globals allTasks
@@ -359,7 +363,6 @@ const HomePage = () => {
     //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
-            setHstatus("Loading");
             setCurrSched(wksched);
 
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions);
@@ -389,46 +392,28 @@ const HomePage = () => {
         }
     }
 
-    // update when currGroup updates, or the background schedGroups,allTasks updates
-    useEffect(() => {
-        console.log("useeffect currGroup - schedGroups, allTasks");
-        if (schedGroups[currGroup] && allTasks) {
-            // set schedule buttons, example = {'test4': 'wake'}
-            setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
-
-            // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
-            setSchedOptions(buildOptions({name:currGroup,...schedGroups[currGroup]}, allTasks));
-
-            // update group title
-            let groupElement =  document.getElementById('grouptitle');
-            if (schedGroups[currGroup].descr && groupElement) {
-                    groupElement.textContent = schedGroups[currGroup].descr;
-            }
-        }
-
-    }, [allTasks, schedGroups, currGroup]);
-
     // init Data
-
     // load allTasks
     useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const newTasks = await fetchEventsDB();
-              if (newTasks) {
-                  enqueueSnackbar(`loaded events`,
-                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-                  setAllTasks(newTasks);
-              } else {
-                  enqueueSnackbar(`no events found`, {variant: 'error'});
-              }
-          } catch (result) {
-              enqueueSnackbar(`error retrieving events`, {variant: 'error'});
-              console.log("got error", result);
-          }
-      };
+        const fetchData = async () => {
+            try {
+                const newTasks = await fetchEventsDB();
+                if (newTasks) {
+                    enqueueSnackbar(`loaded events`,
+                      {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                    setAllTasks(newTasks);
+                } else {
+                    enqueueSnackbar(`no events found`, {variant: 'error'});
+                }
+            } catch (result) {
+                enqueueSnackbar(`error retrieving events`, {variant: 'error'});
+                console.log("got error", result);
+            }
+        };
 
-      fetchData();
+        setHstatus('Loading');
+        console.log('events loading');
+        fetchData();
     }, [enqueueSnackbar] );
 
     // load all schedules, groups
@@ -450,6 +435,8 @@ const HomePage = () => {
 
       };
 
+      setHstatus('Loading');
+      console.log('schedgroups loading');
       fetchData();
     }, [enqueueSnackbar] );
 
@@ -470,12 +457,30 @@ const HomePage = () => {
                     groupElement.textContent = schedGroups[wkGroup].descr;
         }
 
-        // init completed
-        setHstatus("Ready");
-        console.log("init complete");
+        // init schedule group completed
         }
 
     }, [schedGroups]);
+
+    // update when currGroup updates, or the background schedGroups,allTasks updates
+    useEffect(() => {
+        console.log("useeffect currGroup - schedGroups, allTasks");
+        if (schedGroups[currGroup] && allTasks) {
+            // set schedule buttons, example = {'test4': 'wake'}
+            setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
+
+            // set optional schedule buttons, example = {'Miralax': true,'Sunday': false,}
+            setSchedOptions(buildOptions({name:currGroup,...schedGroups[currGroup]}, allTasks));
+
+            // update group title
+            let groupElement =  document.getElementById('grouptitle');
+            if (schedGroups[currGroup].descr && groupElement) {
+                    groupElement.textContent = schedGroups[currGroup].descr;
+            }
+            setHstatus("Ready");
+            console.log("Status = Ready");
+        }
+    }, [allTasks, schedGroups, currGroup]);
 
     return(
       <Layout><Seo title="Prototype 2.3 - Scottschedule" />
