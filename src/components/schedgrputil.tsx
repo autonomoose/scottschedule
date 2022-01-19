@@ -51,13 +51,11 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 if (item.button) {
                     schedArgs.buttonName = item.button;
                 }
-                if (item.sound) {
+                if (item.sound || item.sound === '') {
                     wkSound['name'] = item.sound;
-                    // console.log('sound', item.sound);
                 }
                 if (item.soundrepeat) {
                     wkSound['repeat'] = parseInt(item.soundrepeat, 10);
-                    // console.log('soundrepeat', item.soundrepeat);
                 }
                 if (item.warn || item.warn === '') {
                     // console.log('warn', item.warn);

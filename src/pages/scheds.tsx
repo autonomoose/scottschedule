@@ -86,6 +86,7 @@ const DisplaySchedGroups = (props: DisplaySchedGroupsProps) => {
                       <Box ml={1} display='flex'>
                         sound=(
                         {(schedule.sound.name) && <Box> name={schedule.sound.name}, </Box>}
+                        {(schedule.sound.name === '') && <Box> name='', </Box>}
                         {(schedule.sound.repeat) && <Box> repeat={schedule.sound.repeat}, </Box>}
                         {(schedule.sound.src) && <Box> src={schedule.sound.src}, </Box>}
                         )
