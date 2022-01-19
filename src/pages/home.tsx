@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
-import { API } from 'aws-amplify';
 
 import Layout from '../components/layout';
 import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../components/futurevents';
@@ -23,8 +22,6 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
-
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
 
@@ -35,61 +32,11 @@ interface iNextEvs {
     warn?: iEvsWarn,
 };
 
-interface TempAudioProps {
-    ev: iNextEvs,
+interface iAudioComp {
+    id: string,
+    src: string,
 };
-// pre-loads audio with html id event-audio, warn-audio
-// this runs every paint, if it gets expensive, move audiocomp to state
-const NextEvAudio = (props: TempAudioProps) => {
-    let audioComp = [];
-    let evSrc = DefaultSound;
-    let evId = 'default-audio';
 
-    if (props.ev.sound && 'name' in props.ev.sound) {
-        if (props.ev.sound.name === '') {
-            evSrc = ''; // silence
-            evId = 'no-audio';
-        } else if (props.ev.sound.name === 'bigbell') {
-            evSrc = BigBellSound;
-            evId = 'bigbell-audio';
-        }
-    }
-    if (evSrc !== '') {
-        audioComp.push({src: evSrc, id: evId});
-    }
-
-    let warnSrc = '';
-    evId = '';
-    if ('warn' in props.ev) {
-        warnSrc = DefaultSound;
-        evId = 'default-audio';
-
-        if (props.ev.warn && props.ev.warn.sound && 'name' in props.ev.warn.sound) {
-            if (props.ev.warn.sound.name === '') {
-                warnSrc = ''; // silence
-                evId = 'no-audio';
-            } else if (props.ev.warn.sound.name === 'bigbell') {
-                warnSrc = BigBellSound;
-                evId = 'bigbell-audio';
-            }
-        }
-    }
-
-    if (warnSrc !== '' && warnSrc !== evSrc) {
-        audioComp.push({src: warnSrc, id: evId});
-    }
-    // console.log("audioList", props.ev, audioComp);
-    return (
-      <>
-      { audioComp.map(item => {
-        return (
-          <audio key={item.id} id={item.id} controls>
-            <source src={item.src} type="audio/wav" />
-            Your browser doesn't support audio
-          </audio>
-      )})}
-      </>
-)}
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -103,6 +50,7 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [audioComp, setAudioComp] = useState<iAudioComp[]>([]);
     const [nextEvs, setNextEvs] = useState<iNextEvs>({evs: [], status: 'none'});
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
@@ -112,9 +60,9 @@ const HomePage = () => {
 
 
     // execute event
-    //
+    //  globals nextEvs, futureEvs
     const eventTask = () => {
-        setEventId(0);  // no longer able to cancel me
+        setEventId(0);  // cleanup my id
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
         console.log('nextEvs', nextEvs);
@@ -227,11 +175,12 @@ const HomePage = () => {
     };
 
     // use state eventId and clears it
+    //   global eventId
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel alarm timer');
+            console.log('Cancel alarm timer', eventId);
         }
     };
 
@@ -250,9 +199,51 @@ const HomePage = () => {
                 // exec function eventTask after timer
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
-                console.log('restart alarm timer');
+                console.log('restart alarm timer', timeoutId);
             }
         }
+
+        // set necessary audio components for nextev
+        let wkAudioComp = [];
+        let evSrc = DefaultSound;
+        let evId = 'default-audio';
+
+        if (nextEvs.sound && 'name' in nextEvs.sound) {
+            if (nextEvs.sound.name === '') {
+                evSrc = ''; // silence
+                evId = 'no-audio';
+            } else if (nextEvs.sound.name === 'bigbell') {
+                evSrc = BigBellSound;
+                evId = 'bigbell-audio';
+            }
+        }
+        if (evSrc !== '') {
+            wkAudioComp.push({src: evSrc, id: evId});
+        }
+
+        let warnSrc = '';
+        evId = '';
+        if ('warn' in nextEvs) {
+            warnSrc = DefaultSound;
+            evId = 'default-audio';
+
+            if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound) {
+                if (nextEvs.warn.sound.name === '') {
+                    warnSrc = ''; // silence
+                    evId = 'no-audio';
+                } else if (nextEvs.warn.sound.name === 'bigbell') {
+                    warnSrc = BigBellSound;
+                    evId = 'bigbell-audio';
+                }
+            }
+        }
+
+        if (warnSrc !== '' && warnSrc !== evSrc) {
+            wkAudioComp.push({src: warnSrc, id: evId});
+        }
+        setAudioComp(wkAudioComp);
+        // console.log("audioList", wkAudioComp);
+
     }, [nextEvs]);
 
     // when futureEvs change, setup new nextEvs state
@@ -275,7 +266,6 @@ const HomePage = () => {
             }
         }
     }, [futureEvs]);
-
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
@@ -323,6 +313,7 @@ const HomePage = () => {
     }, [showClock]);
 
     // cleanly reset and rebuild future events using globals
+    //  globals allTasks
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
             console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
@@ -354,6 +345,7 @@ const HomePage = () => {
     };
 
     // change state handle ui for optional schedule button presses
+    //   global schedGroups, currGroup, currSched, schedOptions
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
@@ -364,6 +356,7 @@ const HomePage = () => {
         }
     }
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
+    //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setHstatus("Loading");
@@ -377,12 +370,14 @@ const HomePage = () => {
         }
     }
     // acknowledge the buttons
+    // globals nextEvs
     const acknowledgeEvent = () => {
         const updNext = {...nextEvs, status: 'ack'};
         setNextEvs(updNext);
     }
 
     // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
+    //   global schedGroups, currGroup, currSched, schedOptions
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
         if (currSched !== "off") {
@@ -616,7 +611,15 @@ const HomePage = () => {
            }
          </Box>
          {(nextEvs.status !== 'ack') &&
-           <NextEvAudio ev={nextEvs}/>
+             <>
+             { audioComp.map(item => {
+             return (
+               <audio key={item.id} id={item.id} controls>
+                 <source src={item.src} type="audio/wav" />
+                 Your browser doesn't support audio
+               </audio>
+             )})}
+             </>
          }
        </Card>
        }
