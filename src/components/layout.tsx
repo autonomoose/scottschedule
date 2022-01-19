@@ -191,7 +191,7 @@ interface HdataValues {
        <div style={{textAlign: 'center'}}>
        <div style={{margin: `1rem auto`, minHeight: '100vh', backgroundColor: '#eeeeee', textAlign: 'left' }} >
          <Header uname={uname}/>
-         <div style={{ margin: `0 auto`, padding: `50px 1.0875rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
+         <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
 
            <main>
              {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
