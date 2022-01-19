@@ -9,6 +9,8 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
+import { fetchEventsDB } from '../components/eventsutil';
+import { fetchSchedGroupsDB } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -21,7 +23,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { listEventsFull, listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
+import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
 
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
@@ -412,31 +414,21 @@ const HomePage = () => {
     }, [allTasks, schedGroups, currGroup]);
 
     // init Data
+
+    // load allTasks
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const result: any = await API.graphql({query: listEventsFull})
-              console.log("events:", result.data.listEvents.items.length);
-
-              const compactTasks = result.data.listEvents.items.reduce((resdict : iTask, item: iTaskDb) => {
-                  const evkeys = item.evnames.split('!');
-                  if (!resdict[evkeys[0]]) {
-                      resdict[evkeys[0]] = {descr: '', schedRules: []};
-                  }
-                  if (evkeys[1] === 'args') {
-                      resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
-                  } else {
-                      resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
-                  }
-                  return resdict;
-              }, {});
-              console.log('new tasks', compactTasks);
-
-              enqueueSnackbar(`loaded events`,
-                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-              setAllTasks(compactTasks);
+              const newTasks = await fetchEventsDB();
+              if (newTasks) {
+                  enqueueSnackbar(`loaded events`,
+                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                  setAllTasks(newTasks);
+              } else {
+                  enqueueSnackbar(`no events found`, {variant: 'error'});
+              }
           } catch (result) {
-              enqueueSnackbar(`error retrieving main sku info`, {variant: 'error'});
+              enqueueSnackbar(`error retrieving events`, {variant: 'error'});
               console.log("got error", result);
           }
       };
@@ -444,83 +436,23 @@ const HomePage = () => {
       fetchData();
     }, [enqueueSnackbar] );
 
+    // load all schedules, groups
     useEffect(() => {
       const fetchData = async () => {
           try {
-              const result: any = await API.graphql({query: listSchedGroupsFull})
-              console.log("schedgroups records:", result.data.listSchedGroups.items.length);
-
-              const compactEvents = result.data.listSchedGroups.items.reduce((resdict: iGrpSchedTask, item: iSchedGroupListDB) => {
-                  const evkeys = item.evnames.split('!');
-                  // group,sched,ev
-                  let wkGroup = evkeys[0];
-                  let wkSched = evkeys[1];
-
-                  if (wkSched !== 'args' && evkeys[2] && evkeys[2] !== 'args') {
-                      if (!resdict[wkGroup+"!"+wkSched]) {
-                          resdict[wkGroup+"!"+wkSched] = [];
-                      }
-                      resdict[wkGroup+"!"+wkSched].push({evTaskId: evkeys[2]});
-                  }
-                  return resdict;
-              }, {});
-
-              // console.log("eventlist", compactEvents);
-              const compactGroups = result.data.listSchedGroups.items.reduce((resdict: iSchedGroupList, item: iSchedGroupListDB) => {
-                  const evkeys = item.evnames.split('!');
-                  // group,sched,ev
-                  let wkGroup = evkeys[0];
-                  if (!resdict[wkGroup]) {
-                      // setup basic group
-                      resdict[wkGroup] = {descr: '', schedNames: []};
-                  }
-                  if (evkeys[1] === 'args') {
-                      // group args
-                      resdict[wkGroup].descr = (item.descr)? item.descr: '';
-                  } else if (evkeys[2] === 'args') {
-                      // schedule args
-                      const wkSched = evkeys[1];
-                      let schedArgs: iSchedule = {schedName: wkSched, schedTasks: []};
-                      let wkSound: iEvsSound = {};
-
-                      if (compactEvents[wkGroup+"!"+wkSched]) {
-                          schedArgs.schedTasks = compactEvents[wkGroup+"!"+wkSched];
-                      } else {
-                          schedArgs.schedTasks = [];
-                      }
-                      if (item.begins) {
-                          schedArgs.begins = item.begins;
-                      }
-                      if (item.button) {
-                          schedArgs.buttonName = item.button;
-                      }
-                      if (item.sound) {
-                          wkSound['name'] = item.sound;
-                          console.log('sound', item.sound);
-                      }
-                      if (item.soundrepeat) {
-                          wkSound['repeat'] = parseInt(item.soundrepeat, 10);
-                          console.log('soundrepeat', item.soundrepeat);
-                      }
-                      if (item.warn || item.warn === '') {
-                          console.log('warn', item.warn);
-                          schedArgs['warn'] = {};
-                      }
-                      if (wkSound && Object.keys(wkSound).length > 0) {
-                          schedArgs['sound'] = wkSound;
-                      }
-                      resdict[wkGroup].schedNames.push(schedArgs)
-                  }
-                  return resdict;
-              }, {});
-
-              enqueueSnackbar(`loaded schedules`,
-                {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
-              setSchedGroups(compactGroups);
+              const newSchedgrps = await fetchSchedGroupsDB();
+              if (newSchedgrps) {
+                  enqueueSnackbar(`loaded schedules`,
+                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                  setSchedGroups(newSchedgrps);
+              } else {
+                  enqueueSnackbar(`no schedules found`, {variant: 'error'});
+              }
           } catch (result) {
-              enqueueSnackbar(`error retrieving schedule groups`, {variant: 'error'});
+              enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
               console.log("got error", result);
           }
+
       };
 
       fetchData();
@@ -565,7 +497,7 @@ const HomePage = () => {
             <Typography variant='h1' id='mainclock'
               sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
           </Button>
-          <Typography variant='subtitle' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
+          <Typography variant='subtitle1' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
             PM
           </Typography>
           <Box mx={4} display='flex' justifyContent='space-between'>
@@ -594,7 +526,7 @@ const HomePage = () => {
                 00:00
               </Typography>
             </Button>
-            <Typography variant='subtitle' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12, color: 'black'}}>
               PM
             </Typography>
           </Box>

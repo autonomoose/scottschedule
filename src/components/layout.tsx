@@ -5,6 +5,7 @@ import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
 import { useSnackbar } from 'notistack';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
@@ -236,6 +237,14 @@ interface HdataValues {
            </main>
 
            <footer style={{ paddingTop: 40 }}>
+             <Divider />
+             <Box display='flex' justifyContent='space-around'>
+               <Link to='/home'>Home</Link>
+               <Link to='/usermaint'>Account</Link>
+               <Link to='scheds'>Schedules</Link>
+               <Link to='events'>Events</Link>
+               <Link to='help'>Help</Link>
+             </Box>
              <Divider />
              <Typography variant='caption' mx={2}>
                &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc

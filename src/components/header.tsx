@@ -154,6 +154,9 @@ const Header = ({uname}: HeaderProps) => {
           { (uname !== '') ?
             <>
             <ListItemMenu link="/home" icon={<HomeIcon />} text="Home" />
+            <ListItemMenu link="/usermaint" icon={<StarIcon />} text="Account" />
+            <ListItemMenu link="/scheds" icon={<StarIcon />} text="Schedules" />
+            <ListItemMenu link="/events" icon={<StarIcon />} text="Events" />
             <ListItemMenu link="/help" icon={<StarIcon />} text="Help" />
             <ListItemMenu jslink={signOut} icon={<StarIcon />} text="Logout" />
             </>
