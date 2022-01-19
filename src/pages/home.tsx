@@ -588,20 +588,25 @@ const HomePage = () => {
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
-             {(nextEvs.status === 'pending')
-               ? <Typography variant='h5'>
-                   Next Up
-                 </Typography>
-               : <>
-                 {(nextEvs.status === 'soon')
-                 ? <Typography variant='h5'>
-                     Next Up (soon)
-                   </Typography>
-                 : <Typography variant='h5' sx={{fontWeight: 600,}}>
-                     Active
-                   </Typography>
-                 }
-                 </>
+             {(nextEvs.status === 'pending') &&
+               <Typography variant='h5'>
+                 Next Up
+               </Typography>
+             }
+             {(nextEvs.status === 'soon') &&
+               <Typography variant='h5'>
+                 Next Up (soon)
+               </Typography>
+             }
+             {(nextEvs.status === 'current') &&
+               <Typography variant='h5' sx={{fontWeight: 600,}}>
+                 Active
+               </Typography>
+             }
+             {(nextEvs.status === 'ack') &&
+               <Typography variant='h5' sx={{fontWeight: 600,}}>
+                 Current
+               </Typography>
              }
 
              <Button variant='outlined'
