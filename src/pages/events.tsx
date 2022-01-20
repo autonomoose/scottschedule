@@ -5,7 +5,7 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplayEvent, { fetchEventsDB } from '../components/eventsutil';
+import DisplayEvent, { CreateEvent, fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -54,6 +54,7 @@ const EventsPage = () => {
         }
 
      </Card></Box>
+     <CreateEvent tasks={allTasks} />
 
    </Box>
     <Backdrop sx={{ color: '#fff', zIndex: 3000 }} open={(hstatus === "Loading")} >

@@ -1,9 +1,83 @@
 import React from 'react';
 import { API } from 'aws-amplify';
+import { useForm } from "react-hook-form";
 
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
 
 import { listEventsFull } from '../graphql/queries';
+import { mutAddEvents } from '../graphql/mutations';
+
+interface CreateEventProps {
+  tasks: iTask
+}
+export const CreateEvent = (props: CreateEventProps) => {
+    const allTasks = props.tasks;
+
+    // form states
+    const { register, handleSubmit, reset, formState } = useForm({
+        defaultValues: {
+            name: '',
+            descr: '',
+        }
+    });
+    const { isDirty, errors } = formState;
+
+    interface FormParms {
+        name: string,
+        descr: string,
+    };
+    const formSubmit = async (data: FormParms) => {
+        console.log('form data', data);
+        try {
+            const xdata = {
+                'etype': 'ev',
+                'evnames': data.name+"!args",
+                'descr': data.descr,
+            };
+            const result = await API.graphql({query: mutAddEvents, variables: xdata});
+            console.log('updated', result);
+
+        } catch (result) {
+            console.log('failed update', result);
+        }
+    };
+
+    return(
+      <Box><Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <form key="apply" onSubmit={handleSubmit(formSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <Typography variant='h6'>
+              Add New Event
+            </Typography>
+          </Box>
+
+          <Box><label> Name
+            <input type="text" size={12} data-testid="nameInput"
+             {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
+             aria-invalid={errors.name ? "true" : "false"}
+            />
+          </label></Box>
+          <Box><label> Description
+            <input type="text" size={25} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:25 })}
+             aria-invalid={errors.descr ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box mt={2}>
+            <Button size="small" variant="contained" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
+          </Box>
+
+          </form>
+        </Box>
+      </Card></Box>
+) };
 
 interface DisplayEventProps {
   evid: string,
