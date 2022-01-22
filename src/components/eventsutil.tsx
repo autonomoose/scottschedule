@@ -65,21 +65,21 @@ export const CreateEvent = (props: CreateEventProps) => {
             </Typography>
           </Box>
 
-          <Box><label> Name
-            <input type="text" size={12} data-testid="nameInput"
+          <Box><label>
+            Name <input type="text" size={12} data-testid="nameInput"
              {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
              aria-invalid={errors.name ? "true" : "false"}
             />
           </label></Box>
           <Box><label> Description
-            <input type="text" size={25} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:25 })}
+            <input type="text" size={30} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2}>
-            <Button size="small" variant="contained" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
 
@@ -96,9 +96,10 @@ interface CreateRuleProps {
 }
 export const CreateRule = (props: CreateRuleProps) => {
     // form states
-    const { register, handleSubmit, reset, formState } = useForm({
+    const { register, handleSubmit, reset, formState, watch } = useForm({
         defaultValues: {
             cmd: 'begin',
+            options: '',
             content: '',
         }
     });
@@ -111,14 +112,19 @@ export const CreateRule = (props: CreateRuleProps) => {
     }
     interface FormNewRuleParms {
         cmd: string,
+        options: string,
         content: string,
     };
     const formNewRuleSubmit = async (data: FormNewRuleParms) => {
         console.log('form data', data);
         try {
+            let wkEvNames = props.evName+"!"+data.cmd;
+            if (data.options !== '') {
+                wkEvNames += ' ' + data.options;
+            }
             const xdata = {'input': {
                 'etype': 'ev',
-                'evnames': props.evName+"!"+data.cmd,
+                'evnames': wkEvNames,
                 'rules': data.content,
                 }
             };
@@ -148,6 +154,14 @@ export const CreateRule = (props: CreateRuleProps) => {
             </Typography>
           </Box>
 
+          <Box display='flex'>
+            <select {...register("cmd")}>
+              <option value="begin">begin</option>
+              <option value="option">option</option>
+            </select>
+            <input disabled={(watch('cmd') === 'begin')} data-testid="optionsInput" {...register('options')} />
+          </Box>
+
           <Box>
             <textarea rows={2} cols={27} data-testid="contentRule"
              {...register('content', { required: true,})}
@@ -155,10 +169,10 @@ export const CreateRule = (props: CreateRuleProps) => {
             ></textarea>
           </Box>
 
-          <Box mt={2}>
-            <Button size="small" variant="contained" onClick={() => formNewRuleCancel()}>Cancel</Button>
-            <Button size="small" variant="contained" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
-            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" color='error' onClick={() => formNewRuleCancel()}>Cancel</Button>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
 
           </form>
@@ -260,19 +274,19 @@ export const ModifyEvent = (props: ModifyEventProps) => {
             }
           </Box>
 
-          <Box><label> Description
-            <input type="text" size={25} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:25 })}
+          <Box><label>
+            <input type="text" size={30} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2}>
-            <Button size="small" variant="contained" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
           </form>
-          <Box display='flex' justifyContent='space-around'>
+          <Box mb={1} display='flex' justifyContent='space-around'>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
             <Button onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
           </Box>
@@ -285,7 +299,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                 let words = task.split(' ');
                 let cmd = words.shift() || 'begin';
                 if (cmd === 'option') {
-                    cmd = 'option' +  words.shift() || '';
+                    cmd = 'option ' +  words.shift() || '';
                 }
                 const displayRule = words.join(' ').split(',').join(', ');
 
