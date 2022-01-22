@@ -241,9 +241,9 @@ interface HdataValues {
              <Box display='flex' justifyContent='space-around'>
                <Link to='/home'>Home</Link>
                <Link to='/usermaint'>Account</Link>
-               <Link to='scheds'>Schedules</Link>
-               <Link to='events'>Events</Link>
-               <Link to='help'>Help</Link>
+               <Link to='/scheds'>Schedules</Link>
+               <Link to='/events'>Events</Link>
+               <Link to='/help'>Help</Link>
              </Box>
              <Divider />
              <Typography variant='caption' mx={2}>
