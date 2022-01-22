@@ -283,9 +283,12 @@ export const ModifyEvent = (props: ModifyEventProps) => {
               allTasks[evid].schedRules.map((task: string) => {
                 // get the cmd words out
                 let words = task.split(' ');
-                const rawRule = words.pop();
-                const displayRule = rawRule.split(',').join(', ');
-                const cmd = words.join(' ');
+                let cmd = words.shift() || 'begin';
+                if (cmd === 'option') {
+                    cmd = 'option' +  words.shift() || '';
+                }
+                const displayRule = words.join(' ').split(',').join(', ');
+
               return(
                 <Box key={`${evid}${cmd}`}  display='flex'>
                   <Box display='flex'>
