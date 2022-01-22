@@ -9,10 +9,11 @@ import { useForm } from "react-hook-form";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { listEventsFull } from '../graphql/queries';
-import { mutAddEvents, mutAddRules } from '../graphql/mutations';
+import { mutAddEvents, mutAddRules, mutDelEvents } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateEventProps {
@@ -214,6 +215,27 @@ export const ModifyEvent = (props: ModifyEventProps) => {
             console.log('failed update', result);
         }
     };
+    interface FormDelEventParms {
+        cmd: string,
+    };
+    const formDelEvent = async (data: FormDelEventParms) => {
+        console.log('formDel parms', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'ev',
+                'evnames': evid+"!"+data.cmd,
+                }
+            };
+            console.log('deleting', xdata);
+            const result = await API.graphql({query: mutDelEvents, variables: xdata});
+            console.log('deleted', result);
+            if (props.onComplete) {
+                props.onComplete(evid);
+            }
+        } catch (result) {
+            console.log('failed delete', result);
+        }
+    };
     const formCallback = (status: string) => {
         console.log("mod callback status", status);
         setEvRule('');
@@ -229,9 +251,14 @@ export const ModifyEvent = (props: ModifyEventProps) => {
         <Box mx={1}>
           <form key="newEv" onSubmit={handleSubmit(formModEvSubmit)}>
           <Box display="flex" justifyContent="space-between" alignItems="baseline">
-            <Typography variant='h6'>Modify Event {evid}</Typography>
+            <Typography variant='h6'>Modify Event</Typography>
           </Box>
-          <Box>{evid}</Box>
+          <Box display='flex' alignItems='center'>
+            {evid}
+            { (allTasks[evid] && allTasks[evid].schedRules.length === 0) &&
+            <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+            }
+          </Box>
 
           <Box><label> Description
             <input type="text" size={25} data-testid="descrInput"
@@ -254,12 +281,19 @@ export const ModifyEvent = (props: ModifyEventProps) => {
             <CreateRule evName={evRule} onComplete={formCallback} open={(evRule !== '')} />
             {
               allTasks[evid].schedRules.map((task: string) => {
-                let sequence = 1;
+                // get the cmd words out
+                let words = task.split(' ');
+                const rawRule = words.pop();
+                const displayRule = rawRule.split(',').join(', ');
+                const cmd = words.join(' ');
               return(
-                <Box key={`${evid}${sequence}`}  display='flex'>
-                  {sequence}
-                  <Box mx={1} mb={1} px={1} sx={{ border: '1px solid grey' }} key={`${evid}${sequence++}`}>
-                    {task.split(',').join(', ')}
+                <Box key={`${evid}${cmd}`}  display='flex'>
+                  <Box display='flex'>
+                    <IconButton size='small' color='error' onClick={() => formDelEvent({cmd})}>X</IconButton>
+                    {cmd}
+                  </Box>
+                  <Box mx={1} mb={1} px={1} sx={{ border: '1px solid grey' }} key={`${evid}${cmd}`}>
+                    {displayRule}
                   </Box>
                 </Box>
               )})

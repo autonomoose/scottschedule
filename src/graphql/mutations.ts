@@ -11,3 +11,9 @@ export const mutAddRules = `mutation newEvent($input: RulesInput!) {
           evnames
 } }`;
 
+export const mutDelEvents = `mutation delEvent($input: EventsDelInput!) {
+      delEvents(input: $input)   {
+          evnames
+} }`;
+
+
