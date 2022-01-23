@@ -1,7 +1,300 @@
+// sched and groups utilities and components
+// exports default DisplaySchedGroup
+//  also exports components CreateGroup, ModifyGroup
+// and data fetchSchedGroupsDB - full groups and schedules
+import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
+import { useForm } from "react-hook-form";
+
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
+import { mutAddEvents, mutDelEvents } from '../graphql/mutations';
 
+// -------------------------------------------------
+interface CreateGroupProps {
+  onComplete?: (status: string) => void,
+  open: boolean
+}
+export const CreateGroup = (props: CreateGroupProps) => {
+    // form states
+    const { register, handleSubmit, reset, formState } = useForm({
+        defaultValues: {
+            name: '',
+            descr: '',
+        }
+    });
+    const { isDirty, errors } = formState;
+
+    interface FormNewGroupParms {
+        name: string,
+        descr: string,
+    };
+    const formNewGroupSubmit = async (data: FormNewGroupParms) => {
+        console.log('form group data', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': data.name+"!args",
+                'descr': data.descr,
+                }
+            };
+            const result = await API.graphql({query: mutAddEvents, variables: xdata});
+            console.log('updated', result);
+            if (props.onComplete) {
+                props.onComplete(data.name);
+            }
+        } catch (result) {
+            console.log('failed group update', result);
+        }
+    };
+
+    return(
+      <Box display={(props.open)?'block': 'none'}>
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <form key="newGroup" onSubmit={handleSubmit(formNewGroupSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <Typography variant='h6'>
+              Add New Group
+            </Typography>
+            {(props.onComplete) &&
+              <IconButton size='small' color='error' onClick={() => props.onComplete('')}>X</IconButton>
+            }
+          </Box>
+
+          <Box><label>
+            Name <input type="text" size={12} data-testid="nameInput"
+             {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
+             aria-invalid={errors.name ? "true" : "false"}
+            />
+          </label></Box>
+          <Box><label> Description
+            <input type="text" size={30} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
+             aria-invalid={errors.descr ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
+          </Box>
+
+          </form>
+        </Box>
+      </Card></Box>
+) };
+// -------------------------------------------------
+interface ModifyGroupProps {
+  group: string,
+  groupSched: iSchedGroup,
+  onComplete?: (status: string) => void,
+  open: boolean,
+}
+export const ModifyGroup = (props: ModifyGroupProps) => {
+    const wkGroup = props.groupSched;
+    const wkName = props.group;
+
+    const [schedName, setSchedName] = useState('');
+
+    // form states
+    const { register, handleSubmit, reset, formState } = useForm({
+        defaultValues: {
+            descr: '',
+        }
+    });
+    const { isDirty, errors } = formState;
+
+    useEffect(() => {
+        const defaultValues = {
+            descr: (wkGroup && wkGroup.descr)? wkGroup.descr : '',
+        }
+        reset(defaultValues);
+    }, [wkGroup] );
+
+    interface FormModGroupParms {
+        descr: string,
+    };
+    const formModGroupSubmit = async (data: FormModGroupParms) => {
+        console.log('modform data', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': wkName+"!args",
+                'descr': data.descr,
+                }
+            };
+            const result = await API.graphql({query: mutAddEvents, variables: xdata});
+            console.log('updated', result);
+            if (props.onComplete) {
+                props.onComplete(wkName);
+            }
+        } catch (result) {
+            console.log('failed group update', result);
+        }
+    };
+    interface FormDelEventParms {
+        cmd: string,
+    };
+    const formDelEvent = async (data: FormDelEventParms) => {
+        console.log('formDel parms', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': wkName+"!"+data.cmd,
+                }
+            };
+            console.log('deleting', xdata);
+            const result = await API.graphql({query: mutDelEvents, variables: xdata});
+            console.log('deleted', result);
+            if (props.onComplete) {
+                props.onComplete(wkName);
+            }
+        } catch (result) {
+            console.log('failed delete', result);
+        }
+    };
+    const formCallback = (status: string) => {
+        console.log("mod callback status", status);
+        setSchedName('');
+        if (props.onComplete && status !== '') {
+            props.onComplete(status);
+        }
+    };
+
+    return(
+      <Box display={(props.open)?'block': 'none'}>
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <form key="modGroup" onSubmit={handleSubmit(formModGroupSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <Typography variant='h6'>Modify Group</Typography>
+            {(props.onComplete) &&
+              <IconButton size='small' color='error' onClick={() => props.onComplete('')}>X</IconButton>
+            }
+          </Box>
+          <Box display='flex' alignItems='center'>
+            {wkName}
+            { (wkGroup && wkGroup.schedNames.length === 0) &&
+            <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+            }
+          </Box>
+
+          <Box><label>
+            <input type="text" size={30} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
+             aria-invalid={errors.descr ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
+          </Box>
+          </form>
+          { (wkGroup) &&
+          <>
+            <Box mb={1} display='flex' justifyContent='space-around'>
+              <span>Schedules ({wkGroup.schedNames.length}) </span>
+              <Button onClick={() => setSchedName(wkName)}  size="small" variant="outlined" color="primary">New Schedule</Button>
+            </Box>
+            {
+              wkGroup.schedNames.map(schedule => {
+                return(
+                  <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
+                    {schedule.schedName} ({schedule.schedTasks.length} events)
+                  </Box>
+              ) } )
+            }
+          </>
+          }
+        </Box>
+      </Card></Box>
+) };
+
+// -------------------------------------------------
+interface DisplaySchedGroupProps {
+  group: string,
+  groupSched: iSchedGroup,
+  select?: (group: string) => void,
+}
+const DisplaySchedGroup = (props: DisplaySchedGroupProps) => {
+    const wkGroup = props.groupSched;
+    const wkName = props.group;
+    return(
+      <Box key={wkName}>
+        {(props.select)
+          ? <Button size="small" onClick={() => {props.select?.(wkName);}}>
+              {wkName}
+            </Button>
+          : <span>{wkName} </span>
+        }
+
+        - {wkGroup.descr}
+        {
+          wkGroup.schedNames.map(schedule => {
+            // console.log(schedule);
+          return(
+            <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
+              {schedule.schedName} ({schedule.schedTasks.length} events)
+              {(schedule.begins && schedule.begins.length <= 30) && <Box ml={1}> starts={schedule.begins} </Box>}
+              {(schedule.begins && schedule.begins.length > 30) &&
+                <Box ml={1}>
+                  starts=({schedule.begins.slice(0,30)} {schedule.begins.slice(30)})
+
+                </Box>
+              }
+              {(schedule.buttonName) && <Box ml={1}> button='{schedule.buttonName}' </Box>}
+              {(schedule.sound) &&
+                <Box ml={1} display='flex'>
+                  sound=(
+                  {(schedule.sound.name) && <Box> name={schedule.sound.name}, </Box>}
+                  {(schedule.sound.name === '') && <Box> name='', </Box>}
+                  {(schedule.sound.repeat) && <Box> repeat={schedule.sound.repeat}, </Box>}
+                  {(schedule.sound.src) && <Box> src={schedule.sound.src}, </Box>}
+                  )
+                </Box>
+              }
+              {(schedule.warn) &&
+                <Box ml={1}>
+                  warn=(
+                    {(schedule.warn.sound) &&
+                      <Box ml={1} display='flex'>
+                        sound=(
+                        {(schedule.warn.sound.name) && <Box> name={schedule.warn.sound.name}, </Box>}
+                        {(schedule.warn.sound.repeat) && <Box> repeat={schedule.warn.sound.repeat}, </Box>}
+                        {(schedule.warn.sound.src) && <Box> src={schedule.warn.sound.src}, </Box>}
+                          )
+                      </Box>
+                    }
+                  )
+                </Box>
+              }
+              {(schedule.schedTasks && schedule.schedTasks.length > 0) &&
+                <Box mx={1}>
+                events=(
+                {schedule.schedTasks.map(schedTask => {
+                  return(
+                    <span key={schedTask.evTaskId}>{schedTask.evTaskId}, </span>
+                )})
+                }
+                )
+                </Box>
+              }
+            </Box>
+          )})
+        }
+      </Box>
+) };
+
+// -------------------------------------------------
 export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     try {
         const result: any = await API.graphql({query: listSchedGroupsFull})
@@ -76,4 +369,4 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     }
 };
 
-
+export default DisplaySchedGroup

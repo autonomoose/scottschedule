@@ -27,7 +27,7 @@ interface iSchedule {
 }
 
 interface iSchedGroup {
-    name: string,
+    name?: string,
     descr: string,
     schedNames: iSchedule[],
 };
