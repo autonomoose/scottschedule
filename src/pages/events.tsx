@@ -66,11 +66,11 @@ const EventsPage = () => {
 
         <Box mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
           Events ({Object.keys(allTasks).length})
-          <Button  onClick={() => {setPgserial(pgserial+1);}}>
+          <Button variant='outlined' onClick={() => {setPgserial(pgserial+1);}}>
             Refresh
           </Button>
 
-          <Button disabled={(evName === '')} onClick={() => {buttonSetEvName('');}}>
+          <Button variant='outlined' disabled={(evName === '')} onClick={() => {buttonSetEvName('');}}>
             New Event
           </Button>
         </Box>
