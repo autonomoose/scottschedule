@@ -5,7 +5,7 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplaySchedGroup, { CreateGroup, ModifyGroup, fetchSchedGroupsDB } from '../components/schedgrputil';
+import DisplaySchedGroup, { ManSched, CreateGroup, ModifyGroup, fetchSchedGroupsDB } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -21,21 +21,62 @@ const SchedsPage = () => {
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [groupName, setGroupName] = useState('');
+    const [schedName, setSchedName] = useState('');
+    const [currSchedule, setCurrSchedule] = useState<iSchedule>({schedName: '', schedTasks: []});
     const [pgserial, setPgserial] = useState(0);
 
     const buttonSetGroupName = async (newGroupName: string) => {
         setGroupName(newGroupName);
+        setSchedName('');
     }
 
-    const formGroupCallback = async (status: string) => {
-        console.log("group callback status", status);
-        setGroupName(status);
+    const formSchedCallback = async (status: string) => {
+        console.log("schedule callback status", status);
+        setSchedName(status);
         if (status !== '') {
             setPgserial(pgserial+1);
         }
+    };
+
+    const formGroupCallback = async (status: string) => {
+        console.log("group callback status", status);
+        if (status[0] === '_') {
+          // call to open schedule from group form
+          setGroupName('');
+          setSchedName(status.slice(1));
+        } else {
+          setGroupName(status);
+          if (status !== '') {
+              setPgserial(pgserial+1);
+          }
+        }
     }
 
-    // init Data
+    // maintain currSchedule with schedName
+    useEffect(() => {
+        console.log('useEffect schedName', schedName);
+        let retSched: iSchedule = {schedName: '', schedTasks: []}
+
+        if (schedName !== '') {
+            let schedParts=schedName.split('!');
+            const wkgroup = schedParts.shift() || '';
+            const wksched = schedParts.shift() || '';
+            if (wkgroup && wksched && wksched !== '_NEW_' && schedGroups[wkgroup]) {
+                const schedList = schedGroups[wkgroup].schedNames.filter(item => item.schedName === wksched)
+                if (schedList.length === 1) {
+                    retSched = schedList[0];
+                    console.log('sched found', retSched);
+                } else {
+                    // name no longer defined
+                    console.log('sched not found');
+                    setSchedName('');
+                }
+            }
+        }
+        setCurrSchedule(retSched);
+    }, [schedName, schedGroups]);
+
+    // init DB Data
     useEffect(() => {
         const fetchScheds = async () => {
             setHstatus('Loading');
@@ -57,7 +98,6 @@ const SchedsPage = () => {
         fetchScheds();
     }, [enqueueSnackbar, pgserial]);
 
-    console.log('orig', schedGroups);
     return(
       <Layout><Seo title="Schedules - Scottschedule" />
       <PageTopper pname="Schedules" vdebug={vdebug} helpPage="/help/scheds" />
@@ -92,6 +132,9 @@ const SchedsPage = () => {
       <ModifyGroup group={groupName} groupSched={schedGroups[groupName]}
        onComplete={formGroupCallback}
        open={(groupName !== '' && groupName !== '_NEW_')}
+      />
+      <ManSched onComplete={formSchedCallback} open={(schedName !== '')}
+       groupSchedName={schedName} gSchedule={currSchedule}
       />
 
       </Box>

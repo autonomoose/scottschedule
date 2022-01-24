@@ -1,7 +1,9 @@
 // sched and groups utilities and components
 // exports default DisplaySchedGroup
-//  also exports components CreateGroup, ModifyGroup
+//  - exports Group components CreateGroup, ModifyGroup
+//  - exports Schedule components ManSched
 // and data fetchSchedGroupsDB - full groups and schedules
+
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
@@ -13,14 +15,16 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
-import { mutAddEvents, mutDelEvents } from '../graphql/mutations';
+import { mutAddEvents, mutDelEvents, mutAddRules } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateGroupProps {
   onComplete?: (status: string) => void,
   open: boolean
 }
+const mockComplete = (msg: string) => {console.log(msg)};
 export const CreateGroup = (props: CreateGroupProps) => {
+    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     // form states
     const { register, handleSubmit, reset, formState } = useForm({
         defaultValues: {
@@ -45,9 +49,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
             };
             const result = await API.graphql({query: mutAddEvents, variables: xdata});
             console.log('updated', result);
-            if (props.onComplete) {
-                props.onComplete(data.name);
-            }
+            funComplete(data.name);
         } catch (result) {
             console.log('failed group update', result);
         }
@@ -63,9 +65,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
             <Typography variant='h6'>
               Add New Group
             </Typography>
-            {(props.onComplete) &&
-              <IconButton size='small' color='error' onClick={() => props.onComplete('')}>X</IconButton>
-            }
+            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
           </Box>
 
           <Box><label>
@@ -98,10 +98,9 @@ interface ModifyGroupProps {
   open: boolean,
 }
 export const ModifyGroup = (props: ModifyGroupProps) => {
+    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     const wkGroup = props.groupSched;
     const wkName = props.group;
-
-    const [schedName, setSchedName] = useState('');
 
     // form states
     const { register, handleSubmit, reset, formState } = useForm({
@@ -132,9 +131,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
             };
             const result = await API.graphql({query: mutAddEvents, variables: xdata});
             console.log('updated', result);
-            if (props.onComplete) {
-                props.onComplete(wkName);
-            }
+            funComplete(wkName);
         } catch (result) {
             console.log('failed group update', result);
         }
@@ -153,18 +150,9 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
             console.log('deleting', xdata);
             const result = await API.graphql({query: mutDelEvents, variables: xdata});
             console.log('deleted', result);
-            if (props.onComplete) {
-                props.onComplete(wkName);
-            }
+            funComplete(wkName);
         } catch (result) {
             console.log('failed delete', result);
-        }
-    };
-    const formCallback = (status: string) => {
-        console.log("mod callback status", status);
-        setSchedName('');
-        if (props.onComplete && status !== '') {
-            props.onComplete(status);
         }
     };
 
@@ -176,9 +164,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           <form key="modGroup" onSubmit={handleSubmit(formModGroupSubmit)}>
           <Box display="flex" justifyContent="space-between" alignItems="baseline">
             <Typography variant='h6'>Modify Group</Typography>
-            {(props.onComplete) &&
-              <IconButton size='small' color='error' onClick={() => props.onComplete('')}>X</IconButton>
-            }
+            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
           </Box>
           <Box display='flex' alignItems='center'>
             {wkName}
@@ -203,13 +189,17 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           <>
             <Box mb={1} display='flex' justifyContent='space-around'>
               <span>Schedules ({wkGroup.schedNames.length}) </span>
-              <Button onClick={() => setSchedName(wkName)}  size="small" variant="outlined" color="primary">New Schedule</Button>
+              <Button onClick={() => funComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
             </Box>
             {
               wkGroup.schedNames.map(schedule => {
                 return(
                   <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
-                    {schedule.schedName} ({schedule.schedTasks.length} events)
+                    <Button onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}  size="small" variant="outlined" color="primary">
+                      {schedule.schedName}
+                    </Button>
+
+                    ({schedule.schedTasks.length} events)
                   </Box>
               ) } )
             }
@@ -218,6 +208,244 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
         </Box>
       </Card></Box>
 ) };
+
+// -------------------------------------------------
+interface ManSchedProps {
+  groupSchedName: string, // group!sched or group!_NEW_
+  gSchedule: iSchedule,
+  onComplete?: (status: string) => void,
+  open: boolean
+}
+export const ManSched = (props: ManSchedProps) => {
+    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
+    let wkWords = props.groupSchedName.split('!');
+    const groupName = wkWords.shift() || '';
+    const schedName = wkWords.shift() || '';
+    const currSchedule = props.gSchedule;
+    const [schedEv, setSchedEv] = useState('');
+    // form states
+    const { register, handleSubmit, reset, formState } = useForm({
+        defaultValues: {
+            schedName: '',
+            begins: 'now',
+            buttonName: '_schedule name_',
+        }
+    });
+    const { isDirty, errors } = formState;
+
+    useEffect(() => {
+        let defaultValues = {
+            schedName: '',
+            begins: 'now',
+            buttonName: '_schedule name_',
+        };
+        if (schedName && schedName !== '_NEW_' && currSchedule) {
+          defaultValues = {
+              schedName: schedName,
+              begins: currSchedule.begins || 'now',
+              buttonName: currSchedule.buttonName || '_schedule name_',
+          };
+        }
+
+        reset(defaultValues);
+    }, [schedName, currSchedule] );
+
+    interface FormManSchedParms {
+        schedName: string,
+        begins: string,
+        buttonName: string,
+    };
+    const formManSchedSubmit = async (data: FormManSchedParms) => {
+        console.log('form sched data', data);
+        let wkEvNames = groupName+"!"+data.schedName+"!args";
+        if (schedName !== '' && schedName !== '_NEW_') {
+            wkEvNames = groupName+"!"+schedName+"!args";
+        }
+
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': wkEvNames,
+                }
+            };
+            // const result = await API.graphql({query: mutAddEvents, variables: xdata});
+            console.log('updated', result);
+            funComplete(data.schedName);
+        } catch (result) {
+            console.log('failed sched update', result);
+        }
+    };
+    interface FormDelEventParms {
+        cmd: string,
+    };
+    const formDelEvent = async (data: FormDelEventParms) => {
+        console.log('formDel parms', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': groupName+"!"+schedName+"!"+data.cmd,
+                }
+            };
+            console.log('deleting', xdata);
+            const result = await API.graphql({query: mutDelEvents, variables: xdata});
+            console.log('deleted', result);
+            funComplete(groupName+"!"+schedName);
+        } catch (result) {
+            console.log('failed delete', result);
+        }
+    };
+    const formCallback = (status: string) => {
+        console.log("manSched callback status", status);
+        setSchedEv('');
+        funComplete(status);
+    };
+
+    return(
+      <Box display={(props.open)?'block': 'none'}>
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <form key="manSched" onSubmit={handleSubmit(formManSchedSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <Typography variant='h6'>
+              { (schedName && schedName !== '_NEW_')
+                ? <span>Modify Schedules </span>
+                : <span>Add Schedule ({groupName})</span>
+              }
+            </Typography>
+            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
+          </Box>
+
+          <Box display='flex' justifyContent='space-between'>
+            <Box display={(schedName && schedName !== '_NEW_')?'none':'flex'}><label>
+              Name <input type="text" size={12} data-testid="nameInput"
+               {...register('schedName', { required: true, pattern: /\S+/, maxLength:16 })}
+               aria-invalid={errors.schedName ? "true" : "false"}
+              />
+            </label></Box>
+            {(schedName && schedName !== '_NEW_') &&
+              <Box>
+                {schedName}
+                { (currSchedule && currSchedule.schedTasks.length === 0) &&
+                  <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+                }
+
+              </Box>
+            }
+
+            <Box><label>
+              Button <input type="text" size={6} data-testid="beginsInput"
+               {...register('buttonName', { pattern: /\S+/, maxLength:8 })}
+               aria-invalid={errors.buttonName ? "true" : "false"}
+              />
+            </label></Box>
+          </Box>
+
+          <Box><label>
+            Begins <textarea rows={1} cols={27} data-testid="beginsInput"
+             {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
+             aria-invalid={errors.begins ? "true" : "false"}
+            ></textarea>
+          </label></Box>
+
+
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
+          </Box>
+
+          </form>
+          { (currSchedule) &&
+          <>
+            <Box mb={1} display='flex' justifyContent='space-around'>
+              <span>Events ({currSchedule.schedTasks.length}) </span>
+              <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">Add Event</Button>
+            </Box>
+            <ConnectTask schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
+            {
+              currSchedule.schedTasks.map(task => {
+                return(
+                  <Box mx={2} key={task.evTaskId}>
+                    <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': task.evTaskId })}>X</IconButton>
+
+                    {task.evTaskId}
+                  </Box>
+              ) } )
+            }
+          </>
+          }
+
+        </Box>
+      </Card></Box>
+) };
+
+// -------------------------------------------------
+interface ConnectTaskProps {
+  schedName: string,
+  onComplete: (status: string) => void,
+  open: boolean,
+}
+export const ConnectTask = (props: ConnectTaskProps) => {
+    // form states
+    const { register, handleSubmit, reset, formState } = useForm({
+        defaultValues: {
+            taskid: '',
+        }
+    });
+    const { isDirty, errors } = formState;
+
+    const formConnectTaskCancel = async () => {
+        props.onComplete('');
+    }
+    interface FormConnectTaskParms {
+        taskid: string,
+    };
+    const formConnectTaskSubmit = async (data: FormConnectTaskParms) => {
+        console.log('form data', data);
+        try {
+            const xdata = {'input': {
+                'etype': 'gs',
+                'evnames': props.schedName+'!'+data.taskid,
+                }
+            };
+            const result = await API.graphql({query: mutAddRules, variables: xdata});
+            console.log('connected task to schedule', result);
+            props.onComplete(props.schedName);
+
+        } catch (result) {
+            console.log('failed update connection', result);
+            props.onComplete('');
+        }
+    };
+    return(
+      <Box display={(props.open)?'block': 'none'}>
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+        <Box mx={1}>
+          <form key="connectTask" onSubmit={handleSubmit(formConnectTaskSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+            <Typography variant='h6'>
+              Connect Event
+            </Typography>
+          </Box>
+
+          <Box>
+            <input type='text' size={10} data-testid="taskid"
+             {...register('taskid', { required: true,})}
+             aria-invalid={errors.taskid ? "true" : "false"}
+            />
+          </Box>
+
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
+            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="contained" type="submit" disabled={!isDirty}>Save</Button>
+          </Box>
+
+          </form>
+        </Box>
+      </Card></Box>
+) }
 
 // -------------------------------------------------
 interface DisplaySchedGroupProps {
