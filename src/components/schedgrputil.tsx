@@ -254,7 +254,9 @@ export const ManSched = (props: ManSchedProps) => {
             defaultValues['schedName'] = schedName;
             defaultValues['descr'] = currSchedule.descr || '';
             defaultValues['begins'] = currSchedule.begins || 'now';
-            defaultValues['buttonName'] = currSchedule.buttonName || '_same_';
+            if (currSchedule.buttonName || currSchedule.buttonName === '') {
+                defaultValues['buttonName'] = currSchedule.buttonName;
+            }
             if (currSchedule.sound) {
                 if (currSchedule.sound['name'] || currSchedule.sound['name'] === '') {
                     defaultValues['sound'] = currSchedule.sound.name;
@@ -366,7 +368,7 @@ export const ManSched = (props: ManSchedProps) => {
 
             <Box><label>
               Button <input type="text" size={6} data-testid="beginsInput"
-               {...register('buttonName', { pattern: /\S+/, maxLength:8 })}
+               {...register('buttonName', { maxLength:8 })}
                aria-invalid={errors.buttonName ? "true" : "false"}
               />
             </label></Box>
@@ -583,7 +585,7 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 if (item.begins) {
                     schedArgs.begins = item.begins;
                 }
-                if (item.button) {
+                if (item.button || item.button === '') {
                     schedArgs.buttonName = item.button;
                 }
                 if (item.sound || item.sound === '') {

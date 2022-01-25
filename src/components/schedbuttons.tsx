@@ -32,7 +32,7 @@ export const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
             if (scheds.length > 1) {
                 scheds.forEach((starttime: string) => {
                     if (starttime && starttime !== '') {
-                        outDict[item.schedName + '.' + starttime] = (item.buttonName)
+                        outDict[item.schedName + '.' + starttime] = (item.buttonName || item.buttonName === '')
                             ? item.buttonName + ' ' + starttime
                             : item.schedName + ' ' + starttime;
                     }
