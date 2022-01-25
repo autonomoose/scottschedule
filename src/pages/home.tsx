@@ -1,6 +1,7 @@
 // prototype scottscheduler home page
 
 import React, { useEffect, useState } from 'react';
+import { Link } from "gatsby";
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
@@ -398,12 +399,13 @@ const HomePage = () => {
         const fetchData = async () => {
             try {
                 const newTasks = await fetchEventsDB();
-                if (newTasks) {
+                if (newTasks && Object.keys(newTasks).length > 0) {
                     enqueueSnackbar(`loaded events`,
                       {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                     setAllTasks(newTasks);
                 } else {
                     enqueueSnackbar(`no events found`, {variant: 'error'});
+                    setHstatus('Ready');
                 }
             } catch (result) {
                 enqueueSnackbar(`error retrieving events`, {variant: 'error'});
@@ -421,12 +423,13 @@ const HomePage = () => {
       const fetchData = async () => {
           try {
               const newSchedgrps = await fetchSchedGroupsDB();
-              if (newSchedgrps) {
+              if (newSchedgrps && Object.keys(newSchedgrps).length > 0) {
                   enqueueSnackbar(`loaded schedules`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                   setSchedGroups(newSchedgrps);
               } else {
                   enqueueSnackbar(`no schedules found`, {variant: 'error'});
+                  setHstatus('Ready');
               }
           } catch (result) {
               enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
@@ -442,12 +445,12 @@ const HomePage = () => {
 
     useEffect(() => {
         // post data init
-        if (schedGroups) {
-            killEventTask();
-            setNextEvs({evs: [], status: 'none'});
-            setFutureEvs({evs: []});
-            setShowClock('scheduler');
+        killEventTask();
+        setNextEvs({evs: [], status: 'none'});
+        setFutureEvs({evs: []});
+        setShowClock('scheduler');
 
+        if (schedGroups && Object.keys(schedGroups).length > 0) {
             let wkGroup = 'default';
             setCurrGroup(wkGroup);
             setCurrSched('off');
@@ -483,7 +486,7 @@ const HomePage = () => {
     }, [allTasks, schedGroups, currGroup]);
 
     return(
-      <Layout><Seo title="Prototype 2.3 - Scottschedule" />
+      <Layout><Seo title="Scottschedule v1.2.4b" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
@@ -575,6 +578,28 @@ const HomePage = () => {
             Your browser doesn't support audio
           </audio>
         </Box>
+        { (Object.keys(allTasks).length === 0)
+          ? <Box>
+              <Typography variant='h4' color='error'>
+                No Events found
+              </Typography>
+              <Typography variant='body1'>To get started, go to the</Typography>
+              <Button component={Link} to='/events'>Events page</Button>
+              <Typography variant='body1'>and build your first Event!</Typography>
+            </Box>
+          : <>
+            { (Object.keys(schedGroups).length === 0) &&
+              <Box>
+                <Typography variant='h4' color='error'>
+                  No Schedules found
+                </Typography>
+                <Typography variant='body1'>To finish setting up, go to the</Typography>
+                <Button component={Link} to='/scheds'>Schedules page</Button>
+                <Typography variant='body1'>and setup a group and schedule.</Typography>
+              </Box>
+            }
+            </>
+        }
         </>
         }
 
