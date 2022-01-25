@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
-import { mutAddEvents, mutDelEvents, mutAddRules } from '../graphql/mutations';
+import { mutAddEvents, mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateGroupProps {
@@ -216,6 +216,16 @@ interface ManSchedProps {
   onComplete?: (status: string) => void,
   open: boolean
 }
+interface FormManSchedParms {
+    schedName: string,
+    descr: string,
+    begins: string,
+    buttonName: string,
+    sound: string,
+    soundrepeat: string,
+    warn: string,
+};
+
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     let wkWords = props.groupSchedName.split('!');
@@ -224,53 +234,69 @@ export const ManSched = (props: ManSchedProps) => {
     const currSchedule = props.gSchedule;
     const [schedEv, setSchedEv] = useState('');
     // form states
-    const { register, handleSubmit, reset, formState } = useForm({
-        defaultValues: {
-            schedName: '',
-            begins: 'now',
-            buttonName: '_schedule name_',
-        }
-    });
+    const formDefaultVal: FormManSchedParms = {
+        schedName: '',
+        descr: '',
+        begins: 'now',
+        buttonName: '_same_',
+        sound: '_default_',
+        soundrepeat: '0',
+        warn: '_none_',
+    };
+    const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
 
     useEffect(() => {
-        let defaultValues = {
-            schedName: '',
-            begins: 'now',
-            buttonName: '_schedule name_',
-        };
+        let defaultValues: FormManSchedParms = formDefaultVal;
         if (schedName && schedName !== '_NEW_' && currSchedule) {
-          defaultValues = {
-              schedName: schedName,
-              begins: currSchedule.begins || 'now',
-              buttonName: currSchedule.buttonName || '_schedule name_',
-          };
+            defaultValues['schedName'] = schedName;
+            defaultValues['descr'] = currSchedule.descr || '';
+            defaultValues['begins'] = currSchedule.begins || 'now';
+            defaultValues['buttonName'] = currSchedule.buttonName || '_same_';
+            if (currSchedule.sound) {
+                if (currSchedule.sound['name'] || currSchedule.sound['name'] === '') {
+                    defaultValues['sound'] = currSchedule.sound.name;
+                }
+                if (currSchedule.sound['repeat']) {
+                    defaultValues['soundrepeat'] = currSchedule.sound.repeat.toString();
+                }
+            }
+            if ('warn' in currSchedule) {
+                defaultValues['warn'] = '_default_';
+                if (currSchedule.warn && currSchedule.warn.sound) {
+                    defaultValues['warn'] = currSchedule.warn.sound.name || '_default';
+                }
+            }
         }
 
         reset(defaultValues);
     }, [schedName, currSchedule] );
 
-    interface FormManSchedParms {
-        schedName: string,
-        begins: string,
-        buttonName: string,
-    };
     const formManSchedSubmit = async (data: FormManSchedParms) => {
         console.log('form sched data', data);
-        let wkEvNames = groupName+"!"+data.schedName+"!args";
+        let wkRetNames = groupName+"!"+data.schedName;
         if (schedName !== '' && schedName !== '_NEW_') {
-            wkEvNames = groupName+"!"+schedName+"!args";
+            wkRetNames = groupName+"!"+schedName;
         }
+        const wkEvNames = wkRetNames+"!args";
+
 
         try {
             const xdata = {'input': {
                 'etype': 'gs',
                 'evnames': wkEvNames,
+                'descr': data.descr,
+                'begins': data.begins,
+                'button': (data.buttonName === '_same_')? data.schedName: data.buttonName,
+                'sound': data.sound,
+                'soundrepeat': data.soundrepeat,
+                'warn': data.warn,
                 }
             };
-            // const result = await API.graphql({query: mutAddEvents, variables: xdata});
+            console.log('final data', xdata);
+            const result = await API.graphql({query: mutAddScheds, variables: xdata});
             console.log('updated', result);
-            funComplete(data.schedName);
+            funComplete(wkRetNames);
         } catch (result) {
             console.log('failed sched update', result);
         }
@@ -342,12 +368,39 @@ export const ManSched = (props: ManSchedProps) => {
           </Box>
 
           <Box><label>
+            <input type="text" size={30} data-testid="descrInput"
+             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
+             aria-invalid={errors.descr ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box><label>
             Begins <textarea rows={1} cols={27} data-testid="beginsInput"
              {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
              aria-invalid={errors.begins ? "true" : "false"}
             ></textarea>
           </label></Box>
 
+          <Box><label>
+            Sound <input type="text" size={10} data-testid="soundInput"
+             {...register('sound', { pattern: /\S+/, maxLength:20 })}
+             aria-invalid={errors.sound ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box><label>
+            Repeat <input type="text" size={2} data-testid="soundRepeatInput"
+             {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
+             aria-invalid={errors.soundrepeat ? "true" : "false"}
+            />
+          </label></Box>
+
+          <Box><label>
+            Warn <input type="text" size={10} data-testid="warnInput"
+             {...register('warn', { pattern: /\S+/, maxLength:20 })}
+             aria-invalid={errors.warn ? "true" : "false"}
+            />
+          </label></Box>
 
           <Box mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
@@ -566,6 +619,7 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 } else {
                     schedArgs.schedTasks = [];
                 }
+                schedArgs.descr = (item.descr)? item.descr: '';
                 if (item.begins) {
                     schedArgs.begins = item.begins;
                 }
@@ -573,15 +627,19 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                     schedArgs.buttonName = item.button;
                 }
                 if (item.sound || item.sound === '') {
-                    wkSound['name'] = item.sound;
+                    if (item.sound !== '_default_') {
+                        wkSound['name'] = item.sound;
+                    }
                 }
-                if (item.soundrepeat) {
+                if (item.soundrepeat && parseInt(item.soundrepeat, 10) !== 0) {
                     wkSound['repeat'] = parseInt(item.soundrepeat, 10);
                 }
                 if (item.warn || item.warn === '') {
-                    // console.log('warn', item.warn);
-                    schedArgs['warn'] = {};
+                    if (item.warn !== '_none_') {
+                        schedArgs['warn'] = {};
+                    }
                 }
+
                 if (wkSound && Object.keys(wkSound).length > 0) {
                     schedArgs['sound'] = wkSound;
                 }

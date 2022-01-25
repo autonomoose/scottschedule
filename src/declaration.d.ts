@@ -20,6 +20,7 @@ interface iSchedTask {
 interface iSchedule {
     schedName: string,
     schedTasks: iSchedTask[],
+    descr?: string,
     begins?: string,
     buttonName?: string,
     sound?: iEvsSound,

@@ -16,4 +16,9 @@ export const mutDelEvents = `mutation delEvent($input: EventsDelInput!) {
           evnames
 } }`;
 
+export const mutAddScheds = `mutation newSched($input: SchedGroupsInput!) {
+      addScheds(input: $input)   {
+          evnames
+} }`;
+
 

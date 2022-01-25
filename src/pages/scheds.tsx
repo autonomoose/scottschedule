@@ -65,10 +65,8 @@ const SchedsPage = () => {
                 const schedList = schedGroups[wkgroup].schedNames.filter(item => item.schedName === wksched)
                 if (schedList.length === 1) {
                     retSched = schedList[0];
-                    console.log('sched found', retSched);
                 } else {
                     // name no longer defined
-                    console.log('sched not found');
                     setSchedName('');
                 }
             }
