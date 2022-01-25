@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
@@ -307,15 +309,16 @@ export const ManSched = (props: ManSchedProps) => {
     const formDelEvent = async (data: FormDelEventParms) => {
         console.log('formDel parms', data);
         try {
+            const keyNames = groupName+"!"+schedName;
             const xdata = {'input': {
                 'etype': 'gs',
-                'evnames': groupName+"!"+schedName+"!"+data.cmd,
+                'evnames': keyNames+"!"+data.cmd,
                 }
             };
             console.log('deleting', xdata);
             const result = await API.graphql({query: mutDelEvents, variables: xdata});
             console.log('deleted', result);
-            funComplete(groupName+"!"+schedName);
+            funComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
         } catch (result) {
             console.log('failed delete', result);
         }
@@ -323,7 +326,9 @@ export const ManSched = (props: ManSchedProps) => {
     const formCallback = (status: string) => {
         console.log("manSched callback status", status);
         setSchedEv('');
-        funComplete(status);
+        if (status[0] !== '_') {
+            funComplete(status);
+        }
     };
 
     return(
@@ -448,7 +453,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
     const { isDirty, errors } = formState;
 
     const formConnectTaskCancel = async () => {
-        props.onComplete('');
+        props.onComplete('_'+props.schedName);
     }
     interface FormConnectTaskParms {
         taskid: string,
@@ -510,68 +515,23 @@ const DisplaySchedGroup = (props: DisplaySchedGroupProps) => {
     const wkGroup = props.groupSched;
     const wkName = props.group;
     return(
-      <Box key={wkName}>
-        {(props.select)
-          ? <Button size="small" onClick={() => {props.select?.(wkName);}}>
-              {wkName}
-            </Button>
-          : <span>{wkName} </span>
-        }
-
-        - {wkGroup.descr}
+      <Box mb={1} key={wkName} sx={{borderTop: '1px solid grey'}}>
+        <List disablePadding>
+          <ListItem button sx={{marginRight: '1em'}} onClick={() => {props.select?.(wkName);}}>
+            {wkName} - {wkGroup.descr}
+          </ListItem>
+        <List disablePadding dense sx={{marginLeft: '1em'}}>
         {
           wkGroup.schedNames.map(schedule => {
             // console.log(schedule);
           return(
-            <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
-              {schedule.schedName} ({schedule.schedTasks.length} events)
-              {(schedule.begins && schedule.begins.length <= 30) && <Box ml={1}> starts={schedule.begins} </Box>}
-              {(schedule.begins && schedule.begins.length > 30) &&
-                <Box ml={1}>
-                  starts=({schedule.begins.slice(0,30)} {schedule.begins.slice(30)})
-
-                </Box>
-              }
-              {(schedule.buttonName) && <Box ml={1}> button='{schedule.buttonName}' </Box>}
-              {(schedule.sound) &&
-                <Box ml={1} display='flex'>
-                  sound=(
-                  {(schedule.sound.name) && <Box> name={schedule.sound.name}, </Box>}
-                  {(schedule.sound.name === '') && <Box> name='', </Box>}
-                  {(schedule.sound.repeat) && <Box> repeat={schedule.sound.repeat}, </Box>}
-                  {(schedule.sound.src) && <Box> src={schedule.sound.src}, </Box>}
-                  )
-                </Box>
-              }
-              {(schedule.warn) &&
-                <Box ml={1}>
-                  warn=(
-                    {(schedule.warn.sound) &&
-                      <Box ml={1} display='flex'>
-                        sound=(
-                        {(schedule.warn.sound.name) && <Box> name={schedule.warn.sound.name}, </Box>}
-                        {(schedule.warn.sound.repeat) && <Box> repeat={schedule.warn.sound.repeat}, </Box>}
-                        {(schedule.warn.sound.src) && <Box> src={schedule.warn.sound.src}, </Box>}
-                          )
-                      </Box>
-                    }
-                  )
-                </Box>
-              }
-              {(schedule.schedTasks && schedule.schedTasks.length > 0) &&
-                <Box mx={1}>
-                events=(
-                {schedule.schedTasks.map(schedTask => {
-                  return(
-                    <span key={schedTask.evTaskId}>{schedTask.evTaskId}, </span>
-                )})
-                }
-                )
-                </Box>
-              }
-            </Box>
+            <ListItem button key={schedule.schedName} onClick={() => {props.select?.('_'+wkName+'!'+schedule.schedName);}}>
+              {schedule.schedName} - {schedule.descr}
+            </ListItem>
           )})
         }
+        </List>
+        </List>
       </Box>
 ) };
 

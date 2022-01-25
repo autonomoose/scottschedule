@@ -26,13 +26,18 @@ const SchedsPage = () => {
     const [pgserial, setPgserial] = useState(0);
 
     const buttonSetGroupName = async (newGroupName: string) => {
-        setGroupName(newGroupName);
-        setSchedName('');
+        if (newGroupName[0] === '_' && newGroupName != '_NEW_') {
+            setGroupName('');
+            setSchedName(newGroupName.slice(1));
+        } else {
+            setGroupName(newGroupName);
+            setSchedName('');
+        }
     }
 
     const formSchedCallback = async (status: string) => {
         console.log("schedule callback status", status);
-        setSchedName(status);
+        setSchedName((status[0] === '_')? '': status);
         if (status !== '') {
             setPgserial(pgserial+1);
         }
@@ -65,9 +70,6 @@ const SchedsPage = () => {
                 const schedList = schedGroups[wkgroup].schedNames.filter(item => item.schedName === wksched)
                 if (schedList.length === 1) {
                     retSched = schedList[0];
-                } else {
-                    // name no longer defined
-                    setSchedName('');
                 }
             }
         }
