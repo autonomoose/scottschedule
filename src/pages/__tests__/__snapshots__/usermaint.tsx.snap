@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HomePage renders snapshot correctly 1`] = `
+exports[`UserMaintPage renders snapshot correctly 1`] = `
 <amplify-authenticator>
   <div
     style="text-align: center;"
@@ -385,8 +385,24 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     <li
                       class="MuiBreadcrumbs-li"
                     >
-                      <span>
+                      <a
+                        href="/home"
+                        style="color: blue;"
+                      >
                         Home
+                      </a>
+                    </li>
+                    <li
+                      aria-hidden="true"
+                      class="MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator"
+                    >
+                      &gt;
+                    </li>
+                    <li
+                      class="MuiBreadcrumbs-li"
+                    >
+                      <span>
+                        User Settings
                       </span>
                     </li>
                   </ol>
@@ -394,209 +410,152 @@ exports[`HomePage renders snapshot correctly 1`] = `
               </div>
               <div>
                 <a
-                  href="/help/home"
+                  href="/help/usermaint"
                 >
                   Help
                 </a>
               </div>
             </div>
             <div
-              class="MuiBox-root css-1b1zfbw"
+              class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation5 css-qh7kl5-MuiPaper-root"
+              style="margin: 0px; padding: 1px; clear: both;"
             >
               <div
-                class="MuiBox-root css-0"
+                class="MuiBox-root css-164r41r"
               >
                 <div
-                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
-                  style="max-width: 432px; min-width: 394px; flex: 1 1; background: rgb(245, 245, 230); box-shadow: 5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+                  class="MuiBox-root css-k008qs"
                 >
+                  <h3>
+                    Welcome
+                  </h3>
                   <div
-                    class="MuiBox-root css-dduipi"
-                  />
-                  <div
-                    class="MuiBox-root css-1iuufgg"
+                    class="MuiBox-root css-6ofyve"
                   >
-                    <div
-                      class="MuiBox-root css-x1sij0"
-                    >
-                      <button
-                        class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1e6y48t-MuiButtonBase-root-MuiButton-root"
-                        tabindex="0"
-                        type="button"
-                      >
-                        <h4
-                          class="MuiTypography-root MuiTypography-h4 css-ki721n-MuiTypography-root"
-                          id="mainclock"
-                        >
-                          00:00
-                        </h4>
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
-                      </button>
-                      <h6
-                        class="MuiTypography-root MuiTypography-subtitle1 css-1ystea6-MuiTypography-root"
-                        id="mainpm"
-                      >
-                        PM
-                      </h6>
-                    </div>
-                    <div
-                      class="MuiBox-root css-pf0lra"
-                    >
-                      <h6
-                        class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
-                        id="maindate"
-                      >
-                        01/01/00
-                      </h6>
-                      <span
-                        class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
-                        id="grouptitle"
-                      >
-                        group title
-                      </span>
-                    </div>
-                    <div
-                      class="MuiBox-root css-0"
-                      id="status"
-                    >
-                      <div
-                        class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
-                      >
-                        <label
-                          class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
-                          data-shrink="true"
-                          for="schedgroup"
-                          id="schedgroup-label"
-                        >
-                          Schedule Group
-                        </label>
-                        <div
-                          class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-                        >
-                          <div
-                            aria-expanded="false"
-                            aria-haspopup="listbox"
-                            aria-labelledby="schedgroup-label schedgroup"
-                            class="MuiSelect-select MuiSelect-outlined MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
-                            id="schedgroup"
-                            role="button"
-                            tabindex="0"
-                          >
-                            <span
-                              class="notranslate"
-                            >
-                              ​
-                            </span>
-                          </div>
-                          <input
-                            aria-hidden="true"
-                            class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
-                            data-testid="schedgroup"
-                            tabindex="-1"
-                            value="default"
-                          />
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
-                            data-testid="ArrowDropDownIcon"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M7 10l5 5 5-5z"
-                            />
-                          </svg>
-                          <fieldset
-                            aria-hidden="true"
-                            class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-                          >
-                            <legend
-                              class="css-1z7n62"
-                            >
-                              <span>
-                                Schedule Group
-                              </span>
-                            </legend>
-                          </fieldset>
-                        </div>
-                      </div>
-                    </div>
+                    to the User Settings page.  If you need to contact support, please include the following:
                   </div>
-                  <div
-                    class="MuiBox-root css-5uisrr"
-                  >
-                    <button
-                      class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-1sszw6i-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
-                    >
-                      Off
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
-                    <button
-                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
-                    >
-                      tomorrow
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
-                  </div>
-                  <div
-                    class="MuiBox-root css-1iie599"
-                  />
-                  <hr
-                    class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
-                  />
-                  <div
-                    class="MuiBox-root css-8ljrm5"
-                  >
-                    Test 
-                    <audio
-                      class="audio-element"
-                      controls=""
-                    >
-                      <source
-                        src="test-file-stub"
-                        type="audio/wav"
-                      />
-                      Your browser doesn't support audio
-                    </audio>
-                  </div>
+                </div>
+                <div
+                  class="MuiBox-root css-jltqb6"
+                >
+                  <ul>
+                    <li>
+                       Account key:
+                      <br />
+                       
+                      test
+                       
+                    </li>
+                    <li>
+                       User key:
+                      <br />
+                       
+                      test
+                       
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
             <div
-              aria-hidden="true"
-              class="MuiBackdrop-root css-1178cxv-MuiBackdrop-root"
-              style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+              class="MuiBox-root css-tvv90y"
             >
-              <span
-                class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-62e83j-MuiCircularProgress-root"
-                data-testid="dataBackdrop"
-                role="progressbar"
-                style="width: 40px; height: 40px;"
+              <div
+                class="MuiBox-root css-gz1xpb"
               >
-                <svg
-                  class="MuiCircularProgress-svg css-1idz92c-MuiCircularProgress-svg"
-                  viewBox="22 22 44 44"
+                <div
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
                 >
-                  <circle
-                    class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate css-176wh8e-MuiCircularProgress-circle"
-                    cx="44"
-                    cy="44"
-                    fill="none"
-                    r="20.2"
-                    stroke-width="3.6"
-                  />
-                </svg>
-              </span>
+                  <div
+                    class="MuiBox-root css-1impqaw"
+                  >
+                    <button
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+                      tabindex="0"
+                      type="button"
+                    >
+                      Change Password 
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
+                  </div>
+                  <div
+                    class="MuiBox-root css-18vgi6o"
+                  >
+                    Good account security starts with strong passwords that are changed regularly. 
+                  </div>
+                </div>
+              </div>
+              <div
+                class="MuiBox-root css-gz1xpb"
+              >
+                <div
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+                >
+                  <div
+                    class="MuiBox-root css-1impqaw"
+                  >
+                    <button
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+                      tabindex="0"
+                      type="button"
+                    >
+                      Change Email 
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
+                  </div>
+                  <div
+                    class="MuiBox-root css-18vgi6o"
+                  >
+                    <strong>
+                      testuser1@test.com
+                    </strong>
+                    <div
+                      class="MuiBox-root css-1l4w6pd"
+                    >
+                      <span>
+                        (verified)
+                      </span>
+                    </div>
+                    <p>
+                      It is important to have a valid email address for account security and password recovery.
+                    </p>
+                    <p>
+                      We verify new email addresses by sending a code to that address.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="MuiBox-root css-gz1xpb"
+              >
+                <div
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+                >
+                  <div
+                    class="MuiBox-root css-1impqaw"
+                  >
+                    <button
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1kc3inn-MuiButtonBase-root-MuiButton-root"
+                      tabindex="0"
+                      type="button"
+                    >
+                      Close Account 
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
+                  </div>
+                  <div
+                    class="MuiBox-root css-18vgi6o"
+                  >
+                    This will send you to our billing partner to close your account. Your account data on this system will be securely deleted 7 days after the date the close date specified.
+                  </div>
+                </div>
+              </div>
             </div>
              
           </div>

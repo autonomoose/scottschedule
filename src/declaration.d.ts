@@ -1,6 +1,11 @@
 declare module 'gatsby-query-params';
 declare module '*.wav';
 
+interface iTaskDb {
+    evnames: string,
+    descr?: string,
+    rules?: string,
+};
 interface iTask {
     [evTaskId: string]: {
         descr: string,
@@ -15,6 +20,7 @@ interface iSchedTask {
 interface iSchedule {
     schedName: string,
     schedTasks: iSchedTask[],
+    descr?: string,
     begins?: string,
     buttonName?: string,
     sound?: iEvsSound,
@@ -22,7 +28,7 @@ interface iSchedule {
 }
 
 interface iSchedGroup {
-    name: string,
+    name?: string,
     descr: string,
     schedNames: iSchedule[],
 };
@@ -61,4 +67,16 @@ interface iFutureEvs {
     sound?: iEvsSound,
     warn?: iEvsWarn,
 };
+
+interface iSchedGroupList {
+    [name: string]: {
+        descr: string,
+        schedNames: iSchedule[],
+    };
+};
+
+interface iGrpSchedTask {
+    [name: string]: iSchedTask[],
+};
+
 

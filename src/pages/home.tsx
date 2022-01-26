@@ -1,6 +1,7 @@
 // prototype scottscheduler home page
 
 import React, { useEffect, useState } from 'react';
+import { Link } from "gatsby";
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
@@ -8,6 +9,9 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
+import { ClockDigital1, ClockDigital2 } from '../components/clocks';
+import { fetchEventsDB } from '../components/eventsutil';
+import { fetchSchedGroupsDB } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -23,13 +27,6 @@ import Typography from '@mui/material/Typography';
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
 
-interface iSchedGroupList {
-    [name: string]: {
-        descr: string,
-        schedNames: iSchedule[],
-    };
-};
-
 interface iNextEvs {
     evs: iFutureEvent[],
     status: string,
@@ -37,61 +34,10 @@ interface iNextEvs {
     warn?: iEvsWarn,
 };
 
-interface TempAudioProps {
-    ev: iNextEvs,
+interface iAudioComp {
+    id: string,
+    src: string,
 };
-// pre-loads audio with html id event-audio, warn-audio
-// this runs every paint, if it gets expensive, move audiocomp to state
-const NextEvAudio = (props: TempAudioProps) => {
-    let audioComp = [];
-    let evSrc = DefaultSound;
-    let evId = 'default-audio';
-
-    if (props.ev.sound && 'name' in props.ev.sound) {
-        if (props.ev.sound.name === '') {
-            evSrc = ''; // silence
-            evId = 'no-audio';
-        } else if (props.ev.sound.name === 'bigbell') {
-            evSrc = BigBellSound;
-            evId = 'bigbell-audio';
-        }
-    }
-    if (evSrc !== '') {
-        audioComp.push({src: evSrc, id: evId});
-    }
-
-    let warnSrc = '';
-    evId = '';
-    if ('warn' in props.ev) {
-        warnSrc = DefaultSound;
-        evId = 'default-audio';
-
-        if (props.ev.warn && props.ev.warn.sound && 'name' in props.ev.warn.sound) {
-            if (props.ev.warn.sound.name === '') {
-                warnSrc = ''; // silence
-                evId = 'no-audio';
-            } else if (props.ev.warn.sound.name === 'bigbell') {
-                warnSrc = BigBellSound;
-                evId = 'bigbell-audio';
-            }
-        }
-    }
-
-    if (warnSrc !== '' && warnSrc !== evSrc) {
-        audioComp.push({src: warnSrc, id: evId});
-    }
-    // console.log("audioList", props.ev, audioComp);
-    return (
-      <>
-      { audioComp.map(item => {
-        return (
-          <audio key={item.id} id={item.id} controls>
-            <source src={item.src} type="audio/wav" />
-            Your browser doesn't support audio
-          </audio>
-      )})}
-      </>
-)}
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -105,6 +51,7 @@ const HomePage = () => {
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
     const [schedOptions, setSchedOptions] = useState<iSchedOptions>({});
 
+    const [audioComp, setAudioComp] = useState<iAudioComp[]>([]);
     const [nextEvs, setNextEvs] = useState<iNextEvs>({evs: [], status: 'none'});
     const [expiredEvs, setExpiredEvs] = useState<iFutureEvent[]>([]);
     const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
@@ -112,11 +59,10 @@ const HomePage = () => {
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [eventId, setEventId] = useState(0);
 
-
     // execute event
-    //
+    //  globals nextEvs, futureEvs
     const eventTask = () => {
-        setEventId(0);  // no longer able to cancel me
+        setEventId(0);  // cleanup my id
         var currdate = new Date();
         console.log('Timer Complete', currdate.toLocaleString());
         console.log('nextEvs', nextEvs);
@@ -229,11 +175,12 @@ const HomePage = () => {
     };
 
     // use state eventId and clears it
+    //   global eventId
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel alarm timer');
+            console.log('Cancel alarm timer', eventId);
         }
     };
 
@@ -241,20 +188,66 @@ const HomePage = () => {
     //   this makes sure target fun gets latest copy of nextEvs
     //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
-        console.log('useeffect nextevs');
         if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
             let currdate = new Date().valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
+                console.log('useeffect nextevs - update event task');
                 let next_evtime = nextEvs.evs[0].evTstamp
                 let next_milli = next_evtime - currdate - 300000; // ms until event - 5 min warning
 
                 // exec function eventTask after timer
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
-                console.log('restart alarm timer');
+                console.log('restart alarm timer', timeoutId);
+            } else {
+                console.log('useeffect nextevs - trigger');
+            }
+        } else {
+            console.log('useeffect nextevs - current/soon');
+        }
+
+        // set necessary audio components for nextev
+        let wkAudioComp = [];
+        let evSrc = DefaultSound;
+        let evId = 'default-audio';
+
+        if (nextEvs.sound && 'name' in nextEvs.sound) {
+            if (nextEvs.sound.name === '') {
+                evSrc = ''; // silence
+                evId = 'no-audio';
+            } else if (nextEvs.sound.name === 'bigbell') {
+                evSrc = BigBellSound;
+                evId = 'bigbell-audio';
             }
         }
+        if (evSrc !== '') {
+            wkAudioComp.push({src: evSrc, id: evId});
+        }
+
+        let warnSrc = '';
+        evId = '';
+        if ('warn' in nextEvs) {
+            warnSrc = DefaultSound;
+            evId = 'default-audio';
+
+            if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound) {
+                if (nextEvs.warn.sound.name === '') {
+                    warnSrc = ''; // silence
+                    evId = 'no-audio';
+                } else if (nextEvs.warn.sound.name === 'bigbell') {
+                    warnSrc = BigBellSound;
+                    evId = 'bigbell-audio';
+                }
+            }
+        }
+
+        if (warnSrc !== '' && warnSrc !== evSrc) {
+            wkAudioComp.push({src: warnSrc, id: evId});
+        }
+        setAudioComp(wkAudioComp);
+        // console.log("audioList", wkAudioComp);
+
     }, [nextEvs]);
 
     // when futureEvs change, setup new nextEvs state
@@ -278,7 +271,6 @@ const HomePage = () => {
         }
     }, [futureEvs]);
 
-
     // ui functions
     // maintain the clock/calendar on scheduler ui card
     const setNowDigital = () => {
@@ -286,6 +278,7 @@ const HomePage = () => {
         let wkdate = new Date();
 
         let mainclock = document.getElementById('mainclock');
+        let compclock = document.getElementById('compclock');
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: '2-digit', minute: '2-digit'});
@@ -299,6 +292,28 @@ const HomePage = () => {
                     mainpm.textContent = '  ';
                 }
             }
+        } else if (compclock) {
+            const localTime = wkdate.toLocaleTimeString(
+              "en-US", {hour: '2-digit', minute: '2-digit'});
+            console.log('time', localTime);
+
+            const localComp = localTime.split(' ')[0].split(':');
+            compclock.textContent = localComp[0];
+            const compminutes = document.getElementById('compminutes');
+            if (compminutes) {
+                compminutes.textContent = localComp[1];
+            }
+
+            let mainpm = document.getElementById('mainpm');
+            if (mainpm) {
+                if (localTime.split(' ')[1] === 'PM') {
+                    mainpm.textContent = localTime.split(' ')[1];
+                } else {
+                    mainpm.textContent = '  ';
+                }
+            }
+        } else {
+            console.log("no mainclock on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -312,19 +327,20 @@ const HomePage = () => {
         // every ten seconds, get the time and update clock
         // cleanup on useeffect return
 
-        if (showClock && showClock !== '') {
+        if (showClock && showClock !== '' && hstatus !== 'Loading') {
             setNowDigital();
             var intervalId = setInterval(() => {setNowDigital()}, 10000);
-            console.log("restart clock useeffect", intervalId);
+            console.log("restart clock useeffect id", intervalId);
 
-            return () => {clearInterval(intervalId)};
+            return () => {clearInterval(intervalId);console.log('clear id', intervalId);};
         } else {
             console.log("clock not defined");
         }
         return () => {};
-    }, [showClock]);
+    }, [showClock, hstatus]);
 
     // cleanly reset and rebuild future events using globals
+    //  globals allTasks
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
             console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
@@ -356,6 +372,7 @@ const HomePage = () => {
     };
 
     // change state handle ui for optional schedule button presses
+    //   global schedGroups, currGroup, currSched, schedOptions
     const toggleOptions = (item: string) => {
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
@@ -366,9 +383,9 @@ const HomePage = () => {
         }
     }
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
+    //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
-            setHstatus("Loading");
             setCurrSched(wksched);
 
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions);
@@ -379,12 +396,14 @@ const HomePage = () => {
         }
     }
     // acknowledge the buttons
+    // globals nextEvs
     const acknowledgeEvent = () => {
         const updNext = {...nextEvs, status: 'ack'};
         setNextEvs(updNext);
     }
 
     // change state currGroup from choicelist, turns off currSched/cleanRebuild if nec
+    //   global schedGroups, currGroup, currSched, schedOptions
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
         if (currSched !== "off") {
@@ -395,6 +414,90 @@ const HomePage = () => {
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
         }
     }
+
+    // scheduler (default ''), digital1, digital2
+    const changeClock = (newClock: string) => {
+        if (showClock === 'scheduler' || showClock === '') {
+            setShowClock('digital1');
+        } else if (newClock == 'next' && showClock === 'digital1') {
+            setShowClock('digital2');
+            console.log('clock digital2');
+        } else {
+            setShowClock('scheduler');
+        }
+    };
+
+    // init Data
+    // load allTasks
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const newTasks = await fetchEventsDB();
+                if (newTasks && Object.keys(newTasks).length > 0) {
+                    enqueueSnackbar(`loaded events`,
+                      {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                    setAllTasks(newTasks);
+                } else {
+                    enqueueSnackbar(`no events found`, {variant: 'error'});
+                    setHstatus('Ready');
+                }
+            } catch (result) {
+                enqueueSnackbar(`error retrieving events`, {variant: 'error'});
+                console.log("got error", result);
+            }
+        };
+
+        setHstatus('Loading');
+        console.log('events loading');
+        fetchData();
+    }, [enqueueSnackbar] );
+
+    // load all schedules, groups
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const newSchedgrps = await fetchSchedGroupsDB();
+              if (newSchedgrps && Object.keys(newSchedgrps).length > 0) {
+                  enqueueSnackbar(`loaded schedules`,
+                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                  setSchedGroups(newSchedgrps);
+              } else {
+                  enqueueSnackbar(`no schedules found`, {variant: 'error'});
+                  setHstatus('Ready');
+              }
+          } catch (result) {
+              enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
+              console.log("got error", result);
+          }
+
+      };
+
+      setHstatus('Loading');
+      console.log('schedgroups loading');
+      fetchData();
+    }, [enqueueSnackbar] );
+
+    useEffect(() => {
+        // post data init
+        killEventTask();
+        setNextEvs({evs: [], status: 'none'});
+        setFutureEvs({evs: []});
+        setShowClock('scheduler');
+
+        if (schedGroups && Object.keys(schedGroups).length > 0) {
+            let wkGroup = 'default';
+            setCurrGroup(wkGroup);
+            setCurrSched('off');
+
+            let groupElement =  document.getElementById('grouptitle');
+            if (schedGroups[wkGroup] && groupElement) {
+                    groupElement.textContent = schedGroups[wkGroup].descr;
+        }
+
+        // init schedule group completed
+        }
+
+    }, [schedGroups]);
 
     // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
@@ -411,115 +514,13 @@ const HomePage = () => {
             if (schedGroups[currGroup].descr && groupElement) {
                     groupElement.textContent = schedGroups[currGroup].descr;
             }
+            setHstatus("Ready");
+            console.log("Status = Ready");
         }
-
     }, [allTasks, schedGroups, currGroup]);
 
-    // init Data
-    useEffect(() => {
-        // setup events
-        console.log("useeffect init");
-        const wkTasks: iTask = {
-            'therapy' : {descr:'therapy time, vest nebie', schedRules: [
-                'begin +2:30',
-                'option sunday 14:00 or +5:00',
-            ]},
-            'miralax' : {descr:'miralax treatment', schedRules: [
-                'option miralax +2:15',
-                'option miralax+sunday 13:45 or +4:45',
-            ]},
-            'back2bed' : {descr:'Back to Bed', schedRules: [
-                'begin +2:00,16:00 or +7:00,18:45 or +7:30',
-            ]},
-            'backdown' : {descr:'lay back down', schedRules: [
-                'begin +4:30',
-                'option sunday +5:00 or 13:30 or +4:30',
-            ]},
-            'hook1can' : {descr:'hookup 1 can', schedRules: [
-                'begin +2:30,17:00 or +7:30',
-                'option sunday +0:00,+3:00 or 11:45 or +2:45',
-                'option sunday+start:9:30 +0:00,+4:15',
-                'option sunday+start:9:45 +0:00,+4:15',
-                'option sunday+start:10:00 +0:00,+4:15',
-            ]},
-            'hook125' : {descr:'hookup 1.25 can', schedRules: [
-                'begin +0:0,14:00 or +5:00',
-                'option sunday 14:00 or +5:00,17:00 or +7:30',
-            ]},
-            'twominute' : {descr:'quick 2 min test ev', schedRules: [
-                'begin +0:2,+0:04,+0:06',
-            ]},
-            'cuckoo97' : {descr:'top of the hour 9am-7pm', schedRules: [
-                'begin 7:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00,++1:00',
-            ]},
-            'basetime' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +2,++2,++2',
-            ]},
-            'slowbase' : {descr:'testing ++ and repeat', schedRules: [
-                'begin +6,++7,++7',
-            ]},
-        }
-        setAllTasks(wkTasks);
-
-        // setup scheduleGroup
-        const wkSchedGroup: iSchedGroupList = {
-            'default': {descr:'main schedule', schedNames: [
-                {schedName: 'main', buttonName: ' ',
-                  sound: {name: 'bigbell', repeat: 3}, warn: {},
-                  begins: '8:00,8:15,8:30,8:45,9:00,9:15,9:30,9:45,10:00,', schedTasks: [
-                    {evTaskId: 'miralax'},
-                    {evTaskId: 'therapy'},
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'backdown'},
-                    {evTaskId: 'hook1can'},
-                    {evTaskId: 'hook125'},
-                ]},
-            ]},
-            'test': {descr:'test schedules', schedNames: [
-                {schedName: 'hourly', begins: 'now', schedTasks: [
-                    {evTaskId: 'cuckoo97'},
-                ]},
-                {schedName: 'quick2', schedTasks: [
-                    {evTaskId: 'back2bed'},
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qsilent', begins: 'now', sound: {name: ''}, schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qbell', begins: 'now', sound: {name: 'bigbell'}, schedTasks: [
-                    {evTaskId: 'twominute'},
-                ]},
-                {schedName: 'qtest++', begins: 'now', sound: {name: 'bigbell', repeat: 3}, schedTasks: [
-                    {evTaskId: 'basetime'},
-                ]},
-                {schedName: 'warn', begins: 'now', sound: {name: 'bigbell', repeat: 3}, warn: {}, schedTasks: [
-                    {evTaskId: 'slowbase'},
-                ]},
-                {schedName: 'blank', begins: 'now', schedTasks: []},
-            ]},
-        }
-        setSchedGroups(wkSchedGroup);
-
-        // post data init
-        killEventTask();
-        setNextEvs({evs: [], status: 'none'});
-        setFutureEvs({evs: []});
-        setShowClock('scheduler');
-
-        let wkGroup = (wkSchedGroup)? 'default': 'new';
-        setCurrGroup(wkGroup);
-        setCurrSched('off');
-        let groupElement =  document.getElementById('grouptitle');
-        if (wkSchedGroup[wkGroup] && groupElement) {
-                groupElement.textContent = wkSchedGroup[wkGroup].descr;
-        }
-
-        // init completed
-        setHstatus("Ready");
-    }, []);
-
     return(
-      <Layout><Seo title="Prototype 2.3 - Scottschedule" />
+      <Layout><Seo title="Scottschedule v1.2.4b" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
@@ -528,19 +529,7 @@ const HomePage = () => {
 
         <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
           { (showClock === "digital1") &&
-          <>
-          <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
-            <Typography variant='h1' id='mainclock'
-              sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
-          </Button>
-          <Typography variant='subtitle' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
-            PM
-          </Typography>
-          <Box mx={4} display='flex' justifyContent='space-between'>
-            <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
-            <Button onClick={() => setShowClock('scheduler')}>Close</Button>
-          </Box>
-          </>
+          <ClockDigital1 onComplete={changeClock} />
           }
 
           {(currSched !== "off") &&
@@ -553,7 +542,22 @@ const HomePage = () => {
           }
         </Box>
 
-        {(showClock === 'scheduler') &&
+        <Box display={(showClock === "digital2")? 'block': 'none'}>
+          { (showClock === "digital2") &&
+          <ClockDigital2 onComplete={changeClock} />
+          }
+
+          {(currSched !== "off") &&
+          <Box ml={1} mb={1} display="flex">
+            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
+            <Box mx={1}>
+              {currSched} - {schedGroups[currGroup].descr}
+            </Box>
+          </Box>
+          }
+        </Box>
+
+        {(showClock === 'scheduler' || showClock === '') &&
         <>
         <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
@@ -562,7 +566,7 @@ const HomePage = () => {
                 00:00
               </Typography>
             </Button>
-            <Typography variant='subtitle' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12, color: 'black'}}>
               PM
             </Typography>
           </Box>
@@ -611,6 +615,28 @@ const HomePage = () => {
             Your browser doesn't support audio
           </audio>
         </Box>
+        { (Object.keys(allTasks).length === 0)
+          ? <Box>
+              <Typography variant='h4' color='error'>
+                No Events found
+              </Typography>
+              <Typography variant='body1'>To get started, go to the</Typography>
+              <Button component={Link} to='/events'>Events page</Button>
+              <Typography variant='body1'>and build your first Event!</Typography>
+            </Box>
+          : <>
+            { (Object.keys(schedGroups).length === 0) &&
+              <Box>
+                <Typography variant='h4' color='error'>
+                  No Schedules found
+                </Typography>
+                <Typography variant='body1'>To finish setting up, go to the</Typography>
+                <Button component={Link} to='/scheds'>Schedules page</Button>
+                <Typography variant='body1'>and setup a group and schedule.</Typography>
+              </Box>
+            }
+            </>
+        }
         </>
         }
 
@@ -624,20 +650,25 @@ const HomePage = () => {
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
-             {(nextEvs.status === 'pending')
-               ? <Typography variant='h5'>
-                   Next Up
-                 </Typography>
-               : <>
-                 {(nextEvs.status === 'soon')
-                 ? <Typography variant='h5'>
-                     Next Up (soon)
-                   </Typography>
-                 : <Typography variant='h5' sx={{fontWeight: 600,}}>
-                     Active
-                   </Typography>
-                 }
-                 </>
+             {(nextEvs.status === 'pending') &&
+               <Typography variant='h6'>
+                 Next Up
+               </Typography>
+             }
+             {(nextEvs.status === 'soon') &&
+               <Typography variant='h6'>
+                 Next Up (soon)
+               </Typography>
+             }
+             {(nextEvs.status === 'current') &&
+               <Typography variant='h6' sx={{fontWeight: 600,}}>
+                 Active
+               </Typography>
+             }
+             {(nextEvs.status === 'ack') &&
+               <Typography variant='h6' sx={{fontWeight: 600,}}>
+                 Current
+               </Typography>
              }
 
              <Button variant='outlined'
@@ -652,7 +683,15 @@ const HomePage = () => {
            }
          </Box>
          {(nextEvs.status !== 'ack') &&
-           <NextEvAudio ev={nextEvs}/>
+             <>
+             { audioComp.map(item => {
+             return (
+               <audio key={item.id} id={item.id} controls>
+                 <source src={item.src} type="audio/wav" />
+                 Your browser doesn't support audio
+               </audio>
+             )})}
+             </>
          }
        </Card>
        }

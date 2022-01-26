@@ -8,7 +8,7 @@ const IndexPage = () => {
 
   return (
       <LayoutPub>
-      <Seo title="WDT Workbench" description="Resources for online sellers" />
+      <Seo title="Scottschedule" description="Complex timer" />
         <Box display="flex" alignItems="flex-start">
           <Box ml={2}>
           <StaticImage alt="" width={160} loading="eager" aria-labelledby="site-name" src="../images/wernerdigital-hosted.png" />

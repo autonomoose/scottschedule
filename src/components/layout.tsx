@@ -1,11 +1,11 @@
 // import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import React, { useState, useEffect, useCallback, Component } from 'react';
 import { Link } from 'gatsby';
-// import { Auth, API, Hub } from "aws-amplify"
-import { Auth, Hub } from "aws-amplify"
+import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
 import { useSnackbar } from 'notistack';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 
 import Header from './header';
 
-// import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
+import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
 import './layout.scss';
 
 interface EboundaryState {
@@ -81,15 +81,6 @@ interface LayoutProps {
         vdebug?: string,
 }
 
-// this should come from graphql def
-export interface IgetCurrentUser {
-         userid?: string,
-         perm?: string,
-         nname?: string,
-         adisable?: string,
-         agroups?: string,
- }
-
 interface GetDataValues extends IgetCurrentUser {
                 loading?: "true" | "false" | null,
                 progError?: string | null,
@@ -103,9 +94,7 @@ interface HdataValues {
      const [uname, setUname] = useState('')
      const [uid, setUid] = useState('')
 
-     // set this to show a pre-fetch (uncomment useeffect below)
-     // const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
-     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{userid: "000TEST00000000000000000000000"}}});
+     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
 
      // const vdebug = true;    // test and dev settings
      const vdebug = (props.vdebug || false);  // production settings
@@ -150,21 +139,21 @@ interface HdataValues {
 
      // get the user record from dynamodb
      // everytime the user changes to a valid name
-     // useEffect(() => {
-     //     async function fetchUser() {
-     //       try {
-     //         const result: any = await API.graphql({query: currUsersInfo});
-     //         if (vdebug) { console.log(result); }
-     //         setHdata(result);
-     //         } catch (error) {
-     //           setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
-     //         }
-     //       };
-     //
-     //     if (uname !== 'no user' && uname !=='') {
-     //         fetchUser();
-     //   }
-     // }, [uname, vdebug]);
+     useEffect(() => {
+         async function fetchUser() {
+           try {
+             const result: any = await API.graphql({query: currUsersInfo});
+             if (vdebug) { console.log(result); }
+             setHdata(result);
+             } catch (error) {
+               setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
+             }
+           };
+
+         if (uname !== 'no user' && uname !=='') {
+             fetchUser();
+       }
+     }, [uname, vdebug]);
 
    // subscribe to any changes in auth status
    useEffect(() => {
@@ -202,7 +191,7 @@ interface HdataValues {
        <div style={{textAlign: 'center'}}>
        <div style={{margin: `1rem auto`, minHeight: '100vh', backgroundColor: '#eeeeee', textAlign: 'left' }} >
          <Header uname={uname}/>
-         <div style={{ margin: `0 auto`, padding: `50px 1.0875rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
+         <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
 
            <main>
              {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
@@ -248,6 +237,14 @@ interface HdataValues {
            </main>
 
            <footer style={{ paddingTop: 40 }}>
+             <Divider />
+             <Box display='flex' justifyContent='space-around'>
+               <Link to='/home'>Home</Link>
+               <Link to='/usermaint'>Account</Link>
+               <Link to='/scheds'>Schedules</Link>
+               <Link to='/events'>Events</Link>
+               <Link to='/help'>Help</Link>
+             </Box>
              <Divider />
              <Typography variant='caption' mx={2}>
                &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc
