@@ -9,6 +9,7 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
+import { ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
 import { fetchSchedGroupsDB } from '../components/schedgrputil';
 
@@ -277,11 +278,32 @@ const HomePage = () => {
         let wkdate = new Date();
 
         let mainclock = document.getElementById('mainclock');
+        let compclock = document.getElementById('compclock');
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: '2-digit', minute: '2-digit'});
 
             mainclock.textContent = localTime.split(' ')[0];
+            let mainpm = document.getElementById('mainpm');
+            if (mainpm) {
+                if (localTime.split(' ')[1] === 'PM') {
+                    mainpm.textContent = localTime.split(' ')[1];
+                } else {
+                    mainpm.textContent = '  ';
+                }
+            }
+        } else if (compclock) {
+            const localTime = wkdate.toLocaleTimeString(
+              "en-US", {hour: '2-digit', minute: '2-digit'});
+            console.log('time', localTime);
+
+            const localComp = localTime.split(' ')[0].split(':');
+            compclock.textContent = localComp[0];
+            const compminutes = document.getElementById('compminutes');
+            if (compminutes) {
+                compminutes.textContent = localComp[1];
+            }
+
             let mainpm = document.getElementById('mainpm');
             if (mainpm) {
                 if (localTime.split(' ')[1] === 'PM') {
@@ -393,6 +415,18 @@ const HomePage = () => {
         }
     }
 
+    // scheduler (default ''), digital1, digital2
+    const changeClock = (newClock: string) => {
+        if (showClock === 'scheduler' || showClock === '') {
+            setShowClock('digital1');
+        } else if (newClock == 'next' && showClock === 'digital1') {
+            setShowClock('digital2');
+            console.log('clock digital2');
+        } else {
+            setShowClock('scheduler');
+        }
+    };
+
     // init Data
     // load allTasks
     useEffect(() => {
@@ -495,19 +529,7 @@ const HomePage = () => {
 
         <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
           { (showClock === "digital1") &&
-          <>
-          <Button sx={{margin: 0}} onClick={() => setShowClock('scheduler')}>
-            <Typography variant='h1' id='mainclock'
-              sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
-          </Button>
-          <Typography variant='subtitle1' id='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
-            PM
-          </Typography>
-          <Box mx={4} display='flex' justifyContent='space-between'>
-            <Typography mx={1} variant='h4' id='maindate'>Day, 01/01</Typography>
-            <Button onClick={() => setShowClock('scheduler')}>Close</Button>
-          </Box>
-          </>
+          <ClockDigital1 onComplete={changeClock} />
           }
 
           {(currSched !== "off") &&
@@ -520,7 +542,22 @@ const HomePage = () => {
           }
         </Box>
 
-        {(showClock === 'scheduler') &&
+        <Box display={(showClock === "digital2")? 'block': 'none'}>
+          { (showClock === "digital2") &&
+          <ClockDigital2 onComplete={changeClock} />
+          }
+
+          {(currSched !== "off") &&
+          <Box ml={1} mb={1} display="flex">
+            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
+            <Box mx={1}>
+              {currSched} - {schedGroups[currGroup].descr}
+            </Box>
+          </Box>
+          }
+        </Box>
+
+        {(showClock === 'scheduler' || showClock === '') &&
         <>
         <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
