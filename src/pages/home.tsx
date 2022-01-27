@@ -273,12 +273,13 @@ const HomePage = () => {
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
-    const setNowDigital = () => {
-        console.log("setnow digital");
+    const setNowDigital = (currClock: string) => {
+        console.log("setnow digital", currClock);
         let wkdate = new Date();
 
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
+
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: '2-digit', minute: '2-digit'});
@@ -294,26 +295,44 @@ const HomePage = () => {
             }
         } else if (compclock) {
             const localTime = wkdate.toLocaleTimeString(
-              "en-US", {hour: '2-digit', minute: '2-digit'});
-            console.log('time', localTime);
-
+              "en-US", {hour: 'numeric', minute: '2-digit'});
             const localComp = localTime.split(' ')[0].split(':');
+            let wkColor = '#000000';
+            const swPM : boolean = (localTime.split(' ')[1] === 'PM');
+            const hours = parseInt(localComp[0], 10) + ((swPM)? 12: 0);
+
+            if (currClock.slice(-6) === '-color') {
+                if (hours >= 2 && hours < 6) {
+                    wkColor = '#8b0000';
+                } else if (hours >= 6 && hours < 10) {
+                    wkColor = '#ff4500';
+                } else if (hours >= 10 && hours < 14) {
+                    wkColor = '#003300';
+                } else if (hours >= 14 && hours < 18) {
+                    wkColor = '#00008b';
+                } else if (hours >= 18 && hours < 22) {
+                    wkColor = '#4b008b';
+                }
+            }
+
             compclock.textContent = localComp[0];
+            compclock.style.color = wkColor;
             const compminutes = document.getElementById('compminutes');
             if (compminutes) {
                 compminutes.textContent = localComp[1];
+                compminutes.style.color = wkColor;
             }
 
             let mainpm = document.getElementById('mainpm');
             if (mainpm) {
-                if (localTime.split(' ')[1] === 'PM') {
+                if (swPM) {
                     mainpm.textContent = localTime.split(' ')[1];
                 } else {
                     mainpm.textContent = '  ';
                 }
             }
         } else {
-            console.log("no mainclock on dom");
+            console.log("no clock defined on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -327,10 +346,10 @@ const HomePage = () => {
         // every ten seconds, get the time and update clock
         // cleanup on useeffect return
 
-        if (showClock && showClock !== '' && hstatus !== 'Loading') {
-            setNowDigital();
-            var intervalId = setInterval(() => {setNowDigital()}, 10000);
-            console.log("restart clock useeffect id", intervalId);
+        if (showClock && hstatus !== 'Loading') {
+            setNowDigital(showClock);
+            var intervalId = setInterval(() => {setNowDigital(showClock)}, 10000);
+            console.log("restart clock useeffect id", intervalId, showClock);
 
             return () => {clearInterval(intervalId);console.log('clear id', intervalId);};
         } else {
@@ -417,13 +436,18 @@ const HomePage = () => {
 
     // scheduler (default ''), digital1, digital2
     const changeClock = (newClock: string) => {
-        if (showClock === 'scheduler' || showClock === '') {
-            setShowClock('digital1');
-        } else if (newClock == 'next' && showClock === 'digital1') {
-            setShowClock('digital2');
-            console.log('clock digital2');
-        } else {
+        if (newClock === '' || newClock === 'close') {
             setShowClock('scheduler');
+        } else if (newClock === 'next') {
+            if (showClock === 'scheduler') {
+                setShowClock('digital1');
+            } else if (showClock === 'digital1'  || showClock === 'digital1-color') {
+                setShowClock('digital2');
+            } else {
+                setShowClock('scheduler');
+            }
+        } else {
+            setShowClock(newClock);
         }
     };
 
@@ -527,8 +551,8 @@ const HomePage = () => {
       <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-        <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
-          { (showClock === "digital1") &&
+        <Box display={(showClock === "digital1" || showClock === "digital1-color")? 'flex': 'none'} flexDirection='column'>
+          { (showClock === "digital1" || showClock === "digital1-color") &&
           <ClockDigital1 onComplete={changeClock} />
           }
 
@@ -542,8 +566,8 @@ const HomePage = () => {
           }
         </Box>
 
-        <Box display={(showClock === "digital2")? 'block': 'none'}>
-          { (showClock === "digital2") &&
+        <Box display={(showClock === "digital2" || showClock === "digital2-color")? 'block': 'none'}>
+          { (showClock === "digital2" || showClock === "digital2-color") &&
           <ClockDigital2 onComplete={changeClock} />
           }
 
