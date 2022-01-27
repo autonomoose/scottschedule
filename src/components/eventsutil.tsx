@@ -1,5 +1,5 @@
 // events utilities and components
-// exports default DisplayEvent,
+// exports default DisplayEvents,
 //  also exports components CreateEvent, ModifyEvent
 //  and data fetchEventsDB - full events
 import React, { useEffect, useState } from 'react';
@@ -10,6 +10,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 
 import { listEventsFull } from '../graphql/queries';
@@ -325,27 +327,23 @@ export const ModifyEvent = (props: ModifyEventProps) => {
 
 // -------------------------------------------------
 interface DisplayEventProps {
-  evid: string,
   tasks: iTask,
   select?: (evid: string) => void,
 }
-const DisplayEvent = (props: DisplayEventProps) => {
-    const evid = props.evid;
+const DisplayEvents = (props: DisplayEventProps) => {
     const allTasks = props.tasks;
 
     return(
-      <Box key={`${evid}0`}>
-        <span>
-          {(props.select)
-            ? <Button size="small" onClick={() => {props.select?.(evid);}}>
-                {evid}
-              </Button>
-            : <span>{evid}</span>
-          }
-
-          - {allTasks[evid].descr}
-        </span>
-      </Box>
+      <List disablePadding dense sx={{marginLeft: '1em'}}>
+        {
+          Object.keys(allTasks).map((evid: string) => {
+          return(
+            <ListItem button key={evid} onClick={() => {props.select?.(evid);}}>
+              {evid} - {allTasks[evid].descr}
+            </ListItem>
+           )})
+        }
+      </List>
 ) };
 
 // -------------------------------------------------
@@ -374,4 +372,4 @@ export const fetchEventsDB = async (): Promise<iTask> => {
     }
 };
 
-export default DisplayEvent
+export default DisplayEvents

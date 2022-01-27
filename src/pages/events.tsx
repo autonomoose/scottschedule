@@ -5,7 +5,7 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplayEvent, { CreateEvent, ModifyEvent, fetchEventsDB } from '../components/eventsutil';
+import DisplayEvents, { CreateEvent, ModifyEvent, fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -74,16 +74,7 @@ const EventsPage = () => {
             New Event
           </Button>
         </Box>
-
-        {
-          Object.keys(allTasks).map((evid: string) => {
-          return(
-              <DisplayEvent key={`${evid}ev`}
-               evid={evid} tasks={allTasks}
-               select={buttonSetEvName}
-              />
-          )})
-        }
+       <DisplayEvents tasks={allTasks} select={buttonSetEvName} />
 
      </Card></Box>
      <Box>
