@@ -193,18 +193,16 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
               <span>Schedules ({wkGroup.schedNames.length}) </span>
               <Button onClick={() => funComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
             </Box>
+            <List disablePadding dense sx={{marginLeft: '1em'}}>
             {
               wkGroup.schedNames.map(schedule => {
                 return(
-                  <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
-                    <Button onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}  size="small" variant="outlined" color="primary">
-                      {schedule.schedName}
-                    </Button>
-
-                    ({schedule.schedTasks.length} events)
-                  </Box>
+                  <ListItem button key={schedule.schedName} onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}>
+                      {schedule.schedName} - {schedule.descr}
+                  </ListItem>
               ) } )
             }
+            </List>
           </>
           }
         </Box>
