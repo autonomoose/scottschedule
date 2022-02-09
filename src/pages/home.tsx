@@ -620,14 +620,14 @@ const HomePage = () => {
         </Box>
 
         <Box mx={1} mb={1}>
-          <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          <Button size='large' variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
         </Box>
 
         <Box mx={1} my={1}>
           {Object.keys(schedButtons).map(item => {
           return (
-            <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
+            <Button size='large' key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
           )})}

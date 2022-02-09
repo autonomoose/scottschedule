@@ -11,12 +11,12 @@ export const OptionsButtons = (props: OptionsButtonsProps) => {
       <>
       {Object.keys(props.options).filter(item => item !== 'tomorrow').map(item => {
         return (
-          <Button key={item} variant={(props.options[item])? "contained": "outlined"}
+          <Button size='large' key={item} variant={(props.options[item])? "contained": "outlined"}
             color="primary" onClick={() => props.onClick(item)}>
             {item}
           </Button>
         )})}
-          <Button key={'tomorrow'} variant={(props.options['tomorrow'])? "contained": "outlined"}
+          <Button size='large' key={'tomorrow'} variant={(props.options['tomorrow'])? "contained": "outlined"}
             color="primary" onClick={() => props.onClick('tomorrow')}>
             tomorrow
           </Button>
