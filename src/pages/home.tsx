@@ -275,7 +275,7 @@ const HomePage = () => {
     // maintain the clock/calendar on scheduler ui card
     const setNowDigital = (currClock: string) => {
         console.log("setnow digital", currClock);
-        let wkdate = new Date();
+        let wkdate = new Date(Date.now());
 
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
@@ -645,7 +645,7 @@ const HomePage = () => {
                 No Events found
               </Typography>
               <Typography variant='body1'>To get started, go to the</Typography>
-              <Button component={Link} to='/events'>Events page</Button>
+              <Link to='/events'>Events page</Link>
               <Typography variant='body1'>and build your first Event!</Typography>
             </Box>
           : <>
@@ -655,7 +655,7 @@ const HomePage = () => {
                   No Schedules found
                 </Typography>
                 <Typography variant='body1'>To finish setting up, go to the</Typography>
-                <Button component={Link} to='/scheds'>Schedules page</Button>
+                <Link to='/scheds'>Schedules page</Link>
                 <Typography variant='body1'>and setup a group and schedule.</Typography>
               </Box>
             }

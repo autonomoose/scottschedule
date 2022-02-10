@@ -13,6 +13,8 @@ jest.mock('notistack', () => ({
   }
 }));
 
+Date.now = jest.fn(() => 1482363367071);
+
 describe("HomePage", () => {
   it("renders snapshot correctly", async () => {
     const {container} = render(<HomePage />);
