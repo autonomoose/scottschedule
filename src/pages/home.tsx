@@ -64,8 +64,7 @@ const HomePage = () => {
     const eventTask = () => {
         setEventId(0);  // cleanup my id
         var currdate = new Date();
-        console.log('Timer Complete', currdate.toLocaleString());
-        console.log('nextEvs', nextEvs);
+        // console.log('Timer Complete', currdate.toLocaleString());
         let resched = 0;  // ms to restart
 
         // figure out when our exec time vs event time is
@@ -78,15 +77,11 @@ const HomePage = () => {
             // console.log("repeat ", msRepeat, msCleanup);
         }
 
-        // let next_evtime = nextEvs.evs[0].evTstamp
-        // let resched = next_evtime - currdate.valueOf(); // ms until event
-
         let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
-        console.log('relative to event', execPhase, msRel);
+        // console.log('relative to event', execPhase, msRel);
 
         if (execPhase === 'postCleanup') {
-            // cleanup
-            // remove current events (and next 30 seconds worth) from
+            // cleanup, remove current events (and next 30 seconds worth)
             currdate.setSeconds(currdate.getSeconds() + 30);
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
             if (wkEvents.length !== futureEvs.evs.length) {
@@ -136,7 +131,6 @@ const HomePage = () => {
             // play warn sound unless quieted
             if (nextEvs.status !== 'ack') {
                 if ('warn' in nextEvs) {
-                    // console.log("found warn");
                     if (nextEvs.status === 'pending') {
                         setNextEvs({...nextEvs, status: 'soon'});
                     }
@@ -167,20 +161,17 @@ const HomePage = () => {
             // try again later
             var timeoutId = setTimeout(eventTask, resched) as unknown as number;
             setEventId(timeoutId);
-            console.log('another alarm timer', resched);
         } else {
             console.log('bad resched', resched);
         }
 
     };
 
-    // use state eventId and clears it
-    //   global eventId
+    // use state eventId and clears it using global eventId
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel alarm timer', eventId);
         }
     };
 
@@ -192,16 +183,12 @@ const HomePage = () => {
             let currdate = new Date().valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
-                console.log('useeffect nextevs - update event task');
                 let next_evtime = nextEvs.evs[0].evTstamp
                 let next_milli = next_evtime - currdate - 300000; // ms until event - 5 min warning
 
                 // exec function eventTask after timer
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
-                console.log('restart alarm timer', timeoutId);
-            } else {
-                console.log('useeffect nextevs - trigger');
             }
         } else {
             console.log('useeffect nextevs - current/soon');
@@ -252,7 +239,6 @@ const HomePage = () => {
 
     // when futureEvs change, setup new nextEvs state
     useEffect(() => {
-        console.log('useeffect futureevs');
         setNextEvs({evs: [], status: 'none'});
 
         if (futureEvs.evs.length > 0) {
@@ -274,7 +260,7 @@ const HomePage = () => {
     // ui functions
     // maintain the clock/calendar on scheduler ui card
     const setNowDigital = (currClock: string) => {
-        console.log("setnow digital", currClock);
+        // console.log("setnow digital", currClock);
         let wkdate = new Date(Date.now());
 
         let mainclock = document.getElementById('mainclock');
@@ -349,9 +335,7 @@ const HomePage = () => {
         if (showClock && hstatus !== 'Loading') {
             setNowDigital(showClock);
             var intervalId = setInterval(() => {setNowDigital(showClock)}, 10000);
-            console.log("restart clock useeffect id", intervalId, showClock);
-
-            return () => {clearInterval(intervalId);console.log('clear id', intervalId);};
+            return () => {clearInterval(intervalId);};
         } else {
             console.log("clock not defined");
         }
@@ -361,7 +345,6 @@ const HomePage = () => {
     // cleanly reset and rebuild future events using globals
     //  globals allTasks
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
-            console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
 
             let wkEvents: iFutureEvs = {evs: []};
@@ -472,7 +455,6 @@ const HomePage = () => {
         };
 
         setHstatus('Loading');
-        console.log('events loading');
         fetchData();
     }, [enqueueSnackbar] );
 
@@ -497,7 +479,6 @@ const HomePage = () => {
       };
 
       setHstatus('Loading');
-      console.log('schedgroups loading');
       fetchData();
     }, [enqueueSnackbar] );
 
@@ -525,7 +506,6 @@ const HomePage = () => {
 
     // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
-        console.log("useeffect currGroup - schedGroups, allTasks");
         if (schedGroups[currGroup] && allTasks) {
             // set schedule buttons, example = {'test4': 'wake'}
             setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
@@ -539,7 +519,6 @@ const HomePage = () => {
                     groupElement.textContent = schedGroups[currGroup].descr;
             }
             setHstatus("Ready");
-            console.log("Status = Ready");
         }
     }, [allTasks, schedGroups, currGroup]);
 
