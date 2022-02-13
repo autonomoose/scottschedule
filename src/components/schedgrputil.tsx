@@ -226,6 +226,7 @@ interface FormManSchedParms {
     warn: string,
 };
 
+// manage schedule
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     let wkWords = props.groupSchedName.split('!');
@@ -582,6 +583,9 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 schedArgs.descr = (item.descr)? item.descr: '';
                 if (item.begins) {
                     schedArgs.begins = item.begins;
+                }
+                if (item.chain) {
+                    schedArgs.chain = item.chain;
                 }
                 if (item.button || item.button === '') {
                     schedArgs.buttonName = item.button;

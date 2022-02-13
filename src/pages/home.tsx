@@ -90,8 +90,22 @@ const HomePage = () => {
 
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
-                    setCurrSched("off");
-                    setHstatus("Completed");
+                    const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
+                    console.log("finished", currSched, schedList[0]);
+                    if (schedList[0].chain) {
+                        const chains = schedList[0].chain.split('+');
+                        const newsched = chains[0];
+                        const newOptions = {...schedOptions};
+                        if (chains.length > 1) {
+                            chains.slice(1).forEach(item => {newOptions[item] = true});
+                            setSchedOptions(newOptions);
+                        }
+                        setCurrSched(newsched);
+                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions);
+                    } else {
+                        setCurrSched("off");
+                        setHstatus("Completed");
+                    }
                 }
             } else {
                 console.log("no cleanup after event");
@@ -190,8 +204,6 @@ const HomePage = () => {
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
             }
-        } else {
-            console.log('useeffect nextevs - current/soon');
         }
 
         // set necessary audio components for nextev
