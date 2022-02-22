@@ -125,7 +125,7 @@ describe("UserMaintPage", () => {
         utils.getByRole('main');
     });
 
-    // open change email and cancel -- remember it is mocked above
+    // open change email and cancel
     expect(utils.chgEmailButton).toBeEnabled();
     userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
@@ -138,13 +138,16 @@ describe("UserMaintPage", () => {
 
     // click on close account and then cancel
     userEvent.click(utils.getByRole('button', {name: /close account/i}));
+    await waitFor(() => {
+        expect(utils.getByTestId('mockdialog')).toBeVisible();
+    });
+
     userEvent.click(utils.getByRole('button', {name: /cancel/i}));
     await waitFor(() => {
         utils.getByRole('main');
     });
 
-
-  }, 10000);
+  }, 35000);
 
   it("checks change email submit", async () => {
     const utils = await mySetup();
@@ -152,12 +155,16 @@ describe("UserMaintPage", () => {
     // open change email and click change
     expect(utils.chgEmailButton).toBeEnabled();
     userEvent.click(utils.chgEmailButton);
+    await waitFor(() => {
+        expect(utils.getByTestId('mockdialog')).toBeVisible();
+    });
+
     userEvent.click(utils.getByRole('button', {name: /change/i}));
     await waitFor(() => {
         utils.getByRole('main');
     });
 
-  });
+  }, 25000);
 
   it("checks verify email submit", async () => {
     // @ts-expect-error: until aws-amplify gets formal typing
@@ -174,14 +181,18 @@ describe("UserMaintPage", () => {
     // open change email and click verify
     expect(utils.chgEmailButton).toBeEnabled();
     userEvent.click(utils.chgEmailButton);
-    userEvent.click(utils.getByRole('button', {name: /verify/i}));
+    await waitFor(() => {
+        expect(utils.getByTestId('mockdialog')).toBeVisible();
+    });
 
+    userEvent.click(utils.getByRole('button', {name: /verify/i}));
     await waitFor(() => {
         utils.getByRole('main');
     });
 
     Auth.userAttributes = utils.prevAuthAttrib;
-  });
+  }, 30000);
+
   it("checks re-verify email submit", async () => {
     const prevAuthAttrib = Auth.userAttributes;
     // @ts-expect-error: until aws-amplify gets formal typing
@@ -198,14 +209,17 @@ describe("UserMaintPage", () => {
     // open change email and click change
     const verButton = utils.getByRole('button', {name: /verify email/i});
     userEvent.click(verButton);
-    userEvent.click(utils.getByRole('button', {name: /change/i}));
+    await waitFor(() => {
+        expect(utils.getByTestId('mockdialog')).toBeVisible();
+    });
 
+    userEvent.click(utils.getByRole('button', {name: /change/i}));
     await waitFor(() => {
         utils.getByRole('main');
     });
 
     Auth.userAttributes = prevAuthAttrib;
-  });
+  }, 25000);
 
   it("opens and closes del user as secondary", async () => {
     // @ts-expect-error: until aws-amplify gets formal typing
@@ -221,14 +235,17 @@ describe("UserMaintPage", () => {
     const delUserButton = utils.getByRole('button', {name: /delete user/i});
     expect(delUserButton).toBeEnabled();
     userEvent.click(delUserButton);
-    userEvent.click(utils.getByRole('button', {name: /cancel/i}));
+    await waitFor(() => {
+        expect(utils.getByTestId('mockdialog')).toBeVisible();
+    });
 
+    userEvent.click(utils.getByRole('button', {name: /cancel/i}));
     await waitFor(() => {
         utils.getByRole('main');
     });
 
     Auth.userAttributes = utils.prevAuthAttrib;
-  });
+  }, 25000);
 
   it("handles a thrown error on userAttributes", async () => {
     Auth.userAttributes = jest.fn(() => Promise.reject('mockfailed userAttribute'));
@@ -240,6 +257,6 @@ describe("UserMaintPage", () => {
 
     expect(consoleWarnFn).toHaveBeenCalledTimes(1);
     consoleWarnFn.mockRestore();
-  });
+  }, 10000);
 
 });

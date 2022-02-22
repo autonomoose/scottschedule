@@ -16,4 +16,5 @@ module.exports = {
   setupFiles: [`<rootDir>/loadershim.js`],
   testEnvironment: `jsdom`,
   setupFilesAfterEnv: ["<rootDir>/setup-test-env.js"],
+  testTimeout: 15000,
 }

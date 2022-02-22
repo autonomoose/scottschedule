@@ -32,12 +32,14 @@ describe("userutil user delete", () => {
     userEvent.click(getByText(/Cancel/i));
     expect(handleDialogClose).toHaveBeenCalledWith();
   });
+
   it("submits correctly", () => {
     const {getByRole} = render(mytest);
     const delButton = getByRole('button', {name: /delete/i});
     userEvent.click(delButton);
     expect(handleDialogClose).toHaveBeenCalledWith();
   });
+
   it("handles Auth reject", () => {
     const {getByRole} = render(mytest);
     const delButton = getByRole('button', {name: /delete/i});

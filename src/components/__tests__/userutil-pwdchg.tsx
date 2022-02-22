@@ -74,7 +74,7 @@ describe("userutil password chg", () => {
 
     userEvent.click(utils.chgButton);
     expect(handleDialogClose).toHaveBeenCalledWith();
-  });
+  }, 10000);
 
   it("handles input errors and Auth reject", async () => {
     const utils = mySetup();
@@ -103,6 +103,6 @@ describe("userutil password chg", () => {
     expect(handleDialogClose).toHaveBeenCalledWith();
 
     spy.mockRestore();
-  });
+  }, 10000);
 
 });
