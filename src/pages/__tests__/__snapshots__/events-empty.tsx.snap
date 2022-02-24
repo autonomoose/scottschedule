@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EventsPage renders snapshot correctly 1`] = `
+exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
 <div
   data-testid="authenticator"
 >
@@ -432,7 +432,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
                     class="MuiBox-root css-1kytcjp"
                   >
                     Events (
-                    1
+                    0
                     )
                     <button
                       class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
@@ -455,20 +455,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
                   </div>
                   <ul
                     class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
-                  >
-                    <div
-                      class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
-                      role="button"
-                      tabindex="0"
-                    >
-                      testevt
-                       - 
-                      testing
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </div>
-                  </ul>
+                  />
                 </div>
               </div>
               <div

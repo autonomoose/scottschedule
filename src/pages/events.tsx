@@ -47,8 +47,6 @@ const EventsPage = () => {
                 if (evName in newTasks === false) {
                   setEvName('');
                 }
-            } else {
-                enqueueSnackbar(`no events found`, {variant: 'error'});
             }
         setHstatus('Ready');
         };

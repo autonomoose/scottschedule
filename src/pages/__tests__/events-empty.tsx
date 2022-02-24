@@ -5,7 +5,7 @@ import EventsPage from "../events";
 
 jest.mock('../../components/eventsutil', () => ({
     ...jest.requireActual('../../components/eventsutil'),
-    fetchEventsDB: jest.fn(() => Promise.resolve({testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"]}})),
+    fetchEventsDB: jest.fn(() => Promise.resolve({})),
 }));
 
 const mockEnqueue = jest.fn();
@@ -18,8 +18,8 @@ jest.mock('notistack', () => ({
   }
 }));
 
-describe("EventsPage", () => {
-  it("renders snapshot correctly", async () => {
+describe("EventsPage - empty", () => {
+  it("renders no events snapshot correctly", async () => {
     const {container, getByTestId} = render(<EventsPage />);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
