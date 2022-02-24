@@ -1,16 +1,10 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 
 import HomePage from "../home";
-import { fetchEventsDB } from '../../components/eventsutil';
-import { fetchSchedGroupsDB } from '../../components/schedgrputil';
 
-jest.mock('../../components/eventsutil', () => ({
-    fetchEventsDB: jest.fn(),
-}));
-jest.mock('../../components/schedgrputil', () => ({
-    fetchSchedGroupsDB: jest.fn(),
-}));
+jest.mock('../../components/eventsutil');
+jest.mock('../../components/schedgrputil');
 
 const mockEnqueue = jest.fn();
 jest.mock('notistack', () => ({
@@ -31,5 +25,5 @@ describe("HomePage", () => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(container.firstChild).toMatchSnapshot();
-  });
+  }, 15000);
 });

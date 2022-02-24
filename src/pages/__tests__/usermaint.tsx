@@ -109,7 +109,7 @@ describe("UserMaintPage", () => {
     });
 
     expect(container.firstChild).toMatchSnapshot();
-  });
+  }, 15000);
 
   it("opens and closes change dialogs as primary", async () => {
     const utils = await mySetup();
@@ -164,7 +164,7 @@ describe("UserMaintPage", () => {
         utils.getByRole('main');
     });
 
-  }, 25000);
+  }, 30000);
 
   it("checks verify email submit", async () => {
     // @ts-expect-error: until aws-amplify gets formal typing
@@ -191,7 +191,7 @@ describe("UserMaintPage", () => {
     });
 
     Auth.userAttributes = utils.prevAuthAttrib;
-  }, 30000);
+  }, 15000);
 
   it("checks re-verify email submit", async () => {
     const prevAuthAttrib = Auth.userAttributes;
@@ -219,7 +219,7 @@ describe("UserMaintPage", () => {
     });
 
     Auth.userAttributes = prevAuthAttrib;
-  }, 25000);
+  }, 15000);
 
   it("opens and closes del user as secondary", async () => {
     // @ts-expect-error: until aws-amplify gets formal typing
@@ -245,7 +245,7 @@ describe("UserMaintPage", () => {
     });
 
     Auth.userAttributes = utils.prevAuthAttrib;
-  }, 25000);
+  }, 15000);
 
   it("handles a thrown error on userAttributes", async () => {
     Auth.userAttributes = jest.fn(() => Promise.reject('mockfailed userAttribute'));
