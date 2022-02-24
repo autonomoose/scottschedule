@@ -3,6 +3,12 @@ import { render, waitFor } from "@testing-library/react";
 
 import SchedsPage from "../scheds";
 
+jest.mock('../../components/schedgrputil', () => ({
+    ...jest.requireActual('../../components/schedgrputil'),
+    fetchSchedGroupsDB: jest.fn(),
+}));
+
+
 const mockEnqueue = jest.fn();
 jest.mock('notistack', () => ({
   ...jest.requireActual('notistack'),
@@ -20,5 +26,5 @@ describe("SchedsPage", () => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(container.firstChild).toMatchSnapshot();
-  });
+  }, 15000);
 });
