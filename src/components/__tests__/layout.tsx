@@ -56,7 +56,14 @@ describe("Layout", () => {
     consoleErrorFn.mockRestore();
     consoleWarnFn.mockRestore();
 
-  });
+  }, 10000);
+
+  it('checks permit parameter', async () => {
+    render(<Layout permit='admin'><div data-testid='notshown'></div></Layout>);
+    await waitFor(() => {
+        expect(screen.getByTestId('notpermitted')).toBeVisible();
+    });
+  }, 20000);
 
   it('checks auth Hub listener', async () => {
       const utils = render(mytest);
@@ -91,7 +98,8 @@ describe("Layout", () => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(5);
       consoleWarnFn.mockRestore();
       consoleLogFn.mockRestore();
-  });
+  }, 20000);
+
   it('handles auth currentSession error throw', async () => {
       // patch in error
       const prevSession = Auth.currentSession;
@@ -103,7 +111,7 @@ describe("Layout", () => {
       });
 
       Auth.currentSession = prevSession;
-  });
+  }, 10000);
 
   it('handles dberror during user lookup', async () => {
       const prevAPIgraphql = API.graphql;
@@ -114,7 +122,7 @@ describe("Layout", () => {
       });
       API.graphql = prevAPIgraphql;
 
-  });
+  }, 10000);
 
   it('handles null lookup (new user)', async () => {
       const prevAPIgraphql = API.graphql;
@@ -125,6 +133,6 @@ describe("Layout", () => {
       });
       API.graphql = prevAPIgraphql;
 
-  });
+  }, 10000);
 
 });

@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ClockDigital1 renders snapshot correctly 1`] = `
+<button
+  class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1oiecvs-MuiButtonBase-root-MuiButton-root"
+  data-testid="change clock"
+  tabindex="0"
+  type="button"
+>
+  <div
+    class="MuiBox-root css-1w0wdur"
+  >
+    <div
+      class="MuiBox-root css-1mxzarq"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-18ux7l4-MuiTypography-root"
+        data-testid="mainpm"
+        id="mainpm"
+      >
+        PM
+      </p>
+    </div>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-c2znhc-MuiTypography-root"
+      data-testid="compclock"
+      id="compclock"
+    >
+      0
+    </p>
+    <div
+      class="MuiBox-root css-1b3ucee"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-i75upi-MuiTypography-root"
+        data-testid="compminutes"
+        id="compminutes"
+      >
+        00
+      </p>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1suml8u-MuiTypography-root"
+        data-testid="maindate"
+        id="maindate"
+      >
+        Day, 01/01
+      </p>
+    </div>
+  </div>
+  <span
+    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;

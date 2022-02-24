@@ -143,7 +143,6 @@ interface HdataValues {
          async function fetchUser() {
            try {
              const result: any = await API.graphql({query: currUsersInfo});
-             if (vdebug) { console.log(result); }
              setHdata(result);
              } catch (error) {
                setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
@@ -198,7 +197,7 @@ interface HdataValues {
                  <>
                  { ((!props.permit) || (hdata.data.getCurrentUser.agroups && hdata.data.getCurrentUser.agroups.includes(props.permit))) ?
                      <WbenchErrorBoundary ><div data-testid='mainPageDisplay'> {props.children} </div></WbenchErrorBoundary>
-                     : <div style={{textAlign: 'center'}}>
+                     : <div data-testid='notpermitted' style={{textAlign: 'center'}}>
                        <h3 style={{marginTop: '30px'}}>Sorry! Not Permitted. </h3>
                        This user needs {props.permit} privileges to access this page.
                      </div>

@@ -118,7 +118,7 @@ describe("userutil email chg", () => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Code Sent`, {variant: 'success'});
     });
 
-  }, 30000);
+  }, 60000);
 
   it("handles userattrib and resendcode rejects from Auth", async () => {
     const prevAuthUpdUsrAttrib = Auth.updateUserAttributes;
