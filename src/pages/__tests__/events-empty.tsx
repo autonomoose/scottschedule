@@ -1,6 +1,7 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 
+import { fetchEventsDB } from '../../components/eventsutil';
 import EventsPage from "../events";
 
 jest.mock('../../components/eventsutil', () => ({
@@ -18,12 +19,23 @@ jest.mock('notistack', () => ({
   }
 }));
 
+const mytest = <EventsPage />;
 describe("EventsPage - empty", () => {
   it("renders no events snapshot correctly", async () => {
-    const {container, getByTestId} = render(<EventsPage />);
+    const {container, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(container.firstChild).toMatchSnapshot();
   }, 15000);
+
+  it("handles null for events fetch", async () => {
+    (fetchEventsDB as jest.Mock).mockImplementation(() => Promise.resolve());
+    const utils = render(mytest);
+    await waitFor(() => {
+        expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
+    });
+
+  }, 15000);
+
 });

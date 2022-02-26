@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-import { CreateEvent, ModifyEvent, fetchEventsDB } from '../../components/eventsutil';
+import { CreateEvent, ModifyEvent } from '../../components/eventsutil';
 import EventsPage from "../events";
 
 interface mockCreateEventProps {
@@ -79,7 +79,7 @@ describe("EventsPage", () => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(container.firstChild).toMatchSnapshot();
-  }, 15000);
+  });
 
   it("handles panel setup correctly", async () => {
     const utils = await mySetup();
@@ -90,7 +90,7 @@ describe("EventsPage", () => {
 
     expect(utils.testButton).toBeVisible();
 
-  }, 15000);
+  });
 
   it("handles cancel with callback blank", async () => {
     const utils = await mySetup();
@@ -100,7 +100,7 @@ describe("EventsPage", () => {
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-  }, 15000);
+  });
 
   it("handles clicking on event to show modify card", async () => {
     const utils = await mySetup();
@@ -113,7 +113,7 @@ describe("EventsPage", () => {
     });
     expect(utils.getByTestId('newEvent')).not.toBeVisible();
 
-  }, 15000);
+  });
 
   it("new event button switches back to new event card", async () => {
     const utils = await mySetup();
@@ -132,7 +132,7 @@ describe("EventsPage", () => {
     expect(utils.newEventButton).toBeDisabled();
     expect(utils.getByTestId('modifyEvent')).not.toBeVisible();
 
-  }, 15000);
+  });
 
   it("reloads data after modified event is saved", async () => {
     const utils = await mySetup();
@@ -150,6 +150,6 @@ describe("EventsPage", () => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
 
-  }, 15000);
+  });
 
 });

@@ -38,7 +38,6 @@ const EventsPage = () => {
     useEffect(() => {
         const fetchEvs = async () => {
             setHstatus('Loading');
-            console.log('Loading events seq#', pgserial);
             const newTasks = await fetchEventsDB();
             if (newTasks) {
                 enqueueSnackbar(`loaded events`,
