@@ -147,7 +147,7 @@ describe("UserMaintPage", () => {
         utils.getByRole('main');
     });
 
-  }, 35000);
+  }, 60000);
 
   it("checks change email submit", async () => {
     const utils = await mySetup();
@@ -191,7 +191,7 @@ describe("UserMaintPage", () => {
     });
 
     Auth.userAttributes = utils.prevAuthAttrib;
-  }, 15000);
+  }, 30000);
 
   it("checks re-verify email submit", async () => {
     const prevAuthAttrib = Auth.userAttributes;
