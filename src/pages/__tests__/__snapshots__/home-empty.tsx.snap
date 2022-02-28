@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HomePage renders snapshot correctly 1`] = `
+exports[`HomePage empty renders empty snapshot correctly 1`] = `
 <div
   data-testid="authenticator"
 >
@@ -435,7 +435,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                           class="MuiTypography-root MuiTypography-h4 css-ki721n-MuiTypography-root"
                           id="mainclock"
                         >
-                          06:36
+                          00:00
                         </h4>
                         <span
                           class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
@@ -455,13 +455,13 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
                         id="maindate"
                       >
-                        Wed, Dec 21
+                        01/01/00
                       </h6>
                       <span
                         class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
                         id="grouptitle"
                       >
-                        test group
+                        group title
                       </span>
                     </div>
                     <div
@@ -472,8 +472,8 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
                       >
                         <label
-                          class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
-                          data-shrink="true"
+                          class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
+                          data-shrink="false"
                           for="schedgroup"
                           id="schedgroup-label"
                         >
@@ -492,14 +492,18 @@ exports[`HomePage renders snapshot correctly 1`] = `
                             role="button"
                             tabindex="0"
                           >
-                            default
+                            <span
+                              class="notranslate"
+                            >
+                              ​
+                            </span>
                           </div>
                           <input
                             aria-hidden="true"
                             class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
                             data-testid="schedgroup"
                             tabindex="-1"
-                            value="default"
+                            value=""
                           />
                           <svg
                             aria-hidden="true"
@@ -517,7 +521,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                             class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                           >
                             <legend
-                              class="css-1z7n62"
+                              class="css-173wfxe"
                             >
                               <span>
                                 Schedule Group
@@ -573,13 +577,37 @@ exports[`HomePage renders snapshot correctly 1`] = `
                       Your browser doesn't support audio
                     </audio>
                   </div>
+                  <div
+                    class="MuiBox-root css-0"
+                  >
+                    <h4
+                      class="MuiTypography-root MuiTypography-h4 css-5lfyn9-MuiTypography-root"
+                    >
+                      No Events found
+                    </h4>
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                    >
+                      To get started, go to the
+                    </p>
+                    <a
+                      href="/events"
+                    >
+                      Events page
+                    </a>
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                    >
+                      and build your first Event!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
             <div
               aria-hidden="true"
               class="MuiBackdrop-root css-1178cxv-MuiBackdrop-root"
-              style="opacity: 0; webkit-transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+              style="opacity: 0; visibility: hidden;"
             >
               <span
                 class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-62e83j-MuiCircularProgress-root"

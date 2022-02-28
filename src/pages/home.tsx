@@ -348,8 +348,6 @@ const HomePage = () => {
             setNowDigital(showClock);
             var intervalId = setInterval(() => {setNowDigital(showClock)}, 10000);
             return () => {clearInterval(intervalId);};
-        } else {
-            console.log("clock not defined");
         }
         return () => {};
     }, [showClock, hstatus]);
@@ -433,14 +431,6 @@ const HomePage = () => {
     const changeClock = (newClock: string) => {
         if (newClock === '' || newClock === 'close') {
             setShowClock('scheduler');
-        } else if (newClock === 'next') {
-            if (showClock === 'scheduler') {
-                setShowClock('digital1');
-            } else if (showClock === 'digital1'  || showClock === 'digital1-color') {
-                setShowClock('digital2');
-            } else {
-                setShowClock('scheduler');
-            }
         } else {
             setShowClock(newClock);
         }
@@ -457,12 +447,10 @@ const HomePage = () => {
                       {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                     setAllTasks(newTasks);
                 } else {
-                    enqueueSnackbar(`no events found`, {variant: 'error'});
                     setHstatus('Ready');
                 }
             } catch (result) {
                 enqueueSnackbar(`error retrieving events`, {variant: 'error'});
-                console.log("got error", result);
             }
         };
 
@@ -480,12 +468,11 @@ const HomePage = () => {
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                   setSchedGroups(newSchedgrps);
               } else {
-                  enqueueSnackbar(`no schedules found`, {variant: 'error'});
                   setHstatus('Ready');
               }
           } catch (result) {
               enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
-              console.log("got error", result);
+              setHstatus('Ready');
           }
 
       };
@@ -505,13 +492,6 @@ const HomePage = () => {
             let wkGroup = 'default';
             setCurrGroup(wkGroup);
             setCurrSched('off');
-
-            let groupElement =  document.getElementById('grouptitle');
-            if (schedGroups[wkGroup] && groupElement) {
-                    groupElement.textContent = schedGroups[wkGroup].descr;
-        }
-
-        // init schedule group completed
         }
 
     }, [schedGroups]);
@@ -574,9 +554,9 @@ const HomePage = () => {
 
         {(showClock === 'scheduler' || showClock === '') &&
         <>
-        <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
+        <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
-            <Button onClick={() => setShowClock('digital1')}>
+            <Button data-testid='change clock' onClick={() => changeClock('digital1')}>
               <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600, color: 'black'}}>
                 00:00
               </Typography>
