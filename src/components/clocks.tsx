@@ -11,7 +11,7 @@ interface ClockProps {
 export const ClockDigital2 = (props: ClockProps) => {
     return(
       <>
-        <Button data-testid='change clock' sx={{margin: 0}} onClick={() => props.onComplete('next')}>
+        <Button data-testid='change clock' sx={{margin: 0}} onClick={() => props.onComplete('scheduler')}>
           <Typography variant='h1' id='mainclock' data-testid='mainclock'
             sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
         </Button>
@@ -28,7 +28,7 @@ export const ClockDigital2 = (props: ClockProps) => {
 export const ClockDigital1 = (props: ClockProps) => {
     return(
       <>
-        <Button data-testid='change clock' sx={{margin: 0, padding: 0}} onClick={() => props.onComplete('next')}>
+        <Button data-testid='change clock' sx={{margin: 0, padding: 0}} onClick={() => props.onComplete('digital2')}>
           <Box display='flex' justifyContent='flex-start' alignItems='stretch'>
             <Box mt={1} display='flex' alignItems='flex-start'>
               <Typography id='mainpm' data-testid='mainpm'

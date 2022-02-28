@@ -35,7 +35,7 @@ describe("ClockDigital2", () => {
 
     userEvent.click(utils.chgClockButton);
     await waitFor(() => {
-        expect(mockCompleteFun).toHaveBeenLastCalledWith('next');
+        expect(mockCompleteFun).toHaveBeenLastCalledWith('scheduler');
     });
   });
 
