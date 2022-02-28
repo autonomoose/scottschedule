@@ -1,5 +1,5 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 
 import {OptionsButtons, buildButtons, buildOptions} from '../../components/schedbuttons';
@@ -27,7 +27,7 @@ const testEvents = {
         },
 };
 
-const clickOptions = (item: string) => {
+const clickOptions = (_item: string) => {
     return;
 };
 
