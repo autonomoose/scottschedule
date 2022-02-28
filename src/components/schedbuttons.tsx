@@ -45,7 +45,8 @@ export const buildButtons = (wkSchedGroup: iSchedGroup) : iSchedButtons => {
         }
         return outDict;
     }
-    return (wkSchedGroup.schedNames.reduce(optionSchedReduce, {}));
+    const retres = wkSchedGroup.schedNames.reduce(optionSchedReduce, {});
+    return (retres);
 }
 
 // loops through nested scheduleGroup looking for all possible options
@@ -75,5 +76,6 @@ export const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSched
     }
     const starterOptions = {'tomorrow': false};
 
-    return (wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions));
+    const retres = wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions);
+    return (retres);
 };
