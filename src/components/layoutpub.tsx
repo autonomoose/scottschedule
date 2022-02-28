@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'gatsby';
 
 import Divider from '@mui/material/Divider';
+import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 
 import Header from './header';
@@ -45,6 +46,7 @@ const LayoutPub = ({ children }: LayoutPubProps) => {
                 <Divider />
                 <nav><ul>
                 <FtrLink to="/"><HomeIcon /> Home</FtrLink>
+                <FtrLink to="https://www.wernerdigital.com/about" external={true}><GroupIcon />About</FtrLink>
 
                 </ul></nav>
                 <Divider />
