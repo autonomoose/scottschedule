@@ -364,8 +364,6 @@ export const fetchEventsDB = async (): Promise<iTask> => {
             return resdict;
         }, {});
 
-        console.log("events loaded:", result.data.listEvents.items.length);
-        console.log(compactTasks);
         return(compactTasks);
     } catch (result) {
         console.log("got error", result);
