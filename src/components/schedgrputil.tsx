@@ -540,7 +540,6 @@ const DisplaySchedGroup = (props: DisplaySchedGroupProps) => {
 export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     try {
         const result: any = await API.graphql({query: listSchedGroupsFull})
-        console.log("loaded schedgroups dbrecords:", result.data.listSchedGroups.items.length);
 
         const compactEvents = result.data.listSchedGroups.items.reduce((resdict: iGrpSchedTask, item: iSchedGroupListDB) => {
             const evkeys = item.evnames.split('!');

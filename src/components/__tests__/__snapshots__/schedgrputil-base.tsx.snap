@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`schedgrputil - connect event renders snapshot correctly 1`] = `
+<div
+  class="MuiBox-root css-1w8v01d"
+>
+  <ul
+    class="MuiList-root css-1mk9mw3-MuiList-root"
+  >
+    <div
+      class="MuiButtonBase-root MuiListItem-root MuiListItem-gutters MuiListItem-padding MuiListItem-button css-1kyhxx1-MuiButtonBase-root-MuiListItem-root"
+      role="button"
+      tabindex="0"
+    >
+      default
+       - 
+      test group
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </div>
+    <ul
+      class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
+    >
+      <div
+        class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
+        role="button"
+        tabindex="0"
+      >
+        testsched
+         - 
+        test sched
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </div>
+    </ul>
+  </ul>
+</div>
+`;
