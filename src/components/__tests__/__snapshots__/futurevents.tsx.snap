@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`futurevents renders snapshot correctly 1`] = `
+<div
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+  style="margin-top: 3px; max-width: 432px; min-width: 404px; flex: 1 1; background: rgb(245, 245, 230); box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+>
+  <div
+    class="MuiBox-root css-ibnnmb"
+  >
+    <h6
+      class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+    >
+      Upcoming Events
+    </h6>
+    <div>
+      06:40 PM
+       - 
+      test event
+    </div>
+    <div>
+      06:42 PM
+       - 
+      test event
+    </div>
+  </div>
+</div>
+`;

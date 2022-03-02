@@ -52,7 +52,6 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
     let currdate = new Date(Date.now());
-    console.log("buildFutureEvents", wkgroup.name, wksched, optInfo);
     if (optInfo['tomorrow']) {
         currdate.setHours(currdate.getHours() + 24);
         currdate.setHours(0);
@@ -66,8 +65,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
         if (wkTlang) {
             const dateParts = wkTlang.split(':');
             switch(dateParts.length) {
-                case 0: // undefined and now are handled by retDate init
-                    break;
                 case 1: // minutes only (offset only) or word
                     if (/^\+?\d+$/.test(wkTlang)) {
                         // numeric is minutes only
@@ -103,9 +100,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                         retDate.setSeconds(0);
                     }
                     break;
-                case 3: // constant with offset HH:MM+HH:MM, date with hour minute 12/02/22:HH:MM
-                    break;
-
                 default:
                     console.log("unknown date", wkTlang);
                     break;
@@ -258,7 +252,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
         return {evs:wkEvents};
     }
     let currSchedule = schedList[0];
-    console.log("found iSchedule ", currSchedule, currSchedule);
 
     // find the starting time
     var startTlang = 'now';
@@ -268,7 +261,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             startTlang = currSchedule.begins;
     }
     var startDate = tlangDate(startTlang, currdate);
-    console.log("start tlang", startTlang, " date ", startDate);
 
     // get appropriate rules from tasklist
     let activeRules = [];
@@ -280,7 +272,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
         activeRules.push("new.23:23");
         console.log("no tasks - added new rule");
     }
-    console.log("active Rules", activeRules);
 
     // convert rules to future events dict (to preserve order on mult event per timestamp)
     const dictEvents = activeRules.reduce(rulesReduceToEvents, {});
@@ -290,7 +281,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             wkEvents.push(tmpEv);
         }
     }
-    console.log("active Events", wkEvents);
 
     // copy currSchedule arguments that need to be on futureEvs
     // add another and this should be a set of fields processed by a loop
