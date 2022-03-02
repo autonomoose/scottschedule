@@ -51,7 +51,7 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   convert dict to sorted array w/ earliest events first
 export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
-    let currdate = new Date();
+    let currdate = new Date(Date.now());
     console.log("buildFutureEvents", wkgroup.name, wksched, optInfo);
     if (optInfo['tomorrow']) {
         currdate.setHours(currdate.getHours() + 24);

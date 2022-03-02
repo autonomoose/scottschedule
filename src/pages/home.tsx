@@ -63,7 +63,7 @@ const HomePage = () => {
     //  globals nextEvs, futureEvs
     const eventTask = () => {
         setEventId(0);  // cleanup my id
-        var currdate = new Date();
+        var currdate = new Date(Date.now());
         // console.log('Timer Complete', currdate.toLocaleString());
         let resched = 0;  // ms to restart
 
@@ -194,7 +194,7 @@ const HomePage = () => {
     //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
         if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
-            let currdate = new Date().valueOf();
+            let currdate = new Date(Date.now()).valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
                 let next_evtime = nextEvs.evs[0].evTstamp
@@ -254,7 +254,7 @@ const HomePage = () => {
         setNextEvs({evs: [], status: 'none'});
 
         if (futureEvs.evs.length > 0) {
-            let currdate = new Date().valueOf();
+            let currdate = new Date(Date.now()).valueOf();
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate);
             if (wkEvents.length > 0) {
                 // filter out events that aren't next (within minute of event time)
@@ -363,7 +363,7 @@ const HomePage = () => {
                 }
 
             // cleanup, get expired (or about to in next 30 seconds)
-            let currdate = new Date();
+            let currdate = new Date(Date.now());
             currdate.setSeconds(currdate.getSeconds() + 30);
 
             let stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
