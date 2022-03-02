@@ -44,7 +44,6 @@ const SchedsPage = () => {
     };
 
     const formGroupCallback = async (status: string) => {
-        console.log("group callback status", status);
         if (status[0] === '_') {
           // call to open schedule from group form
           setGroupName('');

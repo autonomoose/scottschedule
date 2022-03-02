@@ -28,7 +28,6 @@ const EventsPage = () => {
     }
 
     const formCallback = async (status: string) => {
-        console.log("ev callback status", status);
         setEvName(status);
         if (status !== '') {
             setPgserial(pgserial+1);

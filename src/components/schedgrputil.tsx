@@ -611,7 +611,6 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
             return resdict;
         }, {});
 
-        console.log(compactGroups);
         return(compactGroups);
     } catch (result) {
         console.log("got error", result);
