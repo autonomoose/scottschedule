@@ -36,7 +36,6 @@ const SchedsPage = () => {
     }
 
     const formSchedCallback = async (status: string) => {
-        console.log("schedule callback status", status);
         setSchedName((status[0] === '_')? '': status);
         if (status !== '') {
             setPgserial(pgserial+1);

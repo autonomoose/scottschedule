@@ -626,6 +626,7 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
                         </h6>
                         <button
                           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorError MuiIconButton-sizeSmall css-1mk6yu1-MuiButtonBase-root-MuiIconButton-root"
+                          data-testid="cancel"
                           tabindex="0"
                           type="button"
                         >
@@ -660,7 +661,7 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
                             Button 
                             <input
                               aria-invalid="false"
-                              data-testid="beginsInput"
+                              data-testid="buttonInput"
                               name="buttonName"
                               size="6"
                               type="text"

@@ -10,13 +10,7 @@ const mockCallback = jest.fn();
 const testSchedGroup = {
     name: 'testgrp',
     descr: 'test group',
-    schedNames: [{
-        begins: 'now',
-        buttonName: 'test1',
-        descr: 'test sched',
-        schedName: 'testsched',
-        schedTasks: [{evTaskId: 'testev'}],
-        }]
+    schedNames: [],
 };
 
 const mytest = <ModifyGroup group='testgrp' groupSched={testSchedGroup} onComplete={mockCallback} open={true} />
@@ -26,6 +20,7 @@ const mySetup = () => {
     const saveButton = utils.getByRole('button', {name: /save/i});
     const descrFld = utils.getByTestId('descrInput');
     const newButton = utils.getByRole('button', {name: /new schedule/i});
+    const delButton = utils.getByTestId('delete');
 
     return {
         ...utils,
@@ -33,10 +28,11 @@ const mySetup = () => {
         saveButton,
         descrFld,
         newButton,
+        delButton,
     }
 };
 
-describe("schedgrputil - modify", () => {
+describe("schedgrputil - modify empty group", () => {
   it("renders snapshot correctly", () => {
     const {container} = render(mytest);
 
@@ -48,47 +44,16 @@ describe("schedgrputil - modify", () => {
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
     expect(utils.newButton).toBeEnabled();
-  });
-  it("cancels with upper right x button", () => {
-    const utils = mySetup();
-
-    userEvent.click(utils.getByRole('button', {name: /x/i}));
-    expect(mockCallback).toHaveBeenLastCalledWith('');
-  });
-  it("enables reset and save after descr modification", async () => {
-    const utils = mySetup();
-
-    userEvent.type(utils.descrFld, 'new desc');
-    await waitFor(() => {
-      expect(utils.resetButton).toBeEnabled();
-    });
-    expect(utils.saveButton).toBeEnabled();
-  });
-  it("handles reset after descr modification", async () => {
-    const utils = mySetup();
-
-    userEvent.type(utils.descrFld, 'new descr');
-    await waitFor(() => {
-      expect(utils.resetButton).toBeEnabled();
-    });
-    userEvent.click(utils.resetButton);
-    await waitFor(() => {
-      expect(utils.resetButton).toBeDisabled();
-    });
+    expect(utils.delButton).toBeEnabled();
   });
 
-  it("handles graphql error on save", async () => {
+  it("handles graphql error on delete", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.reject('mockreject'));
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    await waitFor(() => {
-      expect(utils.resetButton).toBeEnabled();
-    });
-    expect(utils.saveButton).toBeEnabled();
-    userEvent.click(utils.saveButton);
+    userEvent.click(utils.delButton);
 
     await waitFor(() => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(1);
@@ -96,17 +61,12 @@ describe("schedgrputil - modify", () => {
     API.graphql = prevAPIgraphql;
     consoleWarnFn.mockRestore();
   });
-  it("handles save after descr modification", async () => {
+  it("handles delete", async () => {
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.resolve({}));
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    await waitFor(() => {
-      expect(utils.resetButton).toBeEnabled();
-    });
-    expect(utils.saveButton).toBeEnabled();
-    userEvent.click(utils.saveButton);
+    userEvent.click(utils.delButton);
 
     await waitFor(() => {
       expect(mockCallback).toHaveBeenLastCalledWith('testgrp');

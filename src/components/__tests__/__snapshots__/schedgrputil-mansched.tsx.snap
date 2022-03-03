@@ -19,13 +19,12 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
             class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
           >
             <span>
-              Add Schedule (
-              testgrp
-              )
+              Modify Schedules 
             </span>
           </h6>
           <button
             class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorError MuiIconButton-sizeSmall css-1mk6yu1-MuiButtonBase-root-MuiIconButton-root"
+            data-testid="cancel"
             tabindex="0"
             type="button"
           >
@@ -39,7 +38,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
           class="MuiBox-root css-gg4vpm"
         >
           <div
-            class="MuiBox-root css-k008qs"
+            class="MuiBox-root css-1hyfx7x"
           >
             <label>
               Name 
@@ -52,7 +51,11 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               />
             </label>
           </div>
-          
+          <div
+            class="MuiBox-root css-0"
+          >
+            testsched
+          </div>
           <div
             class="MuiBox-root css-0"
           >
@@ -60,7 +63,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               Button 
               <input
                 aria-invalid="false"
-                data-testid="beginsInput"
+                data-testid="buttonInput"
                 name="buttonName"
                 size="6"
                 type="text"
@@ -247,6 +250,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
       >
         <button
           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorError MuiIconButton-sizeSmall css-1mk6yu1-MuiButtonBase-root-MuiIconButton-root"
+          data-testid="dconn-testev"
           tabindex="0"
           type="button"
         >
