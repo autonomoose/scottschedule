@@ -41,7 +41,6 @@ export const CreateGroup = (props: CreateGroupProps) => {
         descr: string,
     };
     const formNewGroupSubmit = async (data: FormNewGroupParms) => {
-        console.log('form group data', data);
         try {
             const xdata = {'input': {
                 'etype': 'gs',
@@ -49,11 +48,10 @@ export const CreateGroup = (props: CreateGroupProps) => {
                 'descr': data.descr,
                 }
             };
-            const result = await API.graphql({query: mutAddEvents, variables: xdata});
-            console.log('updated', result);
+            await API.graphql({query: mutAddEvents, variables: xdata});
             funComplete(data.name);
         } catch (result) {
-            console.log('failed group update', result);
+            console.warn('failed group update', result);
         }
     };
 
@@ -613,7 +611,6 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
 
         return(compactGroups);
     } catch (result) {
-        console.log("got error", result);
         return({});
     }
 };
