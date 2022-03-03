@@ -232,6 +232,22 @@ describe("futurevents", () => {
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
   });
+  it("handles whitespace in 'or'", () => {
+    const specEventList = {
+      'testev': {
+        descr: 'test event',
+        schedRules: ['begin +5:00 or   13:45,++2,++2',],
+      }
+    };
+    const newEvs = buildFutureEvents(
+      testSchedGroup,
+      'testsched',
+      specEventList,
+      {tomorrow: false}
+    );
+    expect(newEvs).toStrictEqual(evsExpected);
+    expect(newEvs.begins).toBe(mockNow);
+  });
 
   // option statement handling ---------------
   //
@@ -369,7 +385,7 @@ describe("futurevents", () => {
             descr: 'test sched',
             schedName: 'testsched',
             schedTasks: [{evTaskId: 'testev'}],
-            sound: '_default_',
+            sound: {name: '_default_'},
             }]
     };
     const newEvs = buildFutureEvents(
@@ -378,7 +394,7 @@ describe("futurevents", () => {
       eventList,
       {tomorrow: false, }
     );
-    expect(newEvs).toStrictEqual({sound: '_default_', ...evsExpected});
+    expect(newEvs).toStrictEqual({sound: {name: '_default_'}, ...evsExpected});
     expect(newEvs.begins).toBe(mockNow);
   });
   it("handles sound parameter", () => {
@@ -391,7 +407,7 @@ describe("futurevents", () => {
             descr: 'test sched',
             schedName: 'testsched',
             schedTasks: [{evTaskId: 'testev'}],
-            warn: '_default_',
+            warn: {sound: {name: '_default_'}},
             }]
     };
     const newEvs = buildFutureEvents(
@@ -400,7 +416,7 @@ describe("futurevents", () => {
       eventList,
       {tomorrow: false, }
     );
-    expect(newEvs).toStrictEqual({warn: '_default_', ...evsExpected});
+    expect(newEvs).toStrictEqual({warn: {sound: {name: '_default_'}}, ...evsExpected});
     expect(newEvs.begins).toBe(mockNow);
   });
 

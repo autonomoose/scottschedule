@@ -136,6 +136,9 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             let nextTlangWord = ruleWords.shift();
             while (nextTlangWord === 'or' && ruleWords.length > 0) {
                 let nextTimeWord = ruleWords.shift();
+                if (!nextTimeWord || nextTimeWord === '') {
+                    break;
+                }
 
                 let nextEvTime = (nextTimeWord.startsWith('++'))
                     ? tlangDate(nextTimeWord.slice(1), lastDate)
@@ -164,9 +167,7 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             }
 
             // store event by timestamp for later extract in order
-            if (typeof lastDate !== 'undefined' && lastDate.valueOf() === evTime.valueOf()) {
-                console.log("repeat event not added");
-            } else {
+            if (typeof lastDate === 'undefined' || lastDate.valueOf() !== evTime.valueOf()) {
                 let evVal = evTime.valueOf().toString();
                 if (outEvents[evVal]) {
                     outEvents[evVal].push({evTstamp: evTime.valueOf(), evTaskId: evTask});
@@ -176,9 +177,7 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                 }
                 lastDate = evTime;
             }
-
             // deal with any * (repeat) instructions
-
         }
         return(outEvents);
     };
@@ -218,7 +217,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                         }
                         break;
                     default:
-                        console.log("unknown word", ruleWords[0]);
                     break;
                 }
                 if (matchRule !== '') {
@@ -231,8 +229,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                 const outRule = wkTaskName.evTaskId + "." + matchRule
                 outRules.push(outRule);
             }
-        } else {
-            console.log(wkTaskName.evTaskId, " task not found");
         }
         return outRules;
     }
@@ -245,7 +241,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
         schedList = wkgroup.schedNames.filter(item => item.schedName === schedParts[0]);
     }
     if (schedList.length !== 1) {
-        console.log("no unique schedule found ", schedList, schedParts[0]);
         return {evs:wkEvents};
     }
     let currSchedule = schedList[0];
@@ -267,7 +262,6 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
     } else {
         // new
         activeRules.push("new.23:23");
-        console.log("no tasks - added new rule");
     }
 
     // convert rules to future events dict (to preserve order on mult event per timestamp)
