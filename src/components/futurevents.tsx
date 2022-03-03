@@ -82,7 +82,7 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                             case 'now':
                                 break;
                             default:
-                                console.log("unknown date", wkTlang);
+                                // console.log("unknown date - bad command", wkTlang);
                                 break;
                         }
                     }
@@ -101,7 +101,7 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                     }
                     break;
                 default:
-                    console.log("unknown date", wkTlang);
+                    // console.log("unknown date", wkTlang);
                     break;
             }
         }
@@ -136,16 +136,13 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             let nextTlangWord = ruleWords.shift();
             while (nextTlangWord === 'or' && ruleWords.length > 0) {
                 let nextTimeWord = ruleWords.shift();
-                if (!nextTimeWord || nextTimeWord === '') {
-                    console.log("or fail - no time word");
-                    break;
-                }
 
                 let nextEvTime = (nextTimeWord.startsWith('++'))
                     ? tlangDate(nextTimeWord.slice(1), lastDate)
                     : tlangDate(nextTimeWord, startDate); // global startDate
 
-                console.log("or ", nextTimeWord, nextEvTime);
+                // console.log("curr", evTime);
+                // console.log("or ", nextTimeWord, nextEvTime);
                 if (nextTimeWord[0] === '+') {
                     // or later
                     if (evTime > nextEvTime) {

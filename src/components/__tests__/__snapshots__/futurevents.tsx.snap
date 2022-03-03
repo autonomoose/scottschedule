@@ -14,12 +14,12 @@ exports[`futurevents renders snapshot correctly 1`] = `
       Upcoming Events
     </h6>
     <div>
-      06:40 PM
+      09:42 AM
        - 
       test event
     </div>
     <div>
-      06:42 PM
+      09:44 AM
        - 
       test event
     </div>
