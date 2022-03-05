@@ -43,6 +43,14 @@ describe("eventsutil - base", () => {
       expect(newList).toStrictEqual(eventList);
       API.graphql = prevAPIgraphql;
   });
+  it("handles graphQL errors", async () => {
+      const prevAPIgraphql = API.graphql;
+      API.graphql = jest.fn(() => Promise.reject('mockreject'));
+
+      const newList = await fetchEventsDB();
+      expect(newList).toStrictEqual({});
+      API.graphql = prevAPIgraphql;
+  });
 
 });
 

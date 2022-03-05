@@ -19,7 +19,7 @@ import { mutAddEvents, mutAddRules, mutDelEvents } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateEventProps {
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean
 }
 export const CreateEvent = (props: CreateEventProps) => {
@@ -37,7 +37,6 @@ export const CreateEvent = (props: CreateEventProps) => {
         descr: string,
     };
     const formNewEvSubmit = async (data: FormNewEvParms) => {
-        console.log('form data', data);
         try {
             const xdata = {'input': {
                 'etype': 'ev',
@@ -45,13 +44,10 @@ export const CreateEvent = (props: CreateEventProps) => {
                 'descr': data.descr,
                 }
             };
-            const result = await API.graphql({query: mutAddEvents, variables: xdata});
-            console.log('updated', result);
-            if (props.onComplete) {
-                props.onComplete(data.name);
-            }
+            await API.graphql({query: mutAddEvents, variables: xdata});
+            props.onComplete(data.name);
         } catch (result) {
-            console.log('failed update', result);
+            console.warn('failed update', result);
         }
     };
 
@@ -93,7 +89,7 @@ export const CreateEvent = (props: CreateEventProps) => {
 // -------------------------------------------------
 interface CreateRuleProps {
   evName: string,
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean
 }
 export const CreateRule = (props: CreateRuleProps) => {
@@ -108,9 +104,7 @@ export const CreateRule = (props: CreateRuleProps) => {
     const { isDirty, errors } = formState;
 
     const formNewRuleCancel = async () => {
-        if (props.onComplete) {
-            props.onComplete('');
-        }
+        props.onComplete('');
     }
     interface FormNewRuleParms {
         cmd: string,
@@ -118,7 +112,6 @@ export const CreateRule = (props: CreateRuleProps) => {
         content: string,
     };
     const formNewRuleSubmit = async (data: FormNewRuleParms) => {
-        console.log('form data', data);
         try {
             let wkEvNames = props.evName+"!"+data.cmd;
             if (data.options !== '') {
@@ -130,17 +123,12 @@ export const CreateRule = (props: CreateRuleProps) => {
                 'rules': data.content,
                 }
             };
-            const result = await API.graphql({query: mutAddRules, variables: xdata});
-            console.log('updated rules', result);
-            if (props.onComplete) {
-                props.onComplete(props.evName);
-            }
+            await API.graphql({query: mutAddRules, variables: xdata});
+            props.onComplete(props.evName);
 
         } catch (result) {
-            console.log('failed update rules', result);
-            if (props.onComplete) {
-                props.onComplete('');
-            }
+            console.warn('failed update rules', result);
+            props.onComplete('');
         }
     };
 
@@ -186,7 +174,7 @@ export const CreateRule = (props: CreateRuleProps) => {
 interface ModifyEventProps {
   evid: string,
   tasks: iTask,
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean,
 }
 export const ModifyEvent = (props: ModifyEventProps) => {
@@ -214,7 +202,6 @@ export const ModifyEvent = (props: ModifyEventProps) => {
         descr: string,
     };
     const formModEvSubmit = async (data: FormModEvParms) => {
-        console.log('modform data', data);
         try {
             const xdata = {'input': {
                 'etype': 'ev',
@@ -222,42 +209,32 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                 'descr': data.descr,
                 }
             };
-            const result = await API.graphql({query: mutAddEvents, variables: xdata});
-            console.log('updated', result);
-            if (props.onComplete) {
-                props.onComplete(evid);
-            }
+            await API.graphql({query: mutAddEvents, variables: xdata});
+            props.onComplete(evid);
         } catch (result) {
-            console.log('failed update', result);
+            console.warn('failed update', result);
         }
     };
     interface FormDelEventParms {
         cmd: string,
     };
     const formDelEvent = async (data: FormDelEventParms) => {
-        console.log('formDel parms', data);
         try {
             const xdata = {'input': {
                 'etype': 'ev',
                 'evnames': evid+"!"+data.cmd,
                 }
             };
-            console.log('deleting', xdata);
-            const result = await API.graphql({query: mutDelEvents, variables: xdata});
-            console.log('deleted', result);
-            if (props.onComplete) {
-                props.onComplete(evid);
-            }
+            await API.graphql({query: mutDelEvents, variables: xdata});
+            props.onComplete(evid);
         } catch (result) {
-            console.log('failed delete', result);
+            console.warn('failed delete', result);
         }
     };
     const formCallback = (status: string) => {
         console.log("mod callback status", status);
         setEvRule('');
-        if (props.onComplete && status !== '') {
-            props.onComplete(status);
-        }
+        props.onComplete(status);
     };
 
     return(
@@ -272,7 +249,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
           <Box display='flex' alignItems='center'>
             {evid}
             { (allTasks[evid] && allTasks[evid].schedRules.length === 0) &&
-            <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+            <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
             }
           </Box>
 
@@ -366,7 +343,6 @@ export const fetchEventsDB = async (): Promise<iTask> => {
 
         return(compactTasks);
     } catch (result) {
-        console.log("got error", result);
         return({});
     }
 };
