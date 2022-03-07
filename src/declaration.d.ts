@@ -25,6 +25,7 @@ interface iSchedule {
     buttonName?: string,
     sound?: iEvsSound,
     warn?: iEvsWarn,
+    chain?: string,
 }
 
 interface iSchedGroup {

@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`schedgrputil - connect event renders snapshot correctly 1`] = `
+<div
+  class="MuiBox-root css-13o7eu2"
+>
+  <div
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+    style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; background: rgb(250, 250, 250); box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+  >
+    <div
+      class="MuiBox-root css-ibnnmb"
+    >
+      <form>
+        <div
+          class="MuiBox-root css-h9yv4t"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+          >
+            Connect Event
+          </h6>
+        </div>
+        <div
+          class="MuiBox-root css-0"
+        >
+          <input
+            aria-invalid="false"
+            data-testid="taskid"
+            name="taskid"
+            size="10"
+            type="text"
+          />
+        </div>
+        <div
+          class="MuiBox-root css-10igwnb"
+        >
+          <button
+            class="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1ir7th6-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            Cancel
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            disabled=""
+            tabindex="-1"
+            type="button"
+          >
+            Reset
+          </button>
+          <button
+            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+            disabled=""
+            tabindex="-1"
+            type="submit"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

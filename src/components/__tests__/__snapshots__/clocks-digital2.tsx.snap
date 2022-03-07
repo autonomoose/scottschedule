@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ClockDigital2 renders snapshot correctly 1`] = `
+<button
+  class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-kn26gc-MuiButtonBase-root-MuiButton-root"
+  data-testid="change clock"
+  tabindex="0"
+  type="button"
+>
+  <h1
+    class="MuiTypography-root MuiTypography-h1 css-1xwtaui-MuiTypography-root"
+    data-testid="mainclock"
+    id="mainclock"
+  >
+    00:00
+  </h1>
+  <span
+    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+  />
+</button>
+`;

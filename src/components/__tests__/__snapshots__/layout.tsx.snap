@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Layout renders snapshot correctly 1`] = `
-<amplify-authenticator>
+<div
+  data-testid="authenticator"
+>
   <div
     style="text-align: center;"
   >
@@ -427,5 +429,5 @@ exports[`Layout renders snapshot correctly 1`] = `
       </div>
     </div>
   </div>
-</amplify-authenticator>
+</div>
 `;

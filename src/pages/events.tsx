@@ -5,7 +5,7 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplayEvent, { CreateEvent, ModifyEvent, fetchEventsDB } from '../components/eventsutil';
+import DisplayEvents, { CreateEvent, ModifyEvent, fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -28,7 +28,6 @@ const EventsPage = () => {
     }
 
     const formCallback = async (status: string) => {
-        console.log("ev callback status", status);
         setEvName(status);
         if (status !== '') {
             setPgserial(pgserial+1);
@@ -38,7 +37,6 @@ const EventsPage = () => {
     useEffect(() => {
         const fetchEvs = async () => {
             setHstatus('Loading');
-            console.log('Loading events seq#', pgserial);
             const newTasks = await fetchEventsDB();
             if (newTasks) {
                 enqueueSnackbar(`loaded events`,
@@ -47,8 +45,6 @@ const EventsPage = () => {
                 if (evName in newTasks === false) {
                   setEvName('');
                 }
-            } else {
-                enqueueSnackbar(`no events found`, {variant: 'error'});
             }
         setHstatus('Ready');
         };
@@ -66,24 +62,12 @@ const EventsPage = () => {
 
         <Box mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
           Events ({Object.keys(allTasks).length})
-          <Button variant='outlined' onClick={() => {setPgserial(pgserial+1);}}>
-            Refresh
-          </Button>
 
           <Button variant='outlined' disabled={(evName === '')} onClick={() => {buttonSetEvName('');}}>
             New Event
           </Button>
         </Box>
-
-        {
-          Object.keys(allTasks).map((evid: string) => {
-          return(
-              <DisplayEvent key={`${evid}ev`}
-               evid={evid} tasks={allTasks}
-               select={buttonSetEvName}
-              />
-          )})
-        }
+       <DisplayEvents tasks={allTasks} select={buttonSetEvName} />
 
      </Card></Box>
      <Box>

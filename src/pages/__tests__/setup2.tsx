@@ -19,6 +19,22 @@ jest.mock('notistack', () => ({
 }));
 
 const mytest = <SetupStep2Page />;
+const mySetup = async () => {
+    const utils = render(mytest);
+    await waitFor(() => {
+        expect(utils.getByTestId('mainPageDisplay')).toBeVisible();
+    });
+    // utils.debug();
+    const acceptBox = utils.getByRole('checkbox', {name: /acceptbox/i});
+    const submitButton = utils.getByRole('button', {name: /submit/i});
+    return {
+        ...utils,
+        acceptBox,
+        submitButton,
+
+    }
+}
+
 describe("SetupStep2Page", () => {
   it("renders snapshot correctly", async () => {
     const {container} = render(mytest);
@@ -26,110 +42,91 @@ describe("SetupStep2Page", () => {
         expect(screen.getByRole('button', {name: /sign out/i}))
         .toBeVisible();
     });
-
     expect(container.firstChild).toMatchSnapshot();
   });
+
   it("calls API correctly", async () => {
-    const utils = render(mytest);
+    const utils = await mySetup();
+    expect(utils.submitButton).toBeDisabled();
+
+    userEvent.click(utils.acceptBox);
     await waitFor(() => {
-        expect(utils.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(utils.submitButton).toBeEnabled();
     });
 
     const spy = jest.spyOn(API, 'post')
-      .mockImplementation(() => Promise.resolve({'Response': 'completed'}));
-
-    const acceptBox = utils.getByRole('checkbox', {name: /acceptbox/i});
-    const submitButton = utils.getByRole('button', {name: /submit/i});
-    expect(submitButton).toBeDisabled();
-
-    userEvent.click(acceptBox);
-
-    expect(submitButton).toBeEnabled();
-    userEvent.click(submitButton);
+     .mockImplementation(() => Promise.resolve({'Response': 'completed'}));
+    userEvent.click(utils.submitButton);
     await waitFor(() => {
-        expect(mockEnqueue).toHaveBeenCalledTimes(1);
+       expect(mockEnqueue).toHaveBeenCalledTimes(1);
     });
-    // utils.debug(utils.getByRole('main'));
 
     spy.mockRestore();
-  });
+  }, 10000);
 
   it("calls API correctly w/ bad response", async () => {
-    const utils = render(mytest);
+    const utils = await mySetup();
+    expect(utils.submitButton).toBeDisabled();
+
+    userEvent.click(utils.acceptBox);
     await waitFor(() => {
-        expect(utils.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(utils.submitButton).toBeEnabled();
     });
 
     const spy = jest.spyOn(API, 'post')
       .mockImplementation(() => Promise.resolve({'Response': 'uncompleted'}));
+    const consoleLogFn = jest.spyOn(console, 'log').mockImplementation(() => jest.fn());
 
-    const acceptBox = utils.getByRole('checkbox', {name: /acceptbox/i});
-    const submitButton = utils.getByRole('button', {name: /submit/i});
-    expect(submitButton).toBeDisabled();
-
-    userEvent.click(acceptBox);
-
-    expect(submitButton).toBeEnabled();
-    userEvent.click(submitButton);
+    userEvent.click(utils.submitButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenCalledTimes(2);
     });
-    // utils.debug(utils.getByRole('main'));
 
+    consoleLogFn.mockRestore();
     spy.mockRestore();
-  });
+  }, 10000);
+
   it("calls API correctly but throws error", async () => {
-    const utils = render(mytest);
+    const utils = await mySetup();
+    expect(utils.submitButton).toBeDisabled();
+
+    userEvent.click(utils.acceptBox);
     await waitFor(() => {
-        expect(utils.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(utils.submitButton).toBeEnabled();
     });
 
     const spy = jest.spyOn(API, 'post')
-      .mockImplementation((_apiname, _funname, _funparms) => Promise.reject({'Response': 'completed'}));
+      .mockImplementation((_apiname, _funname, _funparms) => Promise.reject({'Response': 'throw reject'}));
+    const consoleLogFn = jest.spyOn(console, 'log').mockImplementation(() => jest.fn());
 
-    const acceptBox = utils.getByRole('checkbox', {name: /acceptbox/i});
-    const submitButton = utils.getByRole('button', {name: /submit/i});
-    expect(submitButton).toBeDisabled();
-
-    userEvent.click(acceptBox);
-
-    expect(submitButton).toBeEnabled();
-    userEvent.click(submitButton);
+    userEvent.click(utils.submitButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenCalledTimes(3);
     });
-    // utils.debug(utils.getByRole('main'));
 
+    consoleLogFn.mockRestore();
     spy.mockRestore();
-  });
+  }, 10000);
 
   it("makes sure stupid box is checked", async () => {
-    const utils = render(mytest);
+    const utils = await mySetup();
+    expect(utils.submitButton).toBeDisabled();
+
+    userEvent.click(utils.acceptBox);
     await waitFor(() => {
-        expect(utils.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(utils.submitButton).toBeEnabled();
     });
 
     const spy = jest.spyOn(API, 'post')
       .mockImplementation(() => Promise.resolve({'Response': 'completed'}));
 
-    const acceptBox = utils.getByRole('checkbox', {name: /acceptbox/i});
-    const submitButton = utils.getByRole('button', {name: /submit/i});
-    expect(submitButton).toBeDisabled();
-
-    userEvent.click(acceptBox);
-
-    expect(submitButton).toBeEnabled();
-    userEvent.click(acceptBox);
-    userEvent.click(submitButton);
+    userEvent.click(utils.acceptBox);
+    userEvent.click(utils.submitButton);
     await waitFor(() => {
         expect(utils.getByRole('alert')).toBeVisible();
     });
 
     spy.mockRestore();
-  });
+  }, 10000);
 
 });

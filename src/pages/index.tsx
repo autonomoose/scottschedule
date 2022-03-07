@@ -14,8 +14,9 @@ const IndexPage = () => {
           <StaticImage alt="" width={160} loading="eager" aria-labelledby="site-name" src="../images/wernerdigital-hosted.png" />
           </Box>
           <Box my={6} ml={1}>
-          <h1 id="site-name">Scottschedule</h1>
-
+            <h1 id="site-name">Scottschedule</h1>
+            This tool is designed to help manage complex caregiver schedules,
+            but it can also be used to manage a wide variety of recurring reminders.
           </Box>
         </Box>
 

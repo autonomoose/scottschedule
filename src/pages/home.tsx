@@ -63,9 +63,8 @@ const HomePage = () => {
     //  globals nextEvs, futureEvs
     const eventTask = () => {
         setEventId(0);  // cleanup my id
-        var currdate = new Date();
-        console.log('Timer Complete', currdate.toLocaleString());
-        console.log('nextEvs', nextEvs);
+        var currdate = new Date(Date.now());
+        // console.log('Timer Complete', currdate.toLocaleString());
         let resched = 0;  // ms to restart
 
         // figure out when our exec time vs event time is
@@ -78,15 +77,11 @@ const HomePage = () => {
             // console.log("repeat ", msRepeat, msCleanup);
         }
 
-        // let next_evtime = nextEvs.evs[0].evTstamp
-        // let resched = next_evtime - currdate.valueOf(); // ms until event
-
         let execPhase = (msRel > msCleanup)? 'postCleanup': (msRel > 0)? 'postEvent': 'preEvent';
-        console.log('relative to event', execPhase, msRel);
+        // console.log('relative to event', execPhase, msRel);
 
         if (execPhase === 'postCleanup') {
-            // cleanup
-            // remove current events (and next 30 seconds worth) from
+            // cleanup, remove current events (and next 30 seconds worth)
             currdate.setSeconds(currdate.getSeconds() + 30);
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
             if (wkEvents.length !== futureEvs.evs.length) {
@@ -95,8 +90,22 @@ const HomePage = () => {
 
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
-                    setCurrSched("off");
-                    setHstatus("Completed");
+                    const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
+                    console.log("finished", currSched, schedList[0]);
+                    if (schedList[0].chain) {
+                        const chains = schedList[0].chain.split('+');
+                        const newsched = chains[0];
+                        const newOptions = {...schedOptions};
+                        if (chains.length > 1) {
+                            chains.slice(1).forEach(item => {newOptions[item] = true});
+                            setSchedOptions(newOptions);
+                        }
+                        setCurrSched(newsched);
+                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions);
+                    } else {
+                        setCurrSched("off");
+                        setHstatus("Completed");
+                    }
                 }
             } else {
                 console.log("no cleanup after event");
@@ -136,7 +145,6 @@ const HomePage = () => {
             // play warn sound unless quieted
             if (nextEvs.status !== 'ack') {
                 if ('warn' in nextEvs) {
-                    // console.log("found warn");
                     if (nextEvs.status === 'pending') {
                         setNextEvs({...nextEvs, status: 'soon'});
                     }
@@ -167,20 +175,17 @@ const HomePage = () => {
             // try again later
             var timeoutId = setTimeout(eventTask, resched) as unknown as number;
             setEventId(timeoutId);
-            console.log('another alarm timer', resched);
         } else {
             console.log('bad resched', resched);
         }
 
     };
 
-    // use state eventId and clears it
-    //   global eventId
+    // use state eventId and clears it using global eventId
     const killEventTask = () => {
         if (eventId) {
             clearTimeout(eventId);
             setEventId(0);
-            console.log('Cancel alarm timer', eventId);
         }
     };
 
@@ -189,22 +194,16 @@ const HomePage = () => {
     //   ignore 'current', 'soon' status, that is set/ignored by target fun
     useEffect(() => {
         if (nextEvs.status !== 'current' && nextEvs.status !== 'soon') {
-            let currdate = new Date().valueOf();
+            let currdate = new Date(Date.now()).valueOf();
             killEventTask();
             if (nextEvs.evs.length > 0) {
-                console.log('useeffect nextevs - update event task');
                 let next_evtime = nextEvs.evs[0].evTstamp
                 let next_milli = next_evtime - currdate - 300000; // ms until event - 5 min warning
 
                 // exec function eventTask after timer
                 var timeoutId = setTimeout(eventTask, (next_milli > 0)? next_milli: 10) as unknown as number;
                 setEventId(timeoutId);
-                console.log('restart alarm timer', timeoutId);
-            } else {
-                console.log('useeffect nextevs - trigger');
             }
-        } else {
-            console.log('useeffect nextevs - current/soon');
         }
 
         // set necessary audio components for nextev
@@ -252,11 +251,10 @@ const HomePage = () => {
 
     // when futureEvs change, setup new nextEvs state
     useEffect(() => {
-        console.log('useeffect futureevs');
         setNextEvs({evs: [], status: 'none'});
 
         if (futureEvs.evs.length > 0) {
-            let currdate = new Date().valueOf();
+            let currdate = new Date(Date.now()).valueOf();
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate);
             if (wkEvents.length > 0) {
                 // filter out events that aren't next (within minute of event time)
@@ -273,12 +271,13 @@ const HomePage = () => {
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
-    const setNowDigital = () => {
-        console.log("setnow digital");
-        let wkdate = new Date();
+    const setNowDigital = (currClock: string) => {
+        // console.log("setnow digital", currClock);
+        let wkdate = new Date(Date.now());
 
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
+
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: '2-digit', minute: '2-digit'});
@@ -294,26 +293,44 @@ const HomePage = () => {
             }
         } else if (compclock) {
             const localTime = wkdate.toLocaleTimeString(
-              "en-US", {hour: '2-digit', minute: '2-digit'});
-            console.log('time', localTime);
-
+              "en-US", {hour: 'numeric', minute: '2-digit'});
             const localComp = localTime.split(' ')[0].split(':');
+            let wkColor = '#000000';
+            const swPM : boolean = (localTime.split(' ')[1] === 'PM');
+            const hours = parseInt(localComp[0], 10) + ((swPM)? 12: 0);
+
+            if (currClock.slice(-6) === '-color') {
+                if (hours >= 2 && hours < 6) {
+                    wkColor = '#8b0000';
+                } else if (hours >= 6 && hours < 10) {
+                    wkColor = '#ff4500';
+                } else if (hours >= 10 && hours < 14) {
+                    wkColor = '#003300';
+                } else if (hours >= 14 && hours < 18) {
+                    wkColor = '#00008b';
+                } else if (hours >= 18 && hours < 22) {
+                    wkColor = '#4b008b';
+                }
+            }
+
             compclock.textContent = localComp[0];
+            compclock.style.color = wkColor;
             const compminutes = document.getElementById('compminutes');
             if (compminutes) {
                 compminutes.textContent = localComp[1];
+                compminutes.style.color = wkColor;
             }
 
             let mainpm = document.getElementById('mainpm');
             if (mainpm) {
-                if (localTime.split(' ')[1] === 'PM') {
+                if (swPM) {
                     mainpm.textContent = localTime.split(' ')[1];
                 } else {
                     mainpm.textContent = '  ';
                 }
             }
         } else {
-            console.log("no mainclock on dom");
+            console.log("no clock defined on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -327,14 +344,10 @@ const HomePage = () => {
         // every ten seconds, get the time and update clock
         // cleanup on useeffect return
 
-        if (showClock && showClock !== '' && hstatus !== 'Loading') {
-            setNowDigital();
-            var intervalId = setInterval(() => {setNowDigital()}, 10000);
-            console.log("restart clock useeffect id", intervalId);
-
-            return () => {clearInterval(intervalId);console.log('clear id', intervalId);};
-        } else {
-            console.log("clock not defined");
+        if (showClock && hstatus !== 'Loading') {
+            setNowDigital(showClock);
+            var intervalId = setInterval(() => {setNowDigital(showClock)}, 10000);
+            return () => {clearInterval(intervalId);};
         }
         return () => {};
     }, [showClock, hstatus]);
@@ -342,7 +355,6 @@ const HomePage = () => {
     // cleanly reset and rebuild future events using globals
     //  globals allTasks
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
-            console.log("Building schedule ", wkgroup.name, wkgroup.descr, wksched);
             killEventTask();
 
             let wkEvents: iFutureEvs = {evs: []};
@@ -351,7 +363,7 @@ const HomePage = () => {
                 }
 
             // cleanup, get expired (or about to in next 30 seconds)
-            let currdate = new Date();
+            let currdate = new Date(Date.now());
             currdate.setSeconds(currdate.getSeconds() + 30);
 
             let stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
@@ -417,13 +429,10 @@ const HomePage = () => {
 
     // scheduler (default ''), digital1, digital2
     const changeClock = (newClock: string) => {
-        if (showClock === 'scheduler' || showClock === '') {
-            setShowClock('digital1');
-        } else if (newClock == 'next' && showClock === 'digital1') {
-            setShowClock('digital2');
-            console.log('clock digital2');
-        } else {
+        if (newClock === '' || newClock === 'close') {
             setShowClock('scheduler');
+        } else {
+            setShowClock(newClock);
         }
     };
 
@@ -438,17 +447,14 @@ const HomePage = () => {
                       {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                     setAllTasks(newTasks);
                 } else {
-                    enqueueSnackbar(`no events found`, {variant: 'error'});
                     setHstatus('Ready');
                 }
             } catch (result) {
                 enqueueSnackbar(`error retrieving events`, {variant: 'error'});
-                console.log("got error", result);
             }
         };
 
         setHstatus('Loading');
-        console.log('events loading');
         fetchData();
     }, [enqueueSnackbar] );
 
@@ -462,18 +468,16 @@ const HomePage = () => {
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                   setSchedGroups(newSchedgrps);
               } else {
-                  enqueueSnackbar(`no schedules found`, {variant: 'error'});
                   setHstatus('Ready');
               }
           } catch (result) {
               enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
-              console.log("got error", result);
+              setHstatus('Ready');
           }
 
       };
 
       setHstatus('Loading');
-      console.log('schedgroups loading');
       fetchData();
     }, [enqueueSnackbar] );
 
@@ -488,20 +492,12 @@ const HomePage = () => {
             let wkGroup = 'default';
             setCurrGroup(wkGroup);
             setCurrSched('off');
-
-            let groupElement =  document.getElementById('grouptitle');
-            if (schedGroups[wkGroup] && groupElement) {
-                    groupElement.textContent = schedGroups[wkGroup].descr;
-        }
-
-        // init schedule group completed
         }
 
     }, [schedGroups]);
 
     // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
-        console.log("useeffect currGroup - schedGroups, allTasks");
         if (schedGroups[currGroup] && allTasks) {
             // set schedule buttons, example = {'test4': 'wake'}
             setSchedButtons(buildButtons({name:currGroup,...schedGroups[currGroup]}));
@@ -515,7 +511,6 @@ const HomePage = () => {
                     groupElement.textContent = schedGroups[currGroup].descr;
             }
             setHstatus("Ready");
-            console.log("Status = Ready");
         }
     }, [allTasks, schedGroups, currGroup]);
 
@@ -527,8 +522,8 @@ const HomePage = () => {
       <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-        <Box display={(showClock === "digital1")? 'flex': 'none'} flexDirection='column'>
-          { (showClock === "digital1") &&
+        <Box display={(showClock === "digital1" || showClock === "digital1-color")? 'flex': 'none'} flexDirection='column'>
+          { (showClock === "digital1" || showClock === "digital1-color") &&
           <ClockDigital1 onComplete={changeClock} />
           }
 
@@ -542,8 +537,8 @@ const HomePage = () => {
           }
         </Box>
 
-        <Box display={(showClock === "digital2")? 'block': 'none'}>
-          { (showClock === "digital2") &&
+        <Box display={(showClock === "digital2" || showClock === "digital2-color")? 'block': 'none'}>
+          { (showClock === "digital2" || showClock === "digital2-color") &&
           <ClockDigital2 onComplete={changeClock} />
           }
 
@@ -559,9 +554,9 @@ const HomePage = () => {
 
         {(showClock === 'scheduler' || showClock === '') &&
         <>
-        <Box m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
+        <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
-            <Button onClick={() => setShowClock('digital1')}>
+            <Button data-testid='change clock' onClick={() => changeClock('digital1')}>
               <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600, color: 'black'}}>
                 00:00
               </Typography>
@@ -596,14 +591,14 @@ const HomePage = () => {
         </Box>
 
         <Box mx={1} mb={1}>
-          <Button variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
+          <Button size='large' variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
         </Box>
 
         <Box mx={1} my={1}>
           {Object.keys(schedButtons).map(item => {
           return (
-            <Button key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
+            <Button size='large' key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
               {schedButtons[item]}
             </Button>
           )})}
@@ -621,7 +616,7 @@ const HomePage = () => {
                 No Events found
               </Typography>
               <Typography variant='body1'>To get started, go to the</Typography>
-              <Button component={Link} to='/events'>Events page</Button>
+              <Link to='/events'>Events page</Link>
               <Typography variant='body1'>and build your first Event!</Typography>
             </Box>
           : <>
@@ -631,7 +626,7 @@ const HomePage = () => {
                   No Schedules found
                 </Typography>
                 <Typography variant='body1'>To finish setting up, go to the</Typography>
-                <Button component={Link} to='/scheds'>Schedules page</Button>
+                <Link to='/scheds'>Schedules page</Link>
                 <Typography variant='body1'>and setup a group and schedule.</Typography>
               </Box>
             }

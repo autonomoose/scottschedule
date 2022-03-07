@@ -50,10 +50,12 @@ describe("userutil email chg", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it("handles cancel correctly", () => {
+  it("handles cancel correctly", async () => {
     const utils = mySetup();
     userEvent.click(utils.cancelButton);
-    expect(handleDialogClose).toHaveBeenCalledWith('');
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith('');
+    });
   });
 
   it("handles change email w/ verification ", async () => {
@@ -71,7 +73,7 @@ describe("userutil email chg", () => {
     await waitFor(() => {
         expect(handleDialogClose).toHaveBeenCalledWith('ver');
     });
-  });
+  }, 20000);
 
   it("handles defaults, a bad email and resets ", async () => {
     const utils = mySetup();
@@ -80,7 +82,9 @@ describe("userutil email chg", () => {
 
     // put in bad email and then reset
     userEvent.type(utils.newEmailInput, 't');
-    expect(utils.chgEmailButton).toBeDisabled();
+    await waitFor(() => {
+      expect(utils.chgEmailButton).toBeDisabled();
+    });
     userEvent.click(utils.resetButton);
     await waitFor(() => {
       expect(utils.newEmailInput).toHaveValue('');
@@ -88,7 +92,9 @@ describe("userutil email chg", () => {
 
     // put in correct email to get to verification page
     userEvent.type(utils.newEmailInput, 'test@mock.com');
-    expect(utils.chgEmailButton).toBeEnabled();
+    await waitFor(() => {
+      expect(utils.chgEmailButton).toBeEnabled();
+    });
     userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
         expect(utils.getByTestId('verifyInput')).toBeVisible();
@@ -96,7 +102,9 @@ describe("userutil email chg", () => {
 
     // put in bad verifcation code
     userEvent.type(utils.getByTestId('verifyInput'), '123');
-    expect(utils.verifyButton).toBeDisabled();
+    await waitFor(() => {
+      expect(utils.verifyButton).toBeDisabled();
+    });
 
     userEvent.click(utils.cancelButton);
     await waitFor(() => {
@@ -110,7 +118,7 @@ describe("userutil email chg", () => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Code Sent`, {variant: 'success'});
     });
 
-  }, 10000);
+  }, 60000);
 
   it("handles userattrib and resendcode rejects from Auth", async () => {
     const prevAuthUpdUsrAttrib = Auth.updateUserAttributes;
@@ -150,9 +158,9 @@ describe("userutil email chg", () => {
 
     expect(consoleWarnFn).toHaveBeenCalledTimes(2);
     consoleWarnFn.mockRestore();
-  });
+  }, 20000);
 
-  it("handles userattrib and resendcode rejects from Auth", async () => {
+  it("handles reject submit", async () => {
     const prevAuthVerAttrSub = Auth.verifyCurrentUserAttributeSubmit;
     Auth.verifyCurrentUserAttributeSubmit = jest.fn(() => Promise.reject('mockrejected verifysubmit'));
 
@@ -178,6 +186,6 @@ describe("userutil email chg", () => {
     Auth.verifyCurrentUserAttributeSubmit = prevAuthVerAttrSub;
     expect(consoleWarnFn).toHaveBeenCalledTimes(1);
     consoleWarnFn.mockRestore();
-  });
+  }, 20000);
 
 });

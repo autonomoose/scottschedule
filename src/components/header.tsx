@@ -17,6 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import StarIcon from '@mui/icons-material/Star';
 
@@ -163,6 +164,7 @@ const Header = ({uname}: HeaderProps) => {
           :
             <>
             <ListItemMenu link="/" icon={<HomeIcon />} text="Home" />
+            <ListItemMenu exlink="https://www.wernerdigital.com/about" icon={<GroupIcon />}   text="About" />
             <ListItemMenu link="/home" icon={<StarIcon />}  text="Login" />
             </>
           }

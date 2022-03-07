@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HomePage renders snapshot correctly 1`] = `
-<amplify-authenticator>
+<div
+  data-testid="authenticator"
+>
   <div
     style="text-align: center;"
   >
@@ -414,13 +416,18 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     class="MuiBox-root css-dduipi"
                   />
                   <div
+                    class="MuiBox-root css-1hyfx7x"
+                  />
+                  <div
                     class="MuiBox-root css-1iuufgg"
+                    data-testid="clock-scheduler"
                   >
                     <div
                       class="MuiBox-root css-x1sij0"
                     >
                       <button
                         class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+                        data-testid="change clock"
                         tabindex="0"
                         type="button"
                       >
@@ -428,7 +435,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                           class="MuiTypography-root MuiTypography-h4 css-ki721n-MuiTypography-root"
                           id="mainclock"
                         >
-                          00:00
+                          06:36
                         </h4>
                         <span
                           class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
@@ -448,13 +455,13 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
                         id="maindate"
                       >
-                        01/01/00
+                        Wed, Dec 21
                       </h6>
                       <span
                         class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
                         id="grouptitle"
                       >
-                        group title
+                        test group
                       </span>
                     </div>
                     <div
@@ -474,6 +481,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         </label>
                         <div
                           class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+                          variant="outlined"
                         >
                           <div
                             aria-expanded="false"
@@ -484,11 +492,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                             role="button"
                             tabindex="0"
                           >
-                            <span
-                              class="notranslate"
-                            >
-                              ​
-                            </span>
+                            default
                           </div>
                           <input
                             aria-hidden="true"
@@ -528,7 +532,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     class="MuiBox-root css-5uisrr"
                   >
                     <button
-                      class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButtonBase-root  css-1sszw6i-MuiButtonBase-root-MuiButton-root"
+                      class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root  css-1i749hr-MuiButtonBase-root-MuiButton-root"
                       tabindex="0"
                       type="button"
                     >
@@ -538,7 +542,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                       />
                     </button>
                     <button
-                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1rwt2y5-MuiButtonBase-root-MuiButton-root"
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-9y1egq-MuiButtonBase-root-MuiButton-root"
                       tabindex="0"
                       type="button"
                     >
@@ -575,7 +579,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
             <div
               aria-hidden="true"
               class="MuiBackdrop-root css-1178cxv-MuiBackdrop-root"
-              style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
+              style="opacity: 0; webkit-transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
             >
               <span
                 class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-62e83j-MuiCircularProgress-root"
@@ -651,5 +655,5 @@ exports[`HomePage renders snapshot correctly 1`] = `
       </div>
     </div>
   </div>
-</amplify-authenticator>
+</div>
 `;

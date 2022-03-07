@@ -4,6 +4,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { API, Auth, Hub } from 'aws-amplify';
 import Layout from "../layout";
 
+jest.mock('aws-amplify');
+
 const mockEnqueue = jest.fn();
 jest.mock('notistack', () => ({
   ...jest.requireActual('notistack'),
@@ -27,19 +29,17 @@ afterAll(() => {
     window.location.reload = reload;
 });
 
-// headerpub describes blank uname header
 const mytest = <Layout><div data-testid='test'>Test</div></Layout>;
 describe("Layout", () => {
   it("renders snapshot correctly", async () => {
-    const {container} = render(mytest);
+    const {container, getByTestId} = render(mytest);
     await waitFor(() => {
-        expect(screen.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(getByTestId('test')).toBeVisible();
     });
     expect(container.firstChild).toMatchSnapshot();
-  });
+  }, 10000);
 
-  it.skip('checks Error Boundary', async () => {
+  it('checks Error Boundary', async () => {
     const ThrowError = () => {
       throw new Error('Test error throw');
       return(<div>Mock Error</div>);
@@ -56,9 +56,16 @@ describe("Layout", () => {
     consoleErrorFn.mockRestore();
     consoleWarnFn.mockRestore();
 
-  });
+  }, 10000);
 
-  it.skip('checks auth Hub listener', async () => {
+  it('checks permit parameter', async () => {
+    render(<Layout permit='admin'><div data-testid='notshown'></div></Layout>);
+    await waitFor(() => {
+        expect(screen.getByTestId('notpermitted')).toBeVisible();
+    });
+  }, 20000);
+
+  it('checks auth Hub listener', async () => {
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('test')).toBeVisible();
@@ -91,8 +98,9 @@ describe("Layout", () => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(5);
       consoleWarnFn.mockRestore();
       consoleLogFn.mockRestore();
-  });
-  it.skip('handles auth currentSession error throw', async () => {
+  }, 20000);
+
+  it('handles auth currentSession error throw', async () => {
       // patch in error
       const prevSession = Auth.currentSession;
       Auth.currentSession = jest.fn(() => Promise.reject('mockReject'));
@@ -103,9 +111,9 @@ describe("Layout", () => {
       });
 
       Auth.currentSession = prevSession;
-  });
+  }, 10000);
 
-  it.skip('handles dberror during user lookup', async () => {
+  it('handles dberror during user lookup', async () => {
       const prevAPIgraphql = API.graphql;
       API.graphql = jest.fn(() => Promise.reject('mockRejected'));
       const utils = render(mytest);
@@ -114,9 +122,9 @@ describe("Layout", () => {
       });
       API.graphql = prevAPIgraphql;
 
-  });
+  }, 10000);
 
-  it.skip('handles null lookup (new user)', async () => {
+  it('handles null lookup (new user)', async () => {
       const prevAPIgraphql = API.graphql;
       API.graphql = jest.fn(() => Promise.resolve({'data': {'getCurrentUser':{}}}));
       const utils = render(mytest);
@@ -125,6 +133,6 @@ describe("Layout", () => {
       });
       API.graphql = prevAPIgraphql;
 
-  });
+  }, 10000);
 
 });

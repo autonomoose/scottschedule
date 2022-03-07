@@ -37,6 +37,7 @@ export interface iSchedGroupListDB {
       sound?: string,
       soundrepeat?: string,
       warn?: string,
+      chain?: string,
 }
 export const listSchedGroupsFull = `query queryEvents {
   listSchedGroups {
@@ -48,6 +49,7 @@ export const listSchedGroupsFull = `query queryEvents {
       sound
       soundrepeat
       warn
+      chain
     }
     nextToken
 

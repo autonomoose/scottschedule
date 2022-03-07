@@ -41,7 +41,6 @@ export const CreateGroup = (props: CreateGroupProps) => {
         descr: string,
     };
     const formNewGroupSubmit = async (data: FormNewGroupParms) => {
-        console.log('form group data', data);
         try {
             const xdata = {'input': {
                 'etype': 'gs',
@@ -49,11 +48,10 @@ export const CreateGroup = (props: CreateGroupProps) => {
                 'descr': data.descr,
                 }
             };
-            const result = await API.graphql({query: mutAddEvents, variables: xdata});
-            console.log('updated', result);
+            await API.graphql({query: mutAddEvents, variables: xdata});
             funComplete(data.name);
         } catch (result) {
-            console.log('failed group update', result);
+            console.warn('failed group update', result);
         }
     };
 
@@ -123,7 +121,6 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
         descr: string,
     };
     const formModGroupSubmit = async (data: FormModGroupParms) => {
-        console.log('modform data', data);
         try {
             const xdata = {'input': {
                 'etype': 'gs',
@@ -131,30 +128,26 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
                 'descr': data.descr,
                 }
             };
-            const result = await API.graphql({query: mutAddEvents, variables: xdata});
-            console.log('updated', result);
+            await API.graphql({query: mutAddEvents, variables: xdata});
             funComplete(wkName);
         } catch (result) {
-            console.log('failed group update', result);
+            console.warn('failed group update', result);
         }
     };
     interface FormDelEventParms {
         cmd: string,
     };
     const formDelEvent = async (data: FormDelEventParms) => {
-        console.log('formDel parms', data);
         try {
             const xdata = {'input': {
                 'etype': 'gs',
                 'evnames': wkName+"!"+data.cmd,
                 }
             };
-            console.log('deleting', xdata);
-            const result = await API.graphql({query: mutDelEvents, variables: xdata});
-            console.log('deleted', result);
+            await API.graphql({query: mutDelEvents, variables: xdata});
             funComplete(wkName);
         } catch (result) {
-            console.log('failed delete', result);
+            console.warn('failed delete', result);
         }
     };
 
@@ -171,7 +164,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           <Box display='flex' alignItems='center'>
             {wkName}
             { (wkGroup && wkGroup.schedNames.length === 0) &&
-            <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+            <IconButton data-testid='delete' size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
             }
           </Box>
 
@@ -193,18 +186,16 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
               <span>Schedules ({wkGroup.schedNames.length}) </span>
               <Button onClick={() => funComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
             </Box>
+            <List disablePadding dense sx={{marginLeft: '1em'}}>
             {
               wkGroup.schedNames.map(schedule => {
                 return(
-                  <Box mx={2} key={schedule.schedName} display='flex' flexWrap='wrap'>
-                    <Button onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}  size="small" variant="outlined" color="primary">
-                      {schedule.schedName}
-                    </Button>
-
-                    ({schedule.schedTasks.length} events)
-                  </Box>
+                  <ListItem button key={schedule.schedName} onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}>
+                      {schedule.schedName} - {schedule.descr}
+                  </ListItem>
               ) } )
             }
+            </List>
           </>
           }
         </Box>
@@ -228,6 +219,7 @@ interface FormManSchedParms {
     warn: string,
 };
 
+// manage schedule
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     let wkWords = props.groupSchedName.split('!');
@@ -277,13 +269,11 @@ export const ManSched = (props: ManSchedProps) => {
     }, [schedName, currSchedule] );
 
     const formManSchedSubmit = async (data: FormManSchedParms) => {
-        console.log('form sched data', data);
         let wkRetNames = groupName+"!"+data.schedName;
         if (schedName !== '' && schedName !== '_NEW_') {
             wkRetNames = groupName+"!"+schedName;
         }
         const wkEvNames = wkRetNames+"!args";
-
 
         try {
             const xdata = {'input': {
@@ -297,12 +287,10 @@ export const ManSched = (props: ManSchedProps) => {
                 'warn': data.warn,
                 }
             };
-            console.log('final data', xdata);
-            const result = await API.graphql({query: mutAddScheds, variables: xdata});
-            console.log('updated', result);
+            await API.graphql({query: mutAddScheds, variables: xdata});
             funComplete(wkRetNames);
         } catch (result) {
-            console.log('failed sched update', result);
+            console.warn('failed sched update', result);
         }
     };
     interface FormDelEventParms {
@@ -346,7 +334,7 @@ export const ManSched = (props: ManSchedProps) => {
                 : <span>Add Schedule ({groupName})</span>
               }
             </Typography>
-            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton data-testid='cancel' size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
           </Box>
 
           <Box display='flex' justifyContent='space-between'>
@@ -367,7 +355,7 @@ export const ManSched = (props: ManSchedProps) => {
             }
 
             <Box><label>
-              Button <input type="text" size={6} data-testid="beginsInput"
+              Button <input type="text" size={6} data-testid="buttonInput"
                {...register('buttonName', { maxLength:8 })}
                aria-invalid={errors.buttonName ? "true" : "false"}
               />
@@ -426,7 +414,7 @@ export const ManSched = (props: ManSchedProps) => {
               currSchedule.schedTasks.map(task => {
                 return(
                   <Box mx={2} key={task.evTaskId}>
-                    <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': task.evTaskId })}>X</IconButton>
+                    <IconButton data-testid={'dconn-'+task.evTaskId} size='small' color='error' onClick={() => formDelEvent({'cmd': task.evTaskId })}>X</IconButton>
 
                     {task.evTaskId}
                   </Box>
@@ -461,19 +449,17 @@ export const ConnectTask = (props: ConnectTaskProps) => {
         taskid: string,
     };
     const formConnectTaskSubmit = async (data: FormConnectTaskParms) => {
-        console.log('form data', data);
         try {
             const xdata = {'input': {
                 'etype': 'gs',
                 'evnames': props.schedName+'!'+data.taskid,
                 }
             };
-            const result = await API.graphql({query: mutAddRules, variables: xdata});
-            console.log('connected task to schedule', result);
+            await API.graphql({query: mutAddRules, variables: xdata});
             props.onComplete(props.schedName);
 
         } catch (result) {
-            console.log('failed update connection', result);
+            console.warn('failed update connection', result);
             props.onComplete('');
         }
     };
@@ -541,7 +527,6 @@ const DisplaySchedGroup = (props: DisplaySchedGroupProps) => {
 export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     try {
         const result: any = await API.graphql({query: listSchedGroupsFull})
-        console.log("loaded schedgroups dbrecords:", result.data.listSchedGroups.items.length);
 
         const compactEvents = result.data.listSchedGroups.items.reduce((resdict: iGrpSchedTask, item: iSchedGroupListDB) => {
             const evkeys = item.evnames.split('!');
@@ -585,6 +570,9 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 if (item.begins) {
                     schedArgs.begins = item.begins;
                 }
+                if (item.chain) {
+                    schedArgs.chain = item.chain;
+                }
                 if (item.button || item.button === '') {
                     schedArgs.buttonName = item.button;
                 }
@@ -612,7 +600,6 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
 
         return(compactGroups);
     } catch (result) {
-        console.log("got error", result);
         return({});
     }
 };

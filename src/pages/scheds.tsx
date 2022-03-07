@@ -36,7 +36,6 @@ const SchedsPage = () => {
     }
 
     const formSchedCallback = async (status: string) => {
-        console.log("schedule callback status", status);
         setSchedName((status[0] === '_')? '': status);
         if (status !== '') {
             setPgserial(pgserial+1);
@@ -44,7 +43,6 @@ const SchedsPage = () => {
     };
 
     const formGroupCallback = async (status: string) => {
-        console.log("group callback status", status);
         if (status[0] === '_') {
           // call to open schedule from group form
           setGroupName('');
@@ -59,7 +57,6 @@ const SchedsPage = () => {
 
     // maintain currSchedule with schedName
     useEffect(() => {
-        console.log('useEffect schedName', schedName);
         let retSched: iSchedule = {schedName: '', schedTasks: []}
 
         if (schedName !== '') {
@@ -80,7 +77,6 @@ const SchedsPage = () => {
     useEffect(() => {
         const fetchScheds = async () => {
             setHstatus('Loading');
-            console.log('Loading schedgroups seq#', pgserial);
             const newSchedgrps = await fetchSchedGroupsDB();
             if (newSchedgrps) {
                 enqueueSnackbar(`loaded schedules`,
@@ -107,9 +103,6 @@ const SchedsPage = () => {
          boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
           <Box mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
             Groups ({Object.keys(schedGroups).length})
-            <Button variant='outlined' onClick={() => {setPgserial(pgserial+1);}}>
-              Refresh
-            </Button>
 
             <Button variant='outlined' disabled={(groupName === '_NEW_')} onClick={() => {buttonSetGroupName('_NEW_');}}>
               New Group
