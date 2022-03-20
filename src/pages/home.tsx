@@ -11,7 +11,7 @@ import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 import { ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
-import { fetchSchedGroupsDB } from '../components/schedgrputil';
+import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -20,19 +20,10 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
-
-interface iNextEvs {
-    evs: iFutureEvent[],
-    status: string,
-    sound?: iEvsSound,
-    warn?: iEvsWarn,
-};
 
 interface iAudioComp {
     id: string,
@@ -573,20 +564,7 @@ const HomePage = () => {
             </Typography>
           </Box>
           <Box id='status'>
-            <TextField margin="dense" type="text" variant="outlined" size="small"
-              value={currGroup} onChange={changeGroup}
-              label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
-              inputProps={{'data-testid': 'schedgroup'}}
-              select
-            >
-              {(schedGroups)
-                ? Object.keys(schedGroups).map(item => {
-                  return(
-                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                   )})
-                : <MenuItem value='new'>new</MenuItem>
-              }
-            </TextField>
+            <ChoiceSchedGroup currgroup={currGroup} schedGroupList={schedGroups} setgroup={changeGroup} />
           </Box>
         </Box>
 

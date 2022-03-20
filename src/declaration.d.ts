@@ -57,6 +57,13 @@ interface iEvsWarn {
     sound?: iEvsSound,
 };
 
+interface iNextEvs {
+    evs: iFutureEvent[],
+    status: string,
+    sound?: iEvsSound,
+    warn?: iEvsWarn,
+};
+
 interface iFutureEvent {
     evTstamp: number,
     evTaskId: string,

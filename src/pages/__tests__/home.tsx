@@ -24,6 +24,7 @@ jest.mock('../../components/eventsutil', () => ({
 }));
 
 jest.mock('../../components/schedgrputil', () => ({
+    ...jest.requireActual('../../components/schedgrputil'),
     fetchSchedGroupsDB: jest.fn(() => Promise.resolve(
       {default: {descr: 'test group',
         schedNames: [{

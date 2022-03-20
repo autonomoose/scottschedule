@@ -11,9 +11,11 @@ import { useForm } from "react-hook-form";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
@@ -493,6 +495,28 @@ export const ConnectTask = (props: ConnectTaskProps) => {
       </Card></Box>
 ) }
 
+// -------------------------------------------------
+interface ChoiceSchedGroupProps {
+    schedGroupList: iSchedGroupList,
+    currgroup: string,
+    setgroup: (event: React.ChangeEvent<HTMLInputElement>) => void,
+}
+export const ChoiceSchedGroup = (props:ChoiceSchedGroupProps) => (
+    <TextField margin="dense" type="text" variant="outlined" size="small"
+      value={props.currgroup} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {props.setgroup(e)} }
+      label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
+      inputProps={{'data-testid': 'schedgroup'}}
+      select
+    >
+      {(props.schedGroupList)
+        ? Object.keys(props.schedGroupList).map(item => {
+          return(
+            <MenuItem key={item} value={item}>{item}</MenuItem>
+           )})
+        : <MenuItem value='new'>new</MenuItem>
+      }
+    </TextField>
+);
 // -------------------------------------------------
 interface DisplaySchedGroupProps {
   group: string,

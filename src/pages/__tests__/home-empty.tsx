@@ -2,13 +2,15 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 
 import { fetchEventsDB } from '../../components/eventsutil';
-import { fetchSchedGroupsDB } from '../../components/schedgrputil';
+import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../../components/schedgrputil';
 import HomePage from "../home";
 
 jest.mock('../../components/eventsutil', () => ({
     fetchEventsDB: jest.fn(() => Promise.resolve({})),
 }));
+
 jest.mock('../../components/schedgrputil', () => ({
+    ...jest.requireActual('../../components/schedgrputil'),
     fetchSchedGroupsDB: jest.fn(() => Promise.resolve({})),
 }));
 
