@@ -1,8 +1,11 @@
 // sched and groups utilities and components
-// exports default DisplaySchedGroup
-//  - exports Group components CreateGroup, ModifyGroup
-//  - exports Schedule components ManSched
-// and data fetchSchedGroupsDB - full groups and schedules
+// exports default DisplaySchedGroup (test -base)
+//    fetchSchedGroupsDB - full groups and schedules(test -base)
+//  Group components CreateGroup (test -create),
+//                     ModifyGroup (test -modify,-modempty)
+//                     ChoiceSchedGroup (test -choice)
+//  Schedule components ManSched (test -mansched)
+//  ConnectTask (test -connev)
 
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';

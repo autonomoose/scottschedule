@@ -50,7 +50,7 @@ describe("schedgrputil - modify empty group", () => {
   it("handles graphql error on delete", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.reject('mockreject'));
+    API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
     userEvent.click(utils.delButton);
@@ -63,7 +63,7 @@ describe("schedgrputil - modify empty group", () => {
   });
   it("handles delete", async () => {
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.resolve({}));
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
     userEvent.click(utils.delButton);

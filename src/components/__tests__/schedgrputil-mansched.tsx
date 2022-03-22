@@ -79,7 +79,7 @@ describe("schedgrputil - mansched", () => {
   it("handles graphql error on save", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.reject('mockreject'));
+    API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
     userEvent.type(utils.descrFld, 'test desc');
@@ -97,7 +97,7 @@ describe("schedgrputil - mansched", () => {
   });
   it("handles save after descr modification", async () => {
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.resolve({}));
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
     userEvent.type(utils.descrFld, 'test desc');
@@ -114,7 +114,7 @@ describe("schedgrputil - mansched", () => {
   });
   it("handles event disconnect", async () => {
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.resolve({}));
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
     userEvent.click(utils.getByTestId('dconn-testev'));

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`schedgrputil - connect event renders snapshot correctly 1`] = `
+exports[`schedgrputil - base DisplaySchedGroup event renders snapshot correctly 1`] = `
 <div
   class="MuiBox-root css-1w8v01d"
 >

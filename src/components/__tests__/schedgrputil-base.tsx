@@ -58,7 +58,7 @@ const expectSchedNames = {
 };
 
 const mytest = <DisplaySchedGroup group='default' groupSched={testSchedGroup} select={mockCallback} />
-describe("schedgrputil - connect event", () => {
+describe("schedgrputil - base DisplaySchedGroup event", () => {
   it("renders snapshot correctly", () => {
     const {container} = render(mytest);
 
@@ -67,7 +67,7 @@ describe("schedgrputil - connect event", () => {
 
   it("handles graphQL thrown error", async () => {
       const prevAPIgraphql = API.graphql;
-      API.graphql = jest.fn(() => Promise.reject('mockRejected'));
+      API.graphql = jest.fn(() => Promise.reject('mockRejected')) as any;
 
       const schedGroups = await fetchSchedGroupsDB();
       expect(schedGroups).toStrictEqual({});
@@ -81,7 +81,7 @@ describe("schedgrputil - connect event", () => {
           testDBschedArgs,
           testDBevent,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -99,7 +99,7 @@ describe("schedgrputil - connect event", () => {
           testDBgroupArgs,
           testDBschedArgs,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -117,7 +117,7 @@ describe("schedgrputil - connect event", () => {
           testDBgroupArgs,
           { evnames: 'default!testsched!args',},
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -136,7 +136,7 @@ describe("schedgrputil - connect event", () => {
           {...testDBschedArgs, sound: 'bigbell',},
           testDBevent,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -155,7 +155,7 @@ describe("schedgrputil - connect event", () => {
           {...testDBschedArgs, sound: 'bigbell', soundrepeat: '2'},
           testDBevent,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -174,7 +174,7 @@ describe("schedgrputil - connect event", () => {
           {...testDBschedArgs, warn: '_default_',},
           testDBevent,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
@@ -193,7 +193,7 @@ describe("schedgrputil - connect event", () => {
           {...testDBschedArgs, chain: 'testsched',},
           testDBevent,
         ]}}
-      }));
+      })) as any;
       const schedGroups = await fetchSchedGroupsDB();
 
       expect(schedGroups).toStrictEqual({
