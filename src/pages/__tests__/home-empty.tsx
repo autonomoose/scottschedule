@@ -2,7 +2,7 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 
 import { fetchEventsDB } from '../../components/eventsutil';
-import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../../components/schedgrputil';
+import { fetchSchedGroupsDB } from '../../components/schedgrputil';
 import HomePage from "../home";
 
 jest.mock('../../components/eventsutil', () => ({

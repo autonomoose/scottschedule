@@ -37,7 +37,7 @@ describe("eventsutil - base", () => {
           },
 
         ]}}
-      }));
+      })) as any;
 
       const newList = await fetchEventsDB();
       expect(newList).toStrictEqual(eventList);
@@ -45,7 +45,7 @@ describe("eventsutil - base", () => {
   });
   it("handles graphQL errors", async () => {
       const prevAPIgraphql = API.graphql;
-      API.graphql = jest.fn(() => Promise.reject('mockreject'));
+      API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
 
       const newList = await fetchEventsDB();
       expect(newList).toStrictEqual({});
