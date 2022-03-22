@@ -302,7 +302,6 @@ export const ManSched = (props: ManSchedProps) => {
         cmd: string,
     };
     const formDelEvent = async (data: FormDelEventParms) => {
-        console.log('formDel parms', data);
         try {
             const keyNames = groupName+"!"+schedName;
             const xdata = {'input': {
@@ -310,12 +309,10 @@ export const ManSched = (props: ManSchedProps) => {
                 'evnames': keyNames+"!"+data.cmd,
                 }
             };
-            console.log('deleting', xdata);
             const result = await API.graphql({query: mutDelEvents, variables: xdata});
-            console.log('deleted', result);
             funComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
         } catch (result) {
-            console.log('failed delete', result);
+            console.warn('failed delete', result);
         }
     };
     const formCallback = (status: string) => {
