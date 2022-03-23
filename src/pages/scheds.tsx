@@ -6,6 +6,7 @@ import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 import DisplaySchedGroup, { ManSched, CreateGroup, ModifyGroup, fetchSchedGroupsDB } from '../components/schedgrputil';
+import { fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -23,6 +24,8 @@ const SchedsPage = () => {
     const [groupName, setGroupName] = useState('');
     const [schedName, setSchedName] = useState('');
     const [currSchedule, setCurrSchedule] = useState<iSchedule>({schedName: '', schedTasks: []});
+    const [evList, setEvList] = useState<string[]>([]);
+
     const [pgserial, setPgserial] = useState(0);
 
     const buttonSetGroupName = async (newGroupName: string) => {
@@ -94,6 +97,19 @@ const SchedsPage = () => {
         fetchScheds();
     }, [enqueueSnackbar, pgserial]);
 
+    useEffect(() => {
+        const fetchEvs = async () => {
+            const newTasks = await fetchEventsDB();
+            if (newTasks) {
+                setEvList(Object.keys(newTasks));
+                console.log("new tasks");
+            }
+        };
+
+        console.log("fetchev");
+        fetchEvs();
+    }, []);
+
     return(
       <Layout><Seo title="Schedules - Scottschedule" />
       <PageTopper pname="Schedules" vdebug={vdebug} helpPage="/help/scheds" />
@@ -126,7 +142,7 @@ const SchedsPage = () => {
        onComplete={formGroupCallback}
        open={(groupName !== '' && groupName !== '_NEW_')}
       />
-      <ManSched onComplete={formSchedCallback} open={(schedName !== '')}
+      <ManSched evList={evList} onComplete={formSchedCallback} open={(schedName !== '')}
        groupSchedName={schedName} gSchedule={currSchedule}
       />
 

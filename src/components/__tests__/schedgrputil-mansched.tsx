@@ -15,7 +15,9 @@ const testSched = {
     schedTasks: [{evTaskId: 'testev'}],
 };
 
-const mytest = <ManSched groupSchedName='testgrp!testsched' gSchedule={testSched} onComplete={mockCallback} open={true} />
+const mockEvList = ['ev1','ev2'];
+
+const mytest = <ManSched evList={mockEvList} groupSchedName='testgrp!testsched' gSchedule={testSched} onComplete={mockCallback} open={true} />
 const mySetup = () => {
     const utils = render(mytest);
     const canButton = utils.getByTestId('cancel');

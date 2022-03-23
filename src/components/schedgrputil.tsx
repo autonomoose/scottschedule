@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
 
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -211,6 +212,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
 interface ManSchedProps {
   groupSchedName: string, // group!sched or group!_NEW_
   gSchedule: iSchedule,
+  evList: string[],
   onComplete?: (status: string) => void,
   open: boolean
 }
@@ -309,7 +311,7 @@ export const ManSched = (props: ManSchedProps) => {
                 'evnames': keyNames+"!"+data.cmd,
                 }
             };
-            const result = await API.graphql({query: mutDelEvents, variables: xdata});
+            await API.graphql({query: mutDelEvents, variables: xdata});
             funComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
         } catch (result) {
             console.warn('failed delete', result);
@@ -411,7 +413,7 @@ export const ManSched = (props: ManSchedProps) => {
               <span>Events ({currSchedule.schedTasks.length}) </span>
               <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">Add Event</Button>
             </Box>
-            <ConnectTask schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
+            <ConnectTask evList={props.evList} schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
             {
               currSchedule.schedTasks.map(task => {
                 return(
@@ -433,6 +435,7 @@ export const ManSched = (props: ManSchedProps) => {
 interface ConnectTaskProps {
   schedName: string,
   onComplete: (status: string) => void,
+  evList: string[],
   open: boolean,
 }
 export const ConnectTask = (props: ConnectTaskProps) => {
@@ -443,6 +446,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
         }
     });
     const { isDirty, errors } = formState;
+
 
     const formConnectTaskCancel = async () => {
         props.onComplete('_'+props.schedName);
@@ -478,9 +482,18 @@ export const ConnectTask = (props: ConnectTaskProps) => {
           </Box>
 
           <Box>
-            <input type='text' size={10} data-testid="taskid"
-             {...register('taskid', { required: true,})}
-             aria-invalid={errors.taskid ? "true" : "false"}
+            <Autocomplete
+              options={props.evList}
+              id="taskid" data-testid="taskid"
+              sx={{ width: 200 }}
+              renderInput={(params) => (
+                <TextField {...params}
+                  label="Event Name"
+                  variant="outlined"
+                  {...register('taskid', { required: true,})}
+                  aria-invalid={errors.taskid ? "true" : "false"}
+                />
+              )}
             />
           </Box>
 

@@ -8,7 +8,9 @@ jest.mock('aws-amplify');
 
 const mockCallback = jest.fn();
 
-const mytest = <ConnectTask schedName='testgrp' onComplete={mockCallback} open={true} />
+const mockEvList = ['ev1','ev2'];
+
+const mytest = <ConnectTask evList={mockEvList} schedName='testgrp' onComplete={mockCallback} open={true} />
 const mySetup = () => {
     const utils = render(mytest);
     const canButton = utils.getByRole('button', {name: /cancel/i});
