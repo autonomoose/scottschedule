@@ -38,8 +38,8 @@ describe("schedgrputil - connev (connect event)", () => {
     const utils = mySetup();
 
     expect(utils.canButton).toBeEnabled();
-    expect(utils.resetButton).toBeDisabled();
-    expect(utils.saveButton).toBeDisabled();
+    expect(utils.resetButton).toBeEnabled();
+    expect(utils.saveButton).toBeEnabled();
   });
   it("cancels with button", () => {
     const utils = mySetup();
@@ -65,9 +65,6 @@ describe("schedgrputil - connev (connect event)", () => {
       expect(utils.resetButton).toBeEnabled();
     });
     userEvent.click(utils.resetButton);
-    await waitFor(() => {
-      expect(utils.resetButton).toBeDisabled();
-    });
   });
 
   it("handles graphql error on save", async () => {

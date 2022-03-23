@@ -318,7 +318,6 @@ export const ManSched = (props: ManSchedProps) => {
         }
     };
     const formCallback = (status: string) => {
-        console.log("manSched callback status", status);
         setSchedEv('');
         if (status[0] !== '_') {
             funComplete(status);
@@ -445,7 +444,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
             taskid: '',
         }
     });
-    const { isDirty, errors } = formState;
+    const { errors } = formState;
 
 
     const formConnectTaskCancel = async () => {
@@ -481,11 +480,12 @@ export const ConnectTask = (props: ConnectTaskProps) => {
             </Typography>
           </Box>
 
-          <Box>
+          <Box display="flex" justifyContent="center">
             <Autocomplete
               options={props.evList}
               id="taskid" data-testid="taskid"
-              sx={{ width: 200 }}
+              sx={{ width: 300 }}
+              clearOnEscape clearOnBlur
               renderInput={(params) => (
                 <TextField {...params}
                   label="Event Name"
@@ -499,8 +499,8 @@ export const ConnectTask = (props: ConnectTaskProps) => {
 
           <Box mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
-            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
-            <Button size="small" variant="contained" type="submit" disabled={!isDirty}>Save</Button>
+            <Button size="small" variant="outlined" onClick={() => reset()}>Reset</Button>
+            <Button size="small" variant="contained" type="submit">Save</Button>
           </Box>
 
           </form>

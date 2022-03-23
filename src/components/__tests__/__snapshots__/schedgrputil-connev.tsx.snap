@@ -22,10 +22,10 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
           </h6>
         </div>
         <div
-          class="MuiBox-root css-0"
+          class="MuiBox-root css-1l4w6pd"
         >
           <div
-            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-1dv0nny-MuiAutocomplete-root"
+            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-viou3o-MuiAutocomplete-root"
             data-testid="taskid"
           >
             <div
@@ -113,20 +113,24 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
             />
           </button>
           <button
-            class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
+            class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
             type="button"
           >
             Reset
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
           </button>
           <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
+            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
             type="submit"
           >
             Save
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
           </button>
         </div>
       </form>
