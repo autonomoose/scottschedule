@@ -102,11 +102,9 @@ const SchedsPage = () => {
             const newTasks = await fetchEventsDB();
             if (newTasks) {
                 setEvList(Object.keys(newTasks));
-                console.log("new tasks");
             }
         };
 
-        console.log("fetchev");
         fetchEvs();
     }, []);
 
