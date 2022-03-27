@@ -356,12 +356,11 @@ export const UserDelDialog = (props: UserDelDialogProps) => {
     async function deleteUser() {
         try {
             const currentUser = await Auth.currentAuthenticatedUser();
-            console.log("still needs to del", currentUser);
-            // await currentUser.deleteUser(err, res);
-            enqueueSnackbar(`Would have tried to delete you!`, {variant: 'success'});
-            // redirect?
+            Auth.signOut({ global: true });
+            currentUser.deleteUser((err: any, _res: any) => {if (err) throw err;});
+            enqueueSnackbar(`Deleted account`, {variant: 'success'});
         } catch (error) {
-            // console.warn('delete failed', error);
+            console.warn('delete failed', error);
             enqueueSnackbar(`Delete failed`, {variant: 'error'});
         }
      };
