@@ -150,9 +150,9 @@ const UserMaintPage = () => {
 
                 Close Account </Button></Box>
                 <Box ml={2} mr={1} mb={2}>
-                    This will send you to our billing partner to close your account.
-                    Your account data on this system will be securely deleted 7 days
-                    after the date the close date specified.
+                    This will close your account and log you off.
+                    Any account data will be securely
+                    deleted within 7 days of account closing date.
                 </Box>
               </Card></Box>
           }
