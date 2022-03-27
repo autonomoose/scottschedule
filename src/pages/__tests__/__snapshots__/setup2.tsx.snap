@@ -463,12 +463,13 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
                       <br />
                       <br />
                     </form>
+                    (this will sign you out so that the changes can take effect)
                   </div>
                 </div>
                 <div
                   class="MuiBox-root css-95qj54"
                 >
-                  Step 3: Build/import schedules (or just run the clocks!)
+                  Step 3: Sign back in to build/import schedules (or just run the clocks!)
                 </div>
               </div>
             </div>

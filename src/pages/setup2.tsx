@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticImage } from 'gatsby-plugin-image'
 import { navigate } from "gatsby";
-import { API } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 import { useForm } from "react-hook-form";
 
 import Layout from '../components/layout'
@@ -27,8 +27,9 @@ const SetupStep2Page = () => {
       try {
           const result = await API.post('apscottschedule', '/basicsetup', myParms);
           if (result && result['Response'] === 'completed') {
-              enqueueSnackbar(`Thank you for signing up!`,
+              enqueueSnackbar(`Signup successful!`,
                 {variant: 'success', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+              Auth.signOut({ global: true });
               navigate("/home");
           } else {
               enqueueSnackbar(`setup failed`, {variant: 'error'} );
@@ -61,10 +62,11 @@ const SetupStep2Page = () => {
                  <br />{errors.acceptbox && <span role="alert" style={{color: "#B00020"}}>&nbsp;&nbsp;you must accept terms to continue</span> }
                  <br />
                 </form>
+                (this will sign you out so that the changes can take effect)
                 </Box>
             </Box>
             <Box mb={3} ml={3}>
-              Step 3: Build/import schedules (or just run the clocks!)
+              Step 3: Sign back in to build/import schedules (or just run the clocks!)
             </Box>
           </Box>
         </Box>
