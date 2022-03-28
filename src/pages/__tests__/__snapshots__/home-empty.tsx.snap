@@ -533,32 +533,130 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                     </div>
                   </div>
                   <div
-                    class="MuiBox-root css-5uisrr"
+                    class="MuiBox-root css-1c5ij41"
                   >
-                    <button
-                      class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root  css-1i749hr-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
+                    <h4
+                      class="MuiTypography-root MuiTypography-h4 css-5lbw0b-MuiTypography-root"
                     >
-                      Off
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
-                    <button
-                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-9y1egq-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
+                      Welcome, new user!
+                    </h4>
+                    <ul
+                      class="MuiList-root MuiList-padding MuiList-dense css-h4y409-MuiList-root"
                     >
-                      tomorrow
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
+                      <p
+                        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                      >
+                        Get started quickly with an example config:
+                      </p>
+                      <div
+                        class="MuiBox-root css-1klgapo"
+                      >
+                        <li
+                          class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
+                        >
+                          <div
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            role="button"
+                            tabindex="0"
+                          >
+                            <div
+                              class="MuiListItemText-root MuiListItemText-dense MuiListItemText-multiline css-konndc-MuiListItemText-root"
+                            >
+                              <span
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
+                              >
+                                Just Clocks
+                              </span>
+                              <p
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-secondary css-83ijpv-MuiTypography-root"
+                              >
+                                minimal setup
+                              </p>
+                            </div>
+                            <span
+                              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                            />
+                          </div>
+                        </li>
+                        <li
+                          class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
+                        >
+                          <div
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            role="button"
+                            tabindex="0"
+                          >
+                            <div
+                              class="MuiListItemText-root MuiListItemText-dense MuiListItemText-multiline css-konndc-MuiListItemText-root"
+                            >
+                              <span
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
+                              >
+                                Roaster
+                              </span>
+                              <p
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-secondary css-83ijpv-MuiTypography-root"
+                              >
+                                Coming Soon! Coffee roasting timers
+                              </p>
+                            </div>
+                            <span
+                              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                            />
+                          </div>
+                        </li>
+                        <li
+                          class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
+                        >
+                          <div
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            role="button"
+                            tabindex="0"
+                          >
+                            <div
+                              class="MuiListItemText-root MuiListItemText-dense MuiListItemText-multiline css-konndc-MuiListItemText-root"
+                            >
+                              <span
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
+                              >
+                                Cookbook
+                              </span>
+                              <p
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-secondary css-83ijpv-MuiTypography-root"
+                              >
+                                Lots of small examples
+                              </p>
+                            </div>
+                            <span
+                              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                            />
+                          </div>
+                        </li>
+                        <li
+                          class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
+                        >
+                          <div
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            role="button"
+                            tabindex="0"
+                          >
+                            <div
+                              class="MuiListItemText-root MuiListItemText-dense css-tlelie-MuiListItemText-root"
+                            >
+                              <span
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
+                              >
+                                All examples
+                              </span>
+                            </div>
+                            <span
+                              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                            />
+                          </div>
+                        </li>
+                      </div>
+                    </ul>
                   </div>
-                  <div
-                    class="MuiBox-root css-1iie599"
-                  />
                   <hr
                     class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
                   />
@@ -576,30 +674,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                       />
                       Your browser doesn't support audio
                     </audio>
-                  </div>
-                  <div
-                    class="MuiBox-root css-0"
-                  >
-                    <h4
-                      class="MuiTypography-root MuiTypography-h4 css-5lfyn9-MuiTypography-root"
-                    >
-                      No Events found
-                    </h4>
-                    <p
-                      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-                    >
-                      To get started, go to the
-                    </p>
-                    <a
-                      href="/events"
-                    >
-                      Events page
-                    </a>
-                    <p
-                      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
-                    >
-                      and build your first Event!
-                    </p>
                   </div>
                 </div>
               </div>

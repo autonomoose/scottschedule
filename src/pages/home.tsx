@@ -20,6 +20,10 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 
 import BigBellSound from '../sounds/bigbell.wav';
@@ -568,6 +572,47 @@ const HomePage = () => {
           </Box>
         </Box>
 
+        { (Object.keys(schedGroups).length === 0)
+          ? <Box m={2}>
+              <Typography variant='h4'>
+                Welcome, new user!
+              </Typography>
+              <List dense={true}>
+                <Typography variant='body1'>
+                Get started quickly with an example config:
+                </Typography>
+                <Box width='300'>
+                <ListItem disablePadding><ListItemButton>
+                    <ListItemText primary="Just Clocks" secondary="minimal setup"/>
+                </ListItemButton></ListItem>
+                <ListItem disablePadding><ListItemButton>
+                    <ListItemText primary="Roaster"  secondary="Coming Soon! Coffee roasting timers"/>
+                </ListItemButton></ListItem>
+                <ListItem disablePadding><ListItemButton>
+                    <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
+                </ListItemButton></ListItem>
+                <ListItem disablePadding><ListItemButton>
+                    <ListItemText primary="All examples" />
+                </ListItemButton></ListItem>
+                </Box>
+              </List>
+            </Box>
+          : <>
+            { (Object.keys(allTasks).length === 0) &&
+              <Box>
+                <Typography variant='h4' color='error'>
+                  No Events found
+                </Typography>
+                <Typography variant='body1'>To get started, go to the</Typography>
+                <Link to='/events'>Events page</Link>
+                <Typography variant='body1'>and build your first Event!</Typography>
+              </Box>
+            }
+            </>
+        }
+
+        { (Object.keys(schedButtons).length > 0) &&
+        <>
         <Box mx={1} mb={1}>
           <Button size='large' variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
@@ -581,6 +626,9 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
+        </>
+        }
+
         <Divider />
         <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
           Test <audio className="audio-element" controls >
@@ -588,32 +636,11 @@ const HomePage = () => {
             Your browser doesn't support audio
           </audio>
         </Box>
-        { (Object.keys(allTasks).length === 0)
-          ? <Box>
-              <Typography variant='h4' color='error'>
-                No Events found
-              </Typography>
-              <Typography variant='body1'>To get started, go to the</Typography>
-              <Link to='/events'>Events page</Link>
-              <Typography variant='body1'>and build your first Event!</Typography>
-            </Box>
-          : <>
-            { (Object.keys(schedGroups).length === 0) &&
-              <Box>
-                <Typography variant='h4' color='error'>
-                  No Schedules found
-                </Typography>
-                <Typography variant='body1'>To finish setting up, go to the</Typography>
-                <Link to='/scheds'>Schedules page</Link>
-                <Typography variant='body1'>and setup a group and schedule.</Typography>
-              </Box>
-            }
-            </>
-        }
         </>
         }
 
      </Card></Box>
+
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>

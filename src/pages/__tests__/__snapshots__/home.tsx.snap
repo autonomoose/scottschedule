@@ -528,33 +528,6 @@ exports[`HomePage renders snapshot correctly 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div
-                    class="MuiBox-root css-5uisrr"
-                  >
-                    <button
-                      class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root  css-1i749hr-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
-                    >
-                      Off
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
-                    <button
-                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-9y1egq-MuiButtonBase-root-MuiButton-root"
-                      tabindex="0"
-                      type="button"
-                    >
-                      tomorrow
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
-                    </button>
-                  </div>
-                  <div
-                    class="MuiBox-root css-1iie599"
-                  />
                   <hr
                     class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
                   />
