@@ -11,7 +11,7 @@ import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 import { ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
-import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
+import { fetchSchedGroupsDB, fetchExSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -52,6 +52,7 @@ const HomePage = () => {
     const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
+    const [dataSerial, setDataSerial] = useState(0);
     const [eventId, setEventId] = useState(0);
 
     // execute event
@@ -451,7 +452,7 @@ const HomePage = () => {
 
         setHstatus('Loading');
         fetchData();
-    }, [enqueueSnackbar] );
+    }, [enqueueSnackbar, dataSerial] );
 
     // load all schedules, groups
     useEffect(() => {
@@ -474,7 +475,7 @@ const HomePage = () => {
 
       setHstatus('Loading');
       fetchData();
-    }, [enqueueSnackbar] );
+    }, [enqueueSnackbar, dataSerial] );
 
     useEffect(() => {
         // post data init
@@ -582,16 +583,20 @@ const HomePage = () => {
                 Get started quickly with an example config:
                 </Typography>
                 <Box width='300'>
-                <ListItem disablePadding><ListItemButton>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('clocks', 'default');}}>
                     <ListItemText primary="Just Clocks" secondary="minimal setup"/>
                 </ListItemButton></ListItem>
-                <ListItem disablePadding><ListItemButton>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('roaster', 'default');}}>
                     <ListItemText primary="Roaster"  secondary="Coming Soon! Coffee roasting timers"/>
                 </ListItemButton></ListItem>
-                <ListItem disablePadding><ListItemButton>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('tests', 'default');}}>
                     <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
                 </ListItemButton></ListItem>
-                <ListItem disablePadding><ListItemButton>
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('all', 'default');}}>
                     <ListItemText primary="All examples" />
                 </ListItemButton></ListItem>
                 </Box>
