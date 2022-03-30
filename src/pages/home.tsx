@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from "gatsby";
+import { API } from 'aws-amplify';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
@@ -11,7 +12,7 @@ import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 import { ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
-import { fetchSchedGroupsDB, fetchExSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
+import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -510,6 +511,29 @@ const HomePage = () => {
         }
     }, [allTasks, schedGroups, currGroup]);
 
+    // trigger initial quickstart data load
+    const pullExamples = async (exname: string) => {
+      const myParms = {
+        body: {copyfrom: exname,},
+        headers: {}, // OPTIONAL
+      };
+
+      try {
+          const result = await API.post('apscottschedule', '/copygs', myParms);
+          if (result && result['Response'] === 'completed') {
+              enqueueSnackbar(`Copy successful!`,
+                {variant: 'success', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+          } else {
+              enqueueSnackbar(`setup failed`, {variant: 'error'} );
+              console.log('failed setup result', result);
+          }
+      } catch (apiresult) {
+          enqueueSnackbar(`setup failed`, {variant: 'error'} );
+              console.log('failed api result', apiresult);
+      }
+      setDataSerial(dataSerial+1);
+    };
+
     return(
       <Layout><Seo title="Scottschedule v1.2.4b" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
@@ -584,19 +608,19 @@ const HomePage = () => {
                 </Typography>
                 <Box width='300'>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('clocks', 'default');}}>
+                  <ListItemButton onClick={() => {pullExamples('clocks');}}>
                     <ListItemText primary="Just Clocks" secondary="minimal setup"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('roaster', 'default');}}>
+                  <ListItemButton onClick={() => {pullExamples('roaster');}}>
                     <ListItemText primary="Roaster"  secondary="Coming Soon! Coffee roasting timers"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('tests', 'default');}}>
+                  <ListItemButton onClick={() => {pullExamples('tests');}}>
                     <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {setDataSerial(dataSerial+1);fetchExSchedGroupsDB('all', 'default');}}>
+                  <ListItemButton onClick={() => {pullExamples('all');}}>
                     <ListItemText primary="All examples" />
                 </ListItemButton></ListItem>
                 </Box>

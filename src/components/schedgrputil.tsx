@@ -1,7 +1,6 @@
 // sched and groups utilities and components
 // exports default DisplaySchedGroup (test -base)
 //    fetchSchedGroupsDB - full groups and schedules(test -base)
-//    fetchExSchedGroupsDB - fetch and load from examples
 //  Group components CreateGroup (test -create),
 //                     ModifyGroup (test -modify,-modempty)
 //                     ChoiceSchedGroup (test -choice)
@@ -562,11 +561,6 @@ const DisplaySchedGroup = (props: DisplaySchedGroupProps) => {
 ) };
 
 // -------------------------------------------------
-export const fetchExSchedGroupsDB = async (pdEx: string, pdGroup: string) => {
-  console.log("examples", pdEx, pdGroup);
-  return;
-};
-
 export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     try {
         const result: any = await API.graphql({query: listSchedGroupsFull})
