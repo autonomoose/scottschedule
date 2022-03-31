@@ -1,7 +1,6 @@
 // prototype scottscheduler home page
 
 import React, { useEffect, useState } from 'react';
-import { Link } from "gatsby";
 import { API } from 'aws-amplify';
 import { useQueryParam } from 'gatsby-query-params';
 
@@ -440,8 +439,6 @@ const HomePage = () => {
             try {
                 const newTasks = await fetchEventsDB();
                 if (newTasks && Object.keys(newTasks).length > 0) {
-                    enqueueSnackbar(`loaded events`,
-                      {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                     setAllTasks(newTasks);
                 } else {
                     setHstatus('Ready');
@@ -597,47 +594,29 @@ const HomePage = () => {
           </Box>
         </Box>
 
-        { (Object.keys(schedGroups).length === 0)
-          ? <Box m={2}>
-              <Typography variant='h4'>
-                Welcome, new user!
-              </Typography>
-              <List dense={true}>
-                <Typography variant='body1'>
+        { (Object.keys(schedGroups).length === 0) &&
+          <Box m={2}>
+            <Typography variant='h4'>Welcome, new user!</Typography>
+            <List dense={true}>
+              <Typography variant='body1'>
                 Get started quickly with an example config:
-                </Typography>
-                <Box width='300'>
+              </Typography>
+              <Box width='300'>
                 <ListItem disablePadding>
                   <ListItemButton onClick={() => {pullExamples('clocks');}}>
                     <ListItemText primary="Just Clocks" secondary="minimal setup"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('roaster');}}>
-                    <ListItemText primary="Roaster"  secondary="Coming Soon! Coffee roasting timers"/>
-                </ListItemButton></ListItem>
-                <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('tests');}}>
+                  <ListItemButton onClick={() => {pullExamples('demos');}}>
                     <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('all');}}>
-                    <ListItemText primary="All examples" />
+                  <ListItemButton onClick={() => {pullExamples('medscheds');}}>
+                    <ListItemText primary="Care" secondary="Medication and care examples" />
                 </ListItemButton></ListItem>
-                </Box>
-              </List>
-            </Box>
-          : <>
-            { (Object.keys(allTasks).length === 0) &&
-              <Box>
-                <Typography variant='h4' color='error'>
-                  No Events found
-                </Typography>
-                <Typography variant='body1'>To get started, go to the</Typography>
-                <Link to='/events'>Events page</Link>
-                <Typography variant='body1'>and build your first Event!</Typography>
               </Box>
-            }
-            </>
+            </List>
+          </Box>
         }
 
         { (Object.keys(schedButtons).length > 0) &&

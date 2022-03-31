@@ -592,33 +592,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                               <span
                                 class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
                               >
-                                Roaster
-                              </span>
-                              <p
-                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-secondary css-83ijpv-MuiTypography-root"
-                              >
-                                Coming Soon! Coffee roasting timers
-                              </p>
-                            </div>
-                            <span
-                              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                            />
-                          </div>
-                        </li>
-                        <li
-                          class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
-                        >
-                          <div
-                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
-                            role="button"
-                            tabindex="0"
-                          >
-                            <div
-                              class="MuiListItemText-root MuiListItemText-dense MuiListItemText-multiline css-konndc-MuiListItemText-root"
-                            >
-                              <span
-                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
-                              >
                                 Cookbook
                               </span>
                               <p
@@ -641,13 +614,18 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                             tabindex="0"
                           >
                             <div
-                              class="MuiListItemText-root MuiListItemText-dense css-tlelie-MuiListItemText-root"
+                              class="MuiListItemText-root MuiListItemText-dense MuiListItemText-multiline css-konndc-MuiListItemText-root"
                             >
                               <span
                                 class="MuiTypography-root MuiTypography-body2 MuiListItemText-primary css-et1ao3-MuiTypography-root"
                               >
-                                All examples
+                                Care
                               </span>
+                              <p
+                                class="MuiTypography-root MuiTypography-body2 MuiListItemText-secondary css-83ijpv-MuiTypography-root"
+                              >
+                                Medication and care examples
+                              </p>
                             </div>
                             <span
                               class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
