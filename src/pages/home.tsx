@@ -325,8 +325,6 @@ const HomePage = () => {
                     mainpm.textContent = '  ';
                 }
             }
-        } else {
-            console.log("no clock defined on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -522,11 +520,11 @@ const HomePage = () => {
                 {variant: 'success', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
           } else {
               enqueueSnackbar(`setup failed`, {variant: 'error'} );
-              console.log('failed setup result', result);
+              // console.warn('failed setup result', result);
           }
       } catch (apiresult) {
-          enqueueSnackbar(`setup failed`, {variant: 'error'} );
-              console.log('failed api result', apiresult);
+          enqueueSnackbar(`setup api failed`, {variant: 'error'} );
+          // console.warn('failed api result', apiresult);
       }
       setDataSerial(dataSerial+1);
     };
@@ -603,15 +601,15 @@ const HomePage = () => {
               </Typography>
               <Box width='300'>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('clocks');}}>
+                  <ListItemButton data-testid='qstart1' onClick={() => {pullExamples('clocks');}}>
                     <ListItemText primary="Just Clocks" secondary="minimal setup"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('demos');}}>
+                  <ListItemButton data-testid='qstart2' onClick={() => {pullExamples('demos');}}>
                     <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
                 </ListItemButton></ListItem>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => {pullExamples('medscheds');}}>
+                  <ListItemButton data-testid='qstart3' onClick={() => {pullExamples('medscheds');}}>
                     <ListItemText primary="Care" secondary="Medication and care examples" />
                 </ListItemButton></ListItem>
               </Box>

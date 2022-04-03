@@ -556,6 +556,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         >
                           <div
                             class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            data-testid="qstart1"
                             role="button"
                             tabindex="0"
                           >
@@ -583,6 +584,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         >
                           <div
                             class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            data-testid="qstart2"
                             role="button"
                             tabindex="0"
                           >
@@ -610,6 +612,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         >
                           <div
                             class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            data-testid="qstart3"
                             role="button"
                             tabindex="0"
                           >
