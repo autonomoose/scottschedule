@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, waitFor, act } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 
+import { fetchSchedGroupsDB } from '../../components/schedgrputil';
 import HomePage from "../home";
 
 jest.useFakeTimers();
@@ -22,17 +23,18 @@ jest.mock('../../components/eventsutil', () => ({
         ]}})),
 }));
 
+const baseSchedNames = {
+    begins: 'now',
+    buttonName: 'test1',
+    descr: 'test sched',
+    schedName: 'testsched',
+    schedTasks: [{evTaskId: 'testev'}],
+};
+
 jest.mock('../../components/schedgrputil', () => ({
     ...jest.requireActual('../../components/schedgrputil'),
     fetchSchedGroupsDB: jest.fn(() => Promise.resolve( {
-      default: {descr: 'test group',
-        schedNames: [{
-          begins: 'now',
-          buttonName: 'test1',
-          descr: 'test sched',
-          schedName: 'testsched',
-          schedTasks: [{evTaskId: 'testev'}],
-      }]},
+      default: {descr: 'test group', schedNames: [ baseSchedNames, ]},
       test2: {descr: 'test2 group',
         schedNames: [{
           begins: 'now',
@@ -57,6 +59,7 @@ jest.mock('notistack', () => ({
 describe("HomePage", () => {
   const mytest = <HomePage />;
   const mySetup = async () => {
+      jest.clearAllTimers();
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
@@ -98,15 +101,22 @@ describe("HomePage", () => {
         expect(utils.getByTestId('clock-scheduler')).toBeVisible();
       });
   });
+  it("changes group to test2", async () => {
+    const utils = await mySetup();
+    expect(utils.groupInput).toHaveValue('default');
+
+    utils.groupInputChg('test2');
+    await waitFor(() => {
+      expect(utils.groupInput).toHaveValue('test2');
+    });
+  });
+
   it("starts and stops scheduler", async () => {
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-pend')).toBeVisible();
     });
-
-    // handles multiple presses
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
 
     // should run pre-alarm and reschedule
     Date.now = jest.fn(() => mockNow + 60000);
@@ -127,15 +137,6 @@ describe("HomePage", () => {
     expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
   });
 
-  it("changes group to test2", async () => {
-    const utils = await mySetup();
-    expect(utils.groupInput).toHaveValue('default');
-
-    utils.groupInputChg('test2');
-    await waitFor(() => {
-      expect(utils.groupInput).toHaveValue('test2');
-    });
-  });
 
   it("stops scheduler with group change", async () => {
     const utils = await mySetup();
@@ -159,6 +160,30 @@ describe("HomePage", () => {
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
 
     userEvent.click(utils.getByRole('button', {name: /tomorrow/i}));
+  });
+
+  // warning - fetchSchedGroupsDB mock changes
+  it("starts scheduler with warning schedule", async () => {
+    (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({
+      default: {descr: 'test group',
+      schedNames: [ {...baseSchedNames, warn: {sound: {name: '_default_'}}, }, ]},
+    }));
+    const utils = await mySetup();
+    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await waitFor(() => {
+      expect(utils.getByTestId('ev-pend')).toBeVisible();
+    });
+
+    // handles multiple presses
+    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+
+    // should run pre-alarm and reschedule
+    // Date.now = jest.fn(() => mockNow + 60000);
+    act(() => {jest.runOnlyPendingTimers()});
+    expect(utils.getByTestId('ev-soon')).toBeVisible();
+
+    userEvent.click(utils.getByRole('button', {name: /off/i}));
+    expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
   });
 
 });

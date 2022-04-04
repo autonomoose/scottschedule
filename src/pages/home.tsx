@@ -123,14 +123,8 @@ const HomePage = () => {
                 if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
                     sname = nextEvs.sound.name;
                 }
-                if (sname) {
-                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
-                    if (eventAudio) {
-                        eventAudio.play();
-                    } else {
-                        console.log("no mooo");
-                    }
-                }
+                const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                if (eventAudio) eventAudio.play();
             }
         }
 
@@ -155,14 +149,8 @@ const HomePage = () => {
                     if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound && typeof(nextEvs.warn.sound.name) !== 'undefined') {
                         sname = nextEvs.warn.sound.name;
                     }
-                    if (sname) {
-                        const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
-                        if (eventAudio) {
-                            eventAudio.play();
-                        } else {
-                            console.log("no warn mooo");
-                        }
-                    }
+                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                    if (eventAudio) eventAudio.play();
                 }
             }
         }
@@ -216,9 +204,7 @@ const HomePage = () => {
                 evId = 'bigbell-audio';
             }
         }
-        if (evSrc !== '') {
-            wkAudioComp.push({src: evSrc, id: evId});
-        }
+        if (evSrc !== '') wkAudioComp.push({src: evSrc, id: evId});
 
         let warnSrc = '';
         evId = '';
@@ -241,7 +227,6 @@ const HomePage = () => {
             wkAudioComp.push({src: warnSrc, id: evId});
         }
         setAudioComp(wkAudioComp);
-        // console.log("audioList", wkAudioComp);
 
     }, [nextEvs]);
 
