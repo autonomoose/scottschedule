@@ -657,22 +657,22 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6'>
+               <Typography variant='h6' data-testid='ev-pend'>
                  Next Up
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6'>
+               <Typography variant='h6' data-testid='ev-soon'>
                  Next Up (soon)
                </Typography>
              }
              {(nextEvs.status === 'current') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-curr'>
                  Active
                </Typography>
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-ack'>
                  Current
                </Typography>
              }
