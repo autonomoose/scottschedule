@@ -87,7 +87,7 @@ const HomePage = () => {
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
-                    console.log("finished", currSched, schedList[0]);
+                    // console.log("finished", currSched, schedList[0]);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
@@ -103,8 +103,6 @@ const HomePage = () => {
                         setHstatus("Completed");
                     }
                 }
-            } else {
-                console.log("no cleanup after event");
             }
             return;
         }
@@ -252,7 +250,7 @@ const HomePage = () => {
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
-    const setNowDigital = (currClock: string) => {
+    const setNowDigital = (_currClock: string) => {
         // console.log("setnow digital", currClock);
         let wkdate = new Date(Date.now());
 
@@ -278,21 +276,6 @@ const HomePage = () => {
             const localComp = localTime.split(' ')[0].split(':');
             let wkColor = '#000000';
             const swPM : boolean = (localTime.split(' ')[1] === 'PM');
-            const hours = parseInt(localComp[0], 10) + ((swPM)? 12: 0);
-
-            if (currClock.slice(-6) === '-color') {
-                if (hours >= 2 && hours < 6) {
-                    wkColor = '#8b0000';
-                } else if (hours >= 6 && hours < 10) {
-                    wkColor = '#ff4500';
-                } else if (hours >= 10 && hours < 14) {
-                    wkColor = '#003300';
-                } else if (hours >= 14 && hours < 18) {
-                    wkColor = '#00008b';
-                } else if (hours >= 18 && hours < 22) {
-                    wkColor = '#4b008b';
-                }
-            }
 
             compclock.textContent = localComp[0];
             compclock.style.color = wkColor;

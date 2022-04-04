@@ -3,12 +3,12 @@ import { render, fireEvent, waitFor, act } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 
 import { fetchSchedGroupsDB } from '../../components/schedgrputil';
+import { fetchEventsDB } from '../../components/eventsutil';
 import HomePage from "../home";
 
 jest.useFakeTimers();
 
 const mockNow = 1482363367071; //  6:36 PM
-// const mockLater = 1482331087071; // 9:38 AM
 Date.now = jest.fn(() => mockNow);
 window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 
@@ -60,6 +60,8 @@ describe("HomePage", () => {
   const mytest = <HomePage />;
   const mySetup = async () => {
       jest.clearAllTimers();
+      Date.now = jest.fn(() => mockNow);
+
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
@@ -82,7 +84,15 @@ describe("HomePage", () => {
     });
     expect(container.firstChild).toMatchSnapshot();
   });
+  it("displays a time in the morning", async () => {
+      const mockAM = 1482331087071; // 9:38 AM
+      Date.now = jest.fn(() => mockAM);
+      const utils = render(mytest);
+      await waitFor(() => {
+          expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
+      });
 
+  });
   it("changes clocks with click", async () => {
       const utils = await mySetup();
 
@@ -166,8 +176,9 @@ describe("HomePage", () => {
   it("starts scheduler with warning schedule", async () => {
     (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({
       default: {descr: 'test group',
-      schedNames: [ {...baseSchedNames, warn: {sound: {name: '_default_'}}, }, ]},
+      schedNames: [ {...baseSchedNames, warn: {sound: {name: 'bigbell'}}, }, ]},
     }));
+
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
@@ -178,12 +189,84 @@ describe("HomePage", () => {
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
 
     // should run pre-alarm and reschedule
-    // Date.now = jest.fn(() => mockNow + 60000);
     act(() => {jest.runOnlyPendingTimers()});
     expect(utils.getByTestId('ev-soon')).toBeVisible();
 
+    userEvent.click(utils.getByRole('button', {name: /silence/i}));
+    await waitFor(() => {
+      expect(utils.getByTestId('ev-ack')).toBeVisible();
+    });
+    act(() => {jest.runOnlyPendingTimers()});
+
     userEvent.click(utils.getByRole('button', {name: /off/i}));
     expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
+  });
+
+  // warning - fetchSchedGroupsDB mock changes
+  it("starts scheduler with sound attribs and handles ack", async () => {
+    (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({
+      default: {descr: 'test group',
+      schedNames: [ {...baseSchedNames, sound: {name: 'bigbell', repeat: 2,}} ]},
+    }));
+
+    const utils = await mySetup();
+    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await waitFor(() => {
+      expect(utils.getByTestId('ev-pend')).toBeVisible();
+    });
+
+    // should run event fun before ack
+    Date.now = jest.fn(() => mockNow + 10000);
+    act(() => {jest.runOnlyPendingTimers()});
+
+    userEvent.click(utils.getByRole('button', {name: /silence/i}));
+    await waitFor(() => {
+      expect(utils.getByTestId('ev-ack')).toBeVisible();
+    });
+
+    // run as postevent after ack
+    Date.now = jest.fn(() => mockNow + 600000);
+    act(() => {jest.runOnlyPendingTimers()});
+  });
+
+  it("starts scheduler with quiet sound attribs and chain", async () => {
+    (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({
+      default: {descr: 'test group',
+      schedNames: [ {...baseSchedNames, chain: 'test1+tomorrow', sound: {name: '',}} ]},
+    }));
+
+    const utils = await mySetup();
+    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await waitFor(() => {
+      expect(utils.getByTestId('ev-pend')).toBeVisible();
+    });
+
+    // should fire the current alarm and reschedule
+    Date.now = jest.fn(() => mockNow + 120000);
+    act(() => {jest.runOnlyPendingTimers()});
+    expect(utils.getByTestId('ev-curr')).toBeVisible();
+
+    // run as postevent
+    Date.now = jest.fn(() => mockNow + 600000);
+    act(() => {jest.runOnlyPendingTimers()});
+  });
+
+  it("starts scheduler with expired events", async () => {
+    (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({
+      default: {descr: 'test group',
+      schedNames: [ {...baseSchedNames, warn: {sound: {name: '_default_'}}, }, ]},
+    }));
+    (fetchEventsDB as jest.Mock).mockImplementation(() => Promise.resolve({
+      testev: {descr: 'testing',
+        schedRules: [
+          "begin 2:00,++2,++2",
+        ]}},
+    ));
+
+    const utils = await mySetup();
+    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    act(() => {jest.runOnlyPendingTimers()});
+    expect(mockEnqueue).toHaveBeenLastCalledWith(`Complete with no future events`, {variant: 'warning',});
   });
 
 });
