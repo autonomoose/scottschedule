@@ -41,6 +41,7 @@ const HomePage = () => {
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [showClock, setShowClock] = useState('');
 
+    const [started, setStarted] = useState(new Date(Date.now()));
     const [currGroup, setCurrGroup] = useState('');
     const [currSched, setCurrSched] = useState('off');
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
@@ -315,13 +316,13 @@ const HomePage = () => {
     }, [showClock, hstatus]);
 
     // cleanly reset and rebuild future events using globals
-    //  globals allTasks
+    //  globals allTasks, started
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
             killEventTask();
 
             let wkEvents: iFutureEvs = {evs: []};
             if (wksched !== "off") {
-                wkEvents = buildFutureEvents(wkgroup, wksched, allTasks, wkoptions);
+                wkEvents = buildFutureEvents(started, wkgroup, wksched, allTasks, wkoptions);
                 }
 
             // cleanup, get expired (or about to in next 30 seconds)
@@ -361,7 +362,7 @@ const HomePage = () => {
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setCurrSched(wksched);
-
+            setStarted(new Date(Date.now()));
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,

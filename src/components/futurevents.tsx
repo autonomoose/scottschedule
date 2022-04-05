@@ -49,9 +49,9 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   get the Task rules that match
 //   process rules into events dict w/ tstamp key
 //   convert dict to sorted array w/ earliest events first
-export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
+export const buildFutureEvents = (currdate: Date, wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
-    let currdate = new Date(Date.now());
+    // let currdate = new Date(Date.now());
     if (optInfo['tomorrow']) {
         currdate.setHours(currdate.getHours() + 24);
         currdate.setHours(0);
@@ -79,10 +79,14 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
                         }
                     } else {
                         switch(wkTlang) {
+                            case 'press':  // run-time option press
+                                retDate = new Date(Date.now());
+                                break;
+                            case 'start': // based on schedule start
                             case 'now':
                                 break;
                             default:
-                                // console.log("unknown date - bad command", wkTlang);
+                                console.warn("unknown date - bad command", wkTlang);
                                 break;
                         }
                     }
