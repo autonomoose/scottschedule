@@ -32,6 +32,14 @@ interface iSchedGroup {
     name?: string,
     descr: string,
     schedNames: iSchedule[],
+    notomorrow?: boolean,
+};
+interface iSchedGroupList {
+    [name: string]: {
+        descr: string,
+        schedNames: iSchedule[],
+        notomorrow?: boolean,
+    };
 };
 
 // schedule options
@@ -74,13 +82,6 @@ interface iFutureEvs {
     begins?: number,
     sound?: iEvsSound,
     warn?: iEvsWarn,
-};
-
-interface iSchedGroupList {
-    [name: string]: {
-        descr: string,
-        schedNames: iSchedule[],
-    };
 };
 
 interface iGrpSchedTask {

@@ -102,6 +102,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [baseSchedNames],
         }
       });
@@ -120,6 +121,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{...baseSchedNames, schedTasks: [], }],
         }
       });
@@ -138,6 +140,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{schedName: 'testsched', descr: '', schedTasks: [], }],
         }
       });
@@ -157,6 +160,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{...baseSchedNames, sound: {name: 'bigbell',}, }],
         }
       });
@@ -176,6 +180,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{...baseSchedNames, sound: {name: 'bigbell', repeat: 2}, }],
         }
       });
@@ -195,6 +200,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{...baseSchedNames, warn: {}, }],
         }
       });
@@ -214,6 +220,7 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       expect(schedGroups).toStrictEqual({
         'default': {
           descr: 'test schedules',
+          "notomorrow": false,
           schedNames: [{...baseSchedNames, chain: 'testsched', }],
         }
       });
