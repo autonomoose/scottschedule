@@ -517,7 +517,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                             class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                           >
                             <legend
-                              class="css-1z7n62"
+                              class="css-1in441m"
                             >
                               <span>
                                 Schedule Group
@@ -554,7 +554,18 @@ exports[`HomePage renders snapshot correctly 1`] = `
                   </div>
                   <div
                     class="MuiBox-root css-1iie599"
-                  />
+                  >
+                    <button
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-9y1egq-MuiButtonBase-root-MuiButton-root"
+                      tabindex="0"
+                      type="button"
+                    >
+                      test1
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
+                  </div>
                   <hr
                     class="MuiDivider-root MuiDivider-fullWidth css-9mgopn-MuiDivider-root"
                   />

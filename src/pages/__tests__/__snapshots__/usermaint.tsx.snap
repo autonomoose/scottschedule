@@ -554,7 +554,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                   <div
                     class="MuiBox-root css-18vgi6o"
                   >
-                    This will send you to our billing partner to close your account. Your account data on this system will be securely deleted 7 days after the date the close date specified.
+                    This will close your account and log you off. Any account data will be securely deleted within 7 days of account closing date.
                   </div>
                 </div>
               </div>

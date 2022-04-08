@@ -799,15 +799,82 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
                               </h6>
                             </div>
                             <div
-                              class="MuiBox-root css-0"
+                              class="MuiBox-root css-1l4w6pd"
                             >
-                              <input
-                                aria-invalid="false"
+                              <div
+                                class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-viou3o-MuiAutocomplete-root"
                                 data-testid="taskid"
-                                name="taskid"
-                                size="10"
-                                type="text"
-                              />
+                              >
+                                <div
+                                  aria-invalid="false"
+                                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                                >
+                                  <label
+                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
+                                    data-shrink="false"
+                                    for="taskid"
+                                    id="taskid-label"
+                                  >
+                                    Event Name
+                                  </label>
+                                  <div
+                                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root"
+                                  >
+                                    <input
+                                      aria-autocomplete="list"
+                                      aria-expanded="false"
+                                      aria-invalid="false"
+                                      autocapitalize="none"
+                                      autocomplete="off"
+                                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                                      id="taskid"
+                                      name="taskid"
+                                      role="combobox"
+                                      spellcheck="false"
+                                      type="text"
+                                      value=""
+                                    />
+                                    <div
+                                      class="MuiAutocomplete-endAdornment css-1q60rmi-MuiAutocomplete-endAdornment"
+                                    >
+                                      <button
+                                        aria-label="Open"
+                                        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-popupIndicator css-qzbt6i-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-popupIndicator"
+                                        tabindex="-1"
+                                        title="Open"
+                                        type="button"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                                          data-testid="ArrowDropDownIcon"
+                                          focusable="false"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            d="M7 10l5 5 5-5z"
+                                          />
+                                        </svg>
+                                        <span
+                                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                        />
+                                      </button>
+                                    </div>
+                                    <fieldset
+                                      aria-hidden="true"
+                                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                                    >
+                                      <legend
+                                        class="css-1ftyaf0"
+                                      >
+                                        <span>
+                                          Event Name
+                                        </span>
+                                      </legend>
+                                    </fieldset>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <div
                               class="MuiBox-root css-10igwnb"
@@ -823,20 +890,24 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
                                 />
                               </button>
                               <button
-                                class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-                                disabled=""
-                                tabindex="-1"
+                                class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+                                tabindex="0"
                                 type="button"
                               >
                                 Reset
+                                <span
+                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                />
                               </button>
                               <button
-                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
-                                disabled=""
-                                tabindex="-1"
+                                class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+                                tabindex="0"
                                 type="submit"
                               >
                                 Save
+                                <span
+                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                />
                               </button>
                             </div>
                           </form>

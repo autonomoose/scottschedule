@@ -175,6 +175,9 @@ interface HdataValues {
            case 'tokenRefresh':
                console.log('user refreshed session');
                break;
+           case 'signIn_failure':
+           case 'signUp':
+               break;
            default:
                console.log('Uncaught Auth module hub signal', data.payload.event);
                break;
@@ -222,8 +225,8 @@ interface HdataValues {
 
                        <div style={{textAlign: 'center'}}>
                        <h3 style={{marginTop: '30px'}} data-testid="authentNewUser"> Welcome, new user! </h3>
-                         <p>Your userkey is {uid}.  <br /><small>Give this userkey to your administrator to join an existing company.</small></p>
-                         <p>To setup as a new company please <br /><Button variant='outlined' size='small' ><Link to='/setup2'>Accept Terms of Service</Link></Button> to continue
+                         <p>Your userkey is {uid}.  <br /><small>Give this userkey to your administrator to join an existing account.</small></p>
+                         <p>To setup as a new account please <br /><Button variant='outlined' size='small' ><Link to='/setup2'>Accept Terms of Service</Link></Button> to continue
                          </p>
                        </div>
                      }

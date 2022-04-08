@@ -115,7 +115,7 @@ describe("Layout", () => {
 
   it('handles dberror during user lookup', async () => {
       const prevAPIgraphql = API.graphql;
-      API.graphql = jest.fn(() => Promise.reject('mockRejected'));
+      API.graphql = jest.fn(() => Promise.reject('mockRejected')) as any;
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('authentFail')).toBeVisible();
@@ -126,7 +126,7 @@ describe("Layout", () => {
 
   it('handles null lookup (new user)', async () => {
       const prevAPIgraphql = API.graphql;
-      API.graphql = jest.fn(() => Promise.resolve({'data': {'getCurrentUser':{}}}));
+      API.graphql = jest.fn(() => Promise.resolve({'data': {'getCurrentUser':{}}})) as any;
       const utils = render(mytest);
       await waitFor(() => {
           expect(utils.getByTestId('authentNewUser')).toBeVisible();

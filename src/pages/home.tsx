@@ -1,7 +1,7 @@
 // prototype scottscheduler home page
 
 import React, { useEffect, useState } from 'react';
-import { Link } from "gatsby";
+import { API } from 'aws-amplify';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
@@ -11,7 +11,7 @@ import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
 import { ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
-import { fetchSchedGroupsDB } from '../components/schedgrputil';
+import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
 import Backdrop from '@mui/material/Backdrop';
@@ -20,19 +20,14 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 
 import BigBellSound from '../sounds/bigbell.wav';
 import DefaultSound from '../sounds/default.wav';
-
-interface iNextEvs {
-    evs: iFutureEvent[],
-    status: string,
-    sound?: iEvsSound,
-    warn?: iEvsWarn,
-};
 
 interface iAudioComp {
     id: string,
@@ -57,6 +52,7 @@ const HomePage = () => {
     const [futureEvs, setFutureEvs] = useState<iFutureEvs>({evs: []});
     const [allTasks, setAllTasks] = useState<iTask>({});
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
+    const [dataSerial, setDataSerial] = useState(0);
     const [eventId, setEventId] = useState(0);
 
     // execute event
@@ -91,7 +87,7 @@ const HomePage = () => {
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
-                    console.log("finished", currSched, schedList[0]);
+                    // console.log("finished", currSched, schedList[0]);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
@@ -107,8 +103,6 @@ const HomePage = () => {
                         setHstatus("Completed");
                     }
                 }
-            } else {
-                console.log("no cleanup after event");
             }
             return;
         }
@@ -127,14 +121,8 @@ const HomePage = () => {
                 if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
                     sname = nextEvs.sound.name;
                 }
-                if (sname) {
-                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
-                    if (eventAudio) {
-                        eventAudio.play();
-                    } else {
-                        console.log("no mooo");
-                    }
-                }
+                const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                if (eventAudio) eventAudio.play();
             }
         }
 
@@ -159,14 +147,8 @@ const HomePage = () => {
                     if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound && typeof(nextEvs.warn.sound.name) !== 'undefined') {
                         sname = nextEvs.warn.sound.name;
                     }
-                    if (sname) {
-                        const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
-                        if (eventAudio) {
-                            eventAudio.play();
-                        } else {
-                            console.log("no warn mooo");
-                        }
-                    }
+                    const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
+                    if (eventAudio) eventAudio.play();
                 }
             }
         }
@@ -220,9 +202,7 @@ const HomePage = () => {
                 evId = 'bigbell-audio';
             }
         }
-        if (evSrc !== '') {
-            wkAudioComp.push({src: evSrc, id: evId});
-        }
+        if (evSrc !== '') wkAudioComp.push({src: evSrc, id: evId});
 
         let warnSrc = '';
         evId = '';
@@ -245,7 +225,6 @@ const HomePage = () => {
             wkAudioComp.push({src: warnSrc, id: evId});
         }
         setAudioComp(wkAudioComp);
-        // console.log("audioList", wkAudioComp);
 
     }, [nextEvs]);
 
@@ -271,7 +250,7 @@ const HomePage = () => {
 
     // ui functions
     // maintain the clock/calendar on scheduler ui card
-    const setNowDigital = (currClock: string) => {
+    const setNowDigital = (_currClock: string) => {
         // console.log("setnow digital", currClock);
         let wkdate = new Date(Date.now());
 
@@ -297,21 +276,6 @@ const HomePage = () => {
             const localComp = localTime.split(' ')[0].split(':');
             let wkColor = '#000000';
             const swPM : boolean = (localTime.split(' ')[1] === 'PM');
-            const hours = parseInt(localComp[0], 10) + ((swPM)? 12: 0);
-
-            if (currClock.slice(-6) === '-color') {
-                if (hours >= 2 && hours < 6) {
-                    wkColor = '#8b0000';
-                } else if (hours >= 6 && hours < 10) {
-                    wkColor = '#ff4500';
-                } else if (hours >= 10 && hours < 14) {
-                    wkColor = '#003300';
-                } else if (hours >= 14 && hours < 18) {
-                    wkColor = '#00008b';
-                } else if (hours >= 18 && hours < 22) {
-                    wkColor = '#4b008b';
-                }
-            }
 
             compclock.textContent = localComp[0];
             compclock.style.color = wkColor;
@@ -329,8 +293,6 @@ const HomePage = () => {
                     mainpm.textContent = '  ';
                 }
             }
-        } else {
-            console.log("no clock defined on dom");
         }
 
         let maindate = document.getElementById('maindate');
@@ -443,8 +405,6 @@ const HomePage = () => {
             try {
                 const newTasks = await fetchEventsDB();
                 if (newTasks && Object.keys(newTasks).length > 0) {
-                    enqueueSnackbar(`loaded events`,
-                      {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                     setAllTasks(newTasks);
                 } else {
                     setHstatus('Ready');
@@ -456,7 +416,7 @@ const HomePage = () => {
 
         setHstatus('Loading');
         fetchData();
-    }, [enqueueSnackbar] );
+    }, [enqueueSnackbar, dataSerial] );
 
     // load all schedules, groups
     useEffect(() => {
@@ -479,7 +439,7 @@ const HomePage = () => {
 
       setHstatus('Loading');
       fetchData();
-    }, [enqueueSnackbar] );
+    }, [enqueueSnackbar, dataSerial] );
 
     useEffect(() => {
         // post data init
@@ -513,6 +473,29 @@ const HomePage = () => {
             setHstatus("Ready");
         }
     }, [allTasks, schedGroups, currGroup]);
+
+    // trigger initial quickstart data load
+    const pullExamples = async (exname: string) => {
+      const myParms = {
+        body: {copyfrom: exname,},
+        headers: {}, // OPTIONAL
+      };
+
+      try {
+          const result = await API.post('apscottschedule', '/copygs', myParms);
+          if (result && result['Response'] === 'completed') {
+              enqueueSnackbar(`Copy successful!`,
+                {variant: 'success', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+          } else {
+              enqueueSnackbar(`setup failed`, {variant: 'error'} );
+              // console.warn('failed setup result', result);
+          }
+      } catch (apiresult) {
+          enqueueSnackbar(`setup api failed`, {variant: 'error'} );
+          // console.warn('failed api result', apiresult);
+      }
+      setDataSerial(dataSerial+1);
+    };
 
     return(
       <Layout><Seo title="Scottschedule v1.2.4b" />
@@ -573,23 +556,37 @@ const HomePage = () => {
             </Typography>
           </Box>
           <Box id='status'>
-            <TextField margin="dense" type="text" variant="outlined" size="small"
-              value={currGroup} onChange={changeGroup}
-              label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
-              inputProps={{'data-testid': 'schedgroup'}}
-              select
-            >
-              {(schedGroups)
-                ? Object.keys(schedGroups).map(item => {
-                  return(
-                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                   )})
-                : <MenuItem value='new'>new</MenuItem>
-              }
-            </TextField>
+            <ChoiceSchedGroup currgroup={currGroup} schedGroupList={schedGroups} setgroup={changeGroup} />
           </Box>
         </Box>
 
+        { (Object.keys(schedGroups).length === 0) &&
+          <Box m={2}>
+            <Typography variant='h4'>Welcome, new user!</Typography>
+            <List dense={true}>
+              <Typography variant='body1'>
+                Get started quickly with an example config:
+              </Typography>
+              <Box width='300'>
+                <ListItem disablePadding>
+                  <ListItemButton data-testid='qstart1' onClick={() => {pullExamples('clocks');}}>
+                    <ListItemText primary="Just Clocks" secondary="minimal setup"/>
+                </ListItemButton></ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton data-testid='qstart2' onClick={() => {pullExamples('demos');}}>
+                    <ListItemText primary="Cookbook" secondary="Lots of small examples"/>
+                </ListItemButton></ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton data-testid='qstart3' onClick={() => {pullExamples('medscheds');}}>
+                    <ListItemText primary="Care" secondary="Medication and care examples" />
+                </ListItemButton></ListItem>
+              </Box>
+            </List>
+          </Box>
+        }
+
+        { (Object.keys(schedButtons).length > 0) &&
+        <>
         <Box mx={1} mb={1}>
           <Button size='large' variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
@@ -603,6 +600,9 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
+        </>
+        }
+
         <Divider />
         <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
           Test <audio className="audio-element" controls >
@@ -610,32 +610,11 @@ const HomePage = () => {
             Your browser doesn't support audio
           </audio>
         </Box>
-        { (Object.keys(allTasks).length === 0)
-          ? <Box>
-              <Typography variant='h4' color='error'>
-                No Events found
-              </Typography>
-              <Typography variant='body1'>To get started, go to the</Typography>
-              <Link to='/events'>Events page</Link>
-              <Typography variant='body1'>and build your first Event!</Typography>
-            </Box>
-          : <>
-            { (Object.keys(schedGroups).length === 0) &&
-              <Box>
-                <Typography variant='h4' color='error'>
-                  No Schedules found
-                </Typography>
-                <Typography variant='body1'>To finish setting up, go to the</Typography>
-                <Link to='/scheds'>Schedules page</Link>
-                <Typography variant='body1'>and setup a group and schedule.</Typography>
-              </Box>
-            }
-            </>
-        }
         </>
         }
 
      </Card></Box>
+
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box>
@@ -646,22 +625,22 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6'>
+               <Typography variant='h6' data-testid='ev-pend'>
                  Next Up
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6'>
+               <Typography variant='h6' data-testid='ev-soon'>
                  Next Up (soon)
                </Typography>
              }
              {(nextEvs.status === 'current') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-curr'>
                  Active
                </Typography>
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}}>
+               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-ack'>
                  Current
                </Typography>
              }

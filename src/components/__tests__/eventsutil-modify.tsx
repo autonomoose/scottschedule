@@ -65,7 +65,7 @@ describe("eventsutil - modify", () => {
   it("handles graphql error on save", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.reject('mockreject'));
+    API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
     userEvent.type(utils.descrFld, 'new desc');
@@ -83,7 +83,7 @@ describe("eventsutil - modify", () => {
   });
   it("handles save after descr modification", async () => {
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.resolve({}));
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
     userEvent.type(utils.descrFld, 'new desc');
@@ -109,7 +109,7 @@ describe("eventsutil - modify", () => {
   });
   it("deletes events wo rules", async () => {
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.resolve({}));
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
 
     const specEvents = {testevt: {descr: 'testing', schedRules: []}};
     const spectest = <ModifyEvent evid='testevt' tasks={specEvents} onComplete={mockCallback} open={true} />;
@@ -126,7 +126,7 @@ describe("eventsutil - modify", () => {
   it("handles grapql error on delete", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
-    API.graphql = jest.fn(() => Promise.reject('mockreject'));
+    API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
 
     const specEvents = {testevt: {descr: 'testing', schedRules: []}};
     const spectest = <ModifyEvent evid='testevt' tasks={specEvents} onComplete={mockCallback} open={true} />;

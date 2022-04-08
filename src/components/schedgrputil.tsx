@@ -1,19 +1,25 @@
 // sched and groups utilities and components
-// exports default DisplaySchedGroup
-//  - exports Group components CreateGroup, ModifyGroup
-//  - exports Schedule components ManSched
-// and data fetchSchedGroupsDB - full groups and schedules
+// exports default DisplaySchedGroup (test -base)
+//    fetchSchedGroupsDB - full groups and schedules(test -base)
+//  Group components CreateGroup (test -create),
+//                     ModifyGroup (test -modify,-modempty)
+//                     ChoiceSchedGroup (test -choice)
+//  Schedule components ManSched (test -mansched)
+//  ConnectTask (test -connev)
 
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
 
+import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
@@ -206,6 +212,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
 interface ManSchedProps {
   groupSchedName: string, // group!sched or group!_NEW_
   gSchedule: iSchedule,
+  evList: string[],
   onComplete?: (status: string) => void,
   open: boolean
 }
@@ -297,7 +304,6 @@ export const ManSched = (props: ManSchedProps) => {
         cmd: string,
     };
     const formDelEvent = async (data: FormDelEventParms) => {
-        console.log('formDel parms', data);
         try {
             const keyNames = groupName+"!"+schedName;
             const xdata = {'input': {
@@ -305,16 +311,13 @@ export const ManSched = (props: ManSchedProps) => {
                 'evnames': keyNames+"!"+data.cmd,
                 }
             };
-            console.log('deleting', xdata);
-            const result = await API.graphql({query: mutDelEvents, variables: xdata});
-            console.log('deleted', result);
+            await API.graphql({query: mutDelEvents, variables: xdata});
             funComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
         } catch (result) {
-            console.log('failed delete', result);
+            console.warn('failed delete', result);
         }
     };
     const formCallback = (status: string) => {
-        console.log("manSched callback status", status);
         setSchedEv('');
         if (status[0] !== '_') {
             funComplete(status);
@@ -409,7 +412,7 @@ export const ManSched = (props: ManSchedProps) => {
               <span>Events ({currSchedule.schedTasks.length}) </span>
               <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">Add Event</Button>
             </Box>
-            <ConnectTask schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
+            <ConnectTask evList={props.evList} schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
             {
               currSchedule.schedTasks.map(task => {
                 return(
@@ -431,6 +434,7 @@ export const ManSched = (props: ManSchedProps) => {
 interface ConnectTaskProps {
   schedName: string,
   onComplete: (status: string) => void,
+  evList: string[],
   open: boolean,
 }
 export const ConnectTask = (props: ConnectTaskProps) => {
@@ -440,7 +444,8 @@ export const ConnectTask = (props: ConnectTaskProps) => {
             taskid: '',
         }
     });
-    const { isDirty, errors } = formState;
+    const { errors } = formState;
+
 
     const formConnectTaskCancel = async () => {
         props.onComplete('_'+props.schedName);
@@ -475,17 +480,27 @@ export const ConnectTask = (props: ConnectTaskProps) => {
             </Typography>
           </Box>
 
-          <Box>
-            <input type='text' size={10} data-testid="taskid"
-             {...register('taskid', { required: true,})}
-             aria-invalid={errors.taskid ? "true" : "false"}
+          <Box display="flex" justifyContent="center">
+            <Autocomplete
+              options={props.evList}
+              id="taskid" data-testid="taskid"
+              sx={{ width: 300 }}
+              clearOnEscape clearOnBlur
+              renderInput={(params) => (
+                <TextField {...params}
+                  label="Event Name"
+                  variant="outlined"
+                  {...register('taskid', { required: true,})}
+                  aria-invalid={errors.taskid ? "true" : "false"}
+                />
+              )}
             />
           </Box>
 
           <Box mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
-            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
-            <Button size="small" variant="contained" type="submit" disabled={!isDirty}>Save</Button>
+            <Button size="small" variant="outlined" onClick={() => reset()}>Reset</Button>
+            <Button size="small" variant="contained" type="submit">Save</Button>
           </Box>
 
           </form>
@@ -493,6 +508,28 @@ export const ConnectTask = (props: ConnectTaskProps) => {
       </Card></Box>
 ) }
 
+// -------------------------------------------------
+interface ChoiceSchedGroupProps {
+    schedGroupList: iSchedGroupList,
+    currgroup: string,
+    setgroup: (event: React.ChangeEvent<HTMLInputElement>) => void,
+}
+export const ChoiceSchedGroup = (props:ChoiceSchedGroupProps) => (
+    <TextField margin="dense" type="text" variant="outlined" size="small"
+      value={props.currgroup} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {props.setgroup(e)} }
+      label="Schedule Group" id="schedgroup" sx={{minWidth: 120}}
+      inputProps={{'data-testid': 'schedgroup'}}
+      select
+    >
+      {(props.schedGroupList)
+        ? Object.keys(props.schedGroupList).map(item => {
+          return(
+            <MenuItem key={item} value={item}>{item}</MenuItem>
+           )})
+        : <MenuItem value='new'>new</MenuItem>
+      }
+    </TextField>
+);
 // -------------------------------------------------
 interface DisplaySchedGroupProps {
   group: string,
