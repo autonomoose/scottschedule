@@ -78,7 +78,7 @@ export const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSched
     const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
         return item.schedTasks.reduce(optionTaskReduce, outDict)
     }
-    let starterOptions = {'tomorrow': false};
+    let starterOptions: { [key: string]: boolean } = {'tomorrow': false};
     if (wkSchedGroup.notomorrow) starterOptions = {};
 
     const retres = wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions);
