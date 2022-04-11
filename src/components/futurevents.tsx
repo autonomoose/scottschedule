@@ -49,9 +49,9 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   get the Task rules that match
 //   process rules into events dict w/ tstamp key
 //   convert dict to sorted array w/ earliest events first
-export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
+export const buildFutureEvents = (currdate: Date, wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
-    let currdate = new Date(Date.now());
+    // let currdate = new Date(Date.now());
     if (optInfo['tomorrow']) {
         currdate.setHours(currdate.getHours() + 24);
         currdate.setHours(0);
@@ -66,38 +66,45 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             const dateParts = wkTlang.split(':');
             switch(dateParts.length) {
                 case 1: // minutes only (offset only) or word
-                    if (/^\+?\d+$/.test(wkTlang)) {
-                        // numeric is minutes only
+                    if (/^\+?\d+#?\d*$/.test(wkTlang)) {
                         if (wkTlang[0] === '+') {
                             // offset
-                            retDate.setMinutes(retDate.getMinutes() + Number(dateParts[0]));
-                            retDate.setSeconds(0);
+                            const minParts = wkTlang.split('#');
+                            const wkSeconds = (minParts.length > 1)? retDate.getSeconds() + Number(minParts[1]): 0;
+                            retDate.setMinutes(retDate.getMinutes() + Number(minParts[0].substring(1)), wkSeconds);
                         } else {
                             // constant
-                            retDate.setMinutes(Number(dateParts[0]));
-                            retDate.setSeconds(0);
+                            const minParts = wkTlang.split('#');
+                            const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
+                            retDate.setMinutes(Number(wkTlang.substring(1)), wkSeconds);
                         }
                     } else {
                         switch(wkTlang) {
+                            case 'press':  // run-time option press
+                                retDate = new Date(Date.now());
+                                break;
+                            case 'start': // based on schedule start
                             case 'now':
                                 break;
                             default:
-                                // console.log("unknown date - bad command", wkTlang);
+                                console.warn("unknown date - bad command", wkTlang);
                                 break;
                         }
                     }
                     break;
                 case 2: // hours and minutes (constant or offset)
-                    if (wkTlang[0] === '+') {
-                        // offset
-                        retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
-                        retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
-                        retDate.setSeconds(0);
-                    } else {
-                        // constant
-                        retDate.setHours(Number(dateParts[0]));
-                        retDate.setMinutes(Number(dateParts[1]));
-                        retDate.setSeconds(0);
+                    if (/^\+?\d+$/.test(dateParts[0]) && /^\d+\.?\d*$/.test(dateParts[1])) {
+                        if (wkTlang[0] === '+') {
+                            // offset
+                            retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
+                            retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
+                            retDate.setSeconds(0);
+                        } else {
+                            // constant
+                            retDate.setHours(Number(dateParts[0]));
+                            retDate.setMinutes(Number(dateParts[1]));
+                            retDate.setSeconds(0);
+                        }
                     }
                     break;
                 default:

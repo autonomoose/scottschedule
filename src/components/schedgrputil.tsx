@@ -132,6 +132,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
                 'etype': 'gs',
                 'evnames': wkName+"!args",
                 'descr': data.descr,
+                'notomorrow': (data.notomorrow)? 'true': '',
                 }
             };
             await API.graphql({query: mutAddEvents, variables: xdata});
@@ -592,6 +593,7 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
             if (evkeys[1] === 'args') {
                 // group args
                 resdict[wkGroup].descr = (item.descr)? item.descr: '';
+                resdict[wkGroup].notomorrow = (item.notomorrow && item.notomorrow !== '')? true: false;
             } else if (evkeys[2] === 'args') {
                 // schedule args
                 const wkSched = evkeys[1];

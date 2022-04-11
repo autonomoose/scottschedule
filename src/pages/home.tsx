@@ -41,6 +41,7 @@ const HomePage = () => {
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [showClock, setShowClock] = useState('');
 
+    const [started, setStarted] = useState(new Date(Date.now()));
     const [currGroup, setCurrGroup] = useState('');
     const [currSched, setCurrSched] = useState('off');
     const [schedButtons, setSchedButtons] = useState<iSchedButtons>({});
@@ -97,7 +98,7 @@ const HomePage = () => {
                             setSchedOptions(newOptions);
                         }
                         setCurrSched(newsched);
-                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions);
+                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
                     } else {
                         setCurrSched("off");
                         setHstatus("Completed");
@@ -315,13 +316,13 @@ const HomePage = () => {
     }, [showClock, hstatus]);
 
     // cleanly reset and rebuild future events using globals
-    //  globals allTasks
-    const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions) => {
+    //  globals allTasks, started
+    const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions, startdate: Date) => {
             killEventTask();
 
             let wkEvents: iFutureEvs = {evs: []};
             if (wksched !== "off") {
-                wkEvents = buildFutureEvents(wkgroup, wksched, allTasks, wkoptions);
+                wkEvents = buildFutureEvents(startdate, wkgroup, wksched, allTasks, wkoptions);
                 }
 
             // cleanup, get expired (or about to in next 30 seconds)
@@ -353,7 +354,7 @@ const HomePage = () => {
         setSchedOptions(newOptions);
 
         if (currSched !== 'off') {
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions);
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions, started);
         }
     }
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
@@ -361,8 +362,9 @@ const HomePage = () => {
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setCurrSched(wksched);
-
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions);
+            const startDate = new Date(Date.now());
+            setStarted(startDate);
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
@@ -383,7 +385,7 @@ const HomePage = () => {
         if (currSched !== "off") {
             setCurrSched("off");
             // uses old group in call, thats OK as long as schedule is set to off
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, 'off', schedOptions);
+            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, 'off', schedOptions, started);
             enqueueSnackbar(`scheduler canceled`,
                 {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
         }

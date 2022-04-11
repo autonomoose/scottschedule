@@ -70,6 +70,7 @@ describe("futurevents", () => {
 
   it("creates basic futurevents", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       eventList,
@@ -88,6 +89,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -105,6 +107,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -121,6 +124,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -141,6 +145,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -158,6 +163,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -174,6 +180,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -191,6 +198,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -208,6 +216,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -224,6 +233,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -240,6 +250,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -253,6 +264,7 @@ describe("futurevents", () => {
   //
   it("uses tomorrow option", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       eventList,
@@ -269,6 +281,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -286,6 +299,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -302,6 +316,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -332,6 +347,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       specEventList,
@@ -368,6 +384,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched.8:00',
       eventList,
@@ -389,6 +406,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -411,6 +429,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -430,6 +449,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -446,6 +466,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -463,6 +484,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -480,6 +502,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -496,6 +519,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -512,6 +536,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -535,6 +560,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -545,6 +571,7 @@ describe("futurevents", () => {
   });
   it("handles bad sched", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'badsched',
       eventList,
@@ -565,6 +592,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
