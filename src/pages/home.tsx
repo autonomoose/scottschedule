@@ -258,6 +258,12 @@ const HomePage = () => {
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
 
+        let nextEvent = document.getElementById('ev-pend');
+        if (!nextEvent) nextEvent = document.getElementById('ev-soon');
+        if (nextEvent) {
+            nextEvent.textContent = 'Next Up ' + showTimeLeft();
+        }
+
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: '2-digit', minute: '2-digit'});
@@ -309,11 +315,11 @@ const HomePage = () => {
 
         if (showClock && hstatus !== 'Loading') {
             setNowDigital(showClock);
-            var intervalId = setInterval(() => {setNowDigital(showClock)}, 10000);
+            var intervalId = setInterval(() => {setNowDigital(showClock)}, 5000);
             return () => {clearInterval(intervalId);};
         }
         return () => {};
-    }, [showClock, hstatus]);
+    }, [showClock, hstatus, nextEvs]);
 
     // cleanly reset and rebuild future events using globals
     //  globals allTasks, started
@@ -499,6 +505,16 @@ const HomePage = () => {
       setDataSerial(dataSerial+1);
     };
 
+    const showTimeLeft = () => {
+      if (nextEvs.evs.length === 0) return("");
+      const msLeft = (new Date(Date.now()).valueOf() - nextEvs.evs[0].evTstamp) * -1;
+      if (msLeft <= 0) return("0");
+
+      const minLeft = Math.floor(msLeft / 60000);
+      const secLeft = Math.ceil((msLeft % 60000)/1000);
+      return('' + minLeft + 'm ' + secLeft + 's');
+    };
+
     return(
       <Layout><Seo title="Scottschedule v1.2.4b" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
@@ -627,13 +643,13 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6' data-testid='ev-pend'>
-                 Next Up
+               <Typography variant='h6' data-testid='ev-pend' id='ev-pend'>
+                 Next Up ({showTimeLeft()})
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon'>
-                 Next Up (soon)
+               <Typography variant='h6' data-testid='ev-soon' id='ev-soon'>
+                 Next Up (soon) ({showTimeLeft()})
                </Typography>
              }
              {(nextEvs.status === 'current') &&
