@@ -507,12 +507,27 @@ const HomePage = () => {
 
     const showTimeLeft = () => {
       if (nextEvs.evs.length === 0) return("");
-      const msLeft = (new Date(Date.now()).valueOf() - nextEvs.evs[0].evTstamp) * -1;
-      if (msLeft <= 0) return("0");
+      let retString = '0';
 
-      const minLeft = Math.floor(msLeft / 60000);
-      const secLeft = Math.ceil((msLeft % 60000)/1000);
-      return('' + minLeft + 'm ' + secLeft + 's');
+      const msLeft = (new Date(Date.now()).valueOf() - nextEvs.evs[0].evTstamp) * -1;
+      if (msLeft > 0)  {
+        let minLeft = Math.floor(msLeft / 60000);
+        let secLeft = Math.ceil((msLeft % 60000)/1000);
+        // edge case from the way we are rounding
+        if (secLeft === 60) {
+          secLeft = 0;
+          minLeft += 1;
+        }
+        if (minLeft > 120) {
+          let hourLeft = Math.floor(minLeft/60);
+          minLeft -= hourLeft*60;
+          retString = ''  + hourLeft + 'h ' + hourLeft + 'm ';
+        } else {
+          retString = '' + minLeft + 'm ' + secLeft + 's';
+        }
+      }
+
+      return(retString);
     };
 
     return(
