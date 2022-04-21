@@ -55,6 +55,7 @@ const HomePage = () => {
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [dataSerial, setDataSerial] = useState(0);
     const [eventId, setEventId] = useState(0);
+    const [runNumber, setRunNumber] = useState(0);
 
     // execute event
     //  globals nextEvs, futureEvs
@@ -101,6 +102,7 @@ const HomePage = () => {
                         }
                         setSchedOptions(newOptions);
                         cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
+                        setRunNumber(() => runNumber + 1);
                     } else {
                         resetOptions();
                         setCurrSched("off");
@@ -383,6 +385,8 @@ const HomePage = () => {
                 resetOptions();
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+            } else {
+                setRunNumber(() => runNumber + 1);
             }
         }
     }
@@ -718,9 +722,9 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              <Typography variant='h6'>
-               Recent Events
+               Recent Events {runNumber}
              </Typography>
-             <Button onClick={() => setExpiredEvs([])}>
+             <Button onClick={() => {setExpiredEvs([]); setRunNumber(0)}}>
                Clear
              </Button>
            </Box>
