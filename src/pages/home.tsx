@@ -92,14 +92,17 @@ const HomePage = () => {
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
-                        const newOptions = {...schedOptions};
+                        setCurrSched(newsched);
+
+                        const newOptions : iSchedOptions = {};
+                        Object.keys(schedOptions).forEach(item => {newOptions[item] = false});
                         if (chains.length > 1) {
                             chains.slice(1).forEach(item => {newOptions[item] = true});
-                            setSchedOptions(newOptions);
                         }
-                        setCurrSched(newsched);
+                        setSchedOptions(newOptions);
                         cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
                     } else {
+                        resetOptions();
                         setCurrSched("off");
                         setHstatus("Completed");
                     }
@@ -315,7 +318,7 @@ const HomePage = () => {
 
         if (showClock && hstatus !== 'Loading') {
             setNowDigital(showClock);
-            var intervalId = setInterval(() => {setNowDigital(showClock)}, 5000);
+            var intervalId = setInterval(() => {setNowDigital(showClock)}, 1000);
             return () => {clearInterval(intervalId);};
         }
         return () => {};
@@ -363,6 +366,11 @@ const HomePage = () => {
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions, started);
         }
     }
+    const resetOptions = () => {
+        const newOptions : iSchedOptions = {};
+        Object.keys(schedOptions).forEach(item => {newOptions[item] = false});
+        setSchedOptions(newOptions);
+    };
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string) => {
@@ -372,6 +380,7 @@ const HomePage = () => {
             setStarted(startDate);
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
+                resetOptions();
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             }
