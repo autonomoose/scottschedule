@@ -16,7 +16,7 @@ const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
     const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
     return (
       <div>
-        {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
+        {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit", second: "2-digit"})} - {wkdescr}
       </div>
 )};
 export default DisplayFutureEvent
