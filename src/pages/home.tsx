@@ -263,11 +263,8 @@ const HomePage = () => {
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
 
-        let nextEvent = document.getElementById('ev-pend');
-        if (!nextEvent) nextEvent = document.getElementById('ev-soon');
-        if (nextEvent) {
-            nextEvent.textContent = 'Next Up ' + showTimeLeft();
-        }
+        let countDown = document.getElementById('countDown');
+        if (countDown) countDown.textContent = showTimeLeft();
 
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
@@ -520,24 +517,27 @@ const HomePage = () => {
 
     const showTimeLeft = () => {
       if (nextEvs.evs.length === 0) return("");
+      return(showTimeDiff(nextEvs.evs[0].evTstamp));
+    }
+    const showTimeDiff = (inTstamp) => {
       let retString = '0';
 
-      const msLeft = (new Date(Date.now()).valueOf() - nextEvs.evs[0].evTstamp) * -1;
-      if (msLeft > 0)  {
-        let minLeft = Math.floor(msLeft / 60000);
-        let secLeft = Math.ceil((msLeft % 60000)/1000);
-        // edge case from the way we are rounding
-        if (secLeft === 60) {
-          secLeft = 0;
-          minLeft += 1;
-        }
-        if (minLeft > 120) {
-          let hourLeft = Math.floor(minLeft/60);
-          minLeft -= hourLeft*60;
-          retString = ''  + hourLeft + 'h ' + hourLeft + 'm ';
-        } else {
-          retString = '' + minLeft + 'm ' + secLeft + 's';
-        }
+      const msLeft = Math.abs(new Date(Date.now()).valueOf() - inTstamp);
+      let minLeft = Math.floor(msLeft / 60000);
+      let secLeft = Math.ceil((msLeft % 60000)/1000);
+      // edge case from the way we are rounding
+      if (secLeft === 60) {
+        secLeft = 0;
+        minLeft += 1;
+      }
+      if (minLeft > 120) {
+        let hourLeft = Math.floor(minLeft/60);
+        minLeft -= hourLeft*60;
+        retString = ''  + hourLeft + 'h ' + hourLeft + 'm ';
+      } else if (minLeft > 0) {
+        retString = '' + minLeft + 'm ' + secLeft + 's';
+      } else {
+        retString = '' + secLeft + 's';
       }
 
       return(retString);
@@ -671,13 +671,13 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6' data-testid='ev-pend' id='ev-pend'>
-                 Next Up ({showTimeLeft()})
+               <Typography variant='h6' data-testid='ev-pend'>
+                 Next Up <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon' id='ev-soon'>
-                 Next Up (soon) ({showTimeLeft()})
+               <Typography variant='h6' data-testid='ev-soon' sx={{fontWeight: 600,backgroundColor: '#ffdddd'}}>
+                 Next Soon <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'current') &&
@@ -686,8 +686,8 @@ const HomePage = () => {
                </Typography>
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-ack'>
-                 Current
+               <Typography variant='h6' sx={{fontWeight: 600,backgroundColor: '#dddddd'}} data-testid='ev-ack'>
+                 Next <span id='countDown'>0m 0s</span> (Silenced)
                </Typography>
              }
 
@@ -722,7 +722,7 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              <Typography variant='h6'>
-               Recent Events {runNumber}
+               Log {runNumber} {started.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit", second: "2-digit"})}
              </Typography>
              <Button onClick={() => {setExpiredEvs([]); setRunNumber(0)}}>
                Clear
