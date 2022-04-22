@@ -76,6 +76,7 @@ interface iNextEvs {
 interface iFutureEvent {
     evTstamp: number,
     evTaskId: string,
+    begTstamp?: number,
     descr?: string,
 };
 
