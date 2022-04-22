@@ -65,6 +65,7 @@ interface iEvsWarn {
     sound?: iEvsSound,
 };
 
+// adds a status to the next event
 interface iNextEvs {
     evs: iFutureEvent[],
     status: string,
@@ -75,8 +76,10 @@ interface iNextEvs {
 interface iFutureEvent {
     evTstamp: number,
     evTaskId: string,
+    descr?: string,
 };
 
+// adds schedule begin and default schedule sounds
 interface iFutureEvs {
     evs: iFutureEvent[],
     begins?: number,
