@@ -83,13 +83,23 @@ const HomePage = () => {
             currdate.setSeconds(currdate.getSeconds() + 30);
             let wkEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp > currdate.valueOf());
             if (wkEvents.length !== futureEvs.evs.length) {
+                // add newly expired events to log
                 let stripEvents: iFutureEvent[] = futureEvs.evs.filter(item => item.evTstamp <= currdate.valueOf());
-                setExpiredEvs(stripEvents);
+                const logEvents: iFutureEvent[] = stripEvents.reverse().map(item => {
+                    return({...item, begTstamp: started.valueOf()})
+                });
+                setExpiredEvs(logEvents.concat(expiredEvs));
 
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
-                    const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
                     // console.log("finished", currSched, schedList[0]);
+                    setStarted(new Date(Date.now()));
+
+                    const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
+                    setExpiredEvs([
+                        {descr: 'end #' + runNumber, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
+                        ...expiredEvs
+                        ]);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
@@ -103,6 +113,10 @@ const HomePage = () => {
                         setSchedOptions(newOptions);
                         cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
                         setRunNumber(() => runNumber + 1);
+                        setExpiredEvs([
+                            {descr: 'chain begin #' + (runNumber + 1) + ' ' + newsched, evTstamp: Date.now(), evTaskId: '-'},
+                            ...expiredEvs
+                            ]);
                     } else {
                         resetOptions();
                         setCurrSched("off");
@@ -263,11 +277,11 @@ const HomePage = () => {
         let mainclock = document.getElementById('mainclock');
         let compclock = document.getElementById('compclock');
 
-        let nextEvent = document.getElementById('ev-pend');
-        if (!nextEvent) nextEvent = document.getElementById('ev-soon');
-        if (nextEvent) {
-            nextEvent.textContent = 'Next Up ' + showTimeLeft();
-        }
+        let countDown = document.getElementById('countDown');
+        if (countDown) countDown.textContent = showTimeLeft();
+
+        let countUp = document.getElementById('countUp');
+        if (countUp) countUp.textContent = showTimeDiff(started.valueOf());
 
         if (mainclock) {
             const localTime = wkdate.toLocaleTimeString(
@@ -330,28 +344,40 @@ const HomePage = () => {
     //  globals allTasks, started
     const cleanRebuildFutureEvents = (wkgroup: iSchedGroup, wksched: string, wkoptions: iSchedOptions, startdate: Date) => {
             killEventTask();
-
-            let wkEvents: iFutureEvs = {evs: []};
-            if (wksched !== "off") {
-                wkEvents = buildFutureEvents(startdate, wkgroup, wksched, allTasks, wkoptions);
-                }
-
-            // cleanup, get expired (or about to in next 30 seconds)
             let currdate = new Date(Date.now());
-            currdate.setSeconds(currdate.getSeconds() + 30);
 
-            let stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
-            setExpiredEvs(stripEvents);
+            // let wkEvents: iFutureEvs = {evs: []};
+            if (wksched === "off") {
+                setFutureEvs({evs: []});
+                setHstatus("Ready");
+                return;
+            }
+            let wkEvents = buildFutureEvents(startdate, wkgroup, wksched, allTasks, wkoptions);
+
+            // cleanup, get expired (or about to in next 15 seconds)
+            currdate.setSeconds(currdate.getSeconds() + 15);
+
+            const loggedEvents = expiredEvs.filter(item => item.begTstamp === startdate.valueOf());
+
+            if (loggedEvents.length === 0) {
+                // first time (no other events with begTstamp)
+                const stripEvents = wkEvents.evs.filter(item => item.evTstamp <= currdate.valueOf());
+                const logEvents: iFutureEvent[] = stripEvents.reverse().map(item => {
+                    return({...item, begTstamp: startdate.valueOf()})
+                });
+                logEvents.push(
+                   {descr: 'Begin #' + (runNumber+1) + ' ' + wksched, evTstamp: startdate.valueOf(), begTstamp: startdate.valueOf(),evTaskId: '-beg'},
+                );
+                setExpiredEvs(logEvents.concat(expiredEvs));
+            }
 
             let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
             setFutureEvs({...wkEvents, evs: finalEvents});
 
             if (finalEvents.length === 0) {
                 setHstatus("Ready");
-                if (wksched !== "off") {
-                    enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
-                    setCurrSched("off");
-                }
+                enqueueSnackbar(`Complete with no future events`, {variant: 'warning'});
+                setCurrSched("off");
             } else {
                 setHstatus("Running");
             }
@@ -360,12 +386,29 @@ const HomePage = () => {
     // change state handle ui for optional schedule button presses
     //   global schedGroups, currGroup, currSched, schedOptions
     const toggleOptions = (item: string) => {
+        const toggleTime = Date.now();
+
         const newOptions = {...schedOptions};
         newOptions[item] = (schedOptions[item] === false);
         setSchedOptions(newOptions);
 
         if (currSched !== 'off') {
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions, started);
+            if (newOptions[item]) {
+                // log the new option into a running schedule
+                // note that this will override logging option now events from cleanRebuild below
+                setExpiredEvs([
+                    { descr: 'Opt:'+ item + ' #' + runNumber,
+                      evTstamp: toggleTime, begTstamp: started.valueOf(),
+                      evTaskId: 'opt-' + item,
+                    },
+                    ...expiredEvs
+                ]);
+            }
+
+            if ((nextEvs?.evs[0].evTstamp - toggleTime) > 16000) {
+                // don't rebuild if we are about to rebuild with a running event
+                cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, currSched, newOptions, started);
+            }
         }
     }
     const resetOptions = () => {
@@ -382,11 +425,20 @@ const HomePage = () => {
             setStarted(startDate);
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
+                // set log using previous value of started as begTstamp
+                setExpiredEvs([
+                    {descr: 'Off #' + runNumber, evTstamp: startDate.valueOf(), begTstamp: started.valueOf(), evTaskId: '-'},
+                   ...expiredEvs
+                ]);
                 resetOptions();
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
                 setRunNumber(() => runNumber + 1);
+                // setExpiredEvs([
+                //     {descr: 'begin #' + (runNumber + 1) + ' ' + wksched, evTstamp: startDate.valueOf(), evTaskId: '-'},
+                //     ...expiredEvs
+                // ]);
             }
         }
     }
@@ -520,24 +572,27 @@ const HomePage = () => {
 
     const showTimeLeft = () => {
       if (nextEvs.evs.length === 0) return("");
-      let retString = '0';
+      return(showTimeDiff(nextEvs.evs[0].evTstamp));
+    }
 
-      const msLeft = (new Date(Date.now()).valueOf() - nextEvs.evs[0].evTstamp) * -1;
-      if (msLeft > 0)  {
-        let minLeft = Math.floor(msLeft / 60000);
-        let secLeft = Math.ceil((msLeft % 60000)/1000);
-        // edge case from the way we are rounding
-        if (secLeft === 60) {
-          secLeft = 0;
-          minLeft += 1;
-        }
-        if (minLeft > 120) {
-          let hourLeft = Math.floor(minLeft/60);
-          minLeft -= hourLeft*60;
-          retString = ''  + hourLeft + 'h ' + hourLeft + 'm ';
-        } else {
-          retString = '' + minLeft + 'm ' + secLeft + 's';
-        }
+    const showTimeDiff = (inTstamp: number) => {
+      let retString = '0';
+      const msLeft = Math.abs(new Date(Date.now()).valueOf() - inTstamp);
+      let minLeft = Math.floor(msLeft / 60000);
+      let secLeft = Math.ceil((msLeft % 60000)/1000);
+      // edge case from the way we are rounding
+      if (secLeft === 60) {
+        secLeft = 0;
+        minLeft += 1;
+      }
+      if (minLeft > 120) {
+        let hourLeft = Math.floor(minLeft/60);
+        minLeft -= hourLeft*60;
+        retString = ' '  + hourLeft + 'h ' + minLeft + 'm ';
+      } else if (minLeft > 0) {
+        retString = ' ' + minLeft + 'm ' + secLeft + 's ';
+      } else {
+        retString = ' ' + secLeft + 's ';
       }
 
       return(retString);
@@ -671,13 +726,13 @@ const HomePage = () => {
          <Box mx={1}>
            <Box display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6' data-testid='ev-pend' id='ev-pend'>
-                 Next Up ({showTimeLeft()})
+               <Typography variant='h6' data-testid='ev-pend'>
+                 Next Up <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon' id='ev-soon'>
-                 Next Up (soon) ({showTimeLeft()})
+               <Typography variant='h6' data-testid='ev-soon' sx={{fontWeight: 600,backgroundColor: '#ffdddd'}}>
+                 Next Up <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'current') &&
@@ -686,8 +741,8 @@ const HomePage = () => {
                </Typography>
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-ack'>
-                 Current
+               <Typography variant='h6' sx={{fontWeight: 600,backgroundColor: '#dddddd'}} data-testid='ev-ack'>
+                 Next Up <span id='countDown'>0m 0s</span> (Silenced)
                </Typography>
              }
 
@@ -717,21 +772,34 @@ const HomePage = () => {
        }
 
        { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1', background: '#FAFAFA',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-         <Box mx={1}>
-           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+         <Box >
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" sx={{backgroundColor: '#e9e9e9'}}>
+             <Box display="flex"  alignItems="baseline">
              <Typography variant='h6'>
-               Recent Events {runNumber}
+               Log #{runNumber} {currSched}
              </Typography>
+
+             <Typography variant='body1' sx={{marginLeft: 1, marginRight: 1}}>
+               {(currSched === 'off')? 'for': 'running' }
+             </Typography>
+
+             <Typography variant='h6'>
+             <span id='countUp'>0m 0s</span>
+             </Typography>
+             </Box>
+
              <Button onClick={() => {setExpiredEvs([]); setRunNumber(0)}}>
                Clear
              </Button>
            </Box>
+           <Box mx={1}>
            { expiredEvs.map(item => <DisplayFutureEvent
              key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-             descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+             descr={(item.descr)? item.descr: (allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
            }
+           </Box>
          </Box>
        </Card>
        }

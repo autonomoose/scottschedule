@@ -14,10 +14,28 @@ interface DisplayFutureEventProps {
 const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
     const wkdate = new Date(props.item.evTstamp);
     const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
+    const stamp = wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+    let wksize = (wkdescr.length < 25)? 'body1': 'caption';
+    let offset = '';
+    if (props.item.begTstamp && props.item.begTstamp !== props.item.evTstamp) {
+        const sTotLeft = Math.round((props.item.evTstamp - props.item.begTstamp)/1000);
+        if (sTotLeft > 0) {
+            const minLeft = Math.floor(sTotLeft / 60);
+            const hourLeft = Math.floor(minLeft / 60);
+            // offset = hourLeft < 99? ('00'+hourLeft).slice(-2): '' + hourLeft;
+            offset = '+' + hourLeft;
+            offset += ':' + ('00' + (minLeft - (hourLeft*60))).slice(-2);
+            offset += ':' + ('00' + (sTotLeft - (minLeft*60) - (hourLeft*3600))).slice(-2);
+            wksize = 'caption';
+        } else {
+            offset ='old';
+            wksize = 'caption';
+        }
+    }
     return (
-      <div>
-        {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit", second: "2-digit"})} - {wkdescr}
-      </div>
+      <Typography variant={wksize as any} component='div'>
+        {stamp} {offset} - {wkdescr}
+      </Typography>
 )};
 export default DisplayFutureEvent
 
