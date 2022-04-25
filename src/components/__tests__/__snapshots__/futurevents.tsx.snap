@@ -13,14 +13,18 @@ exports[`futurevents renders snapshot correctly 1`] = `
     >
       Upcoming Events
     </h6>
-    <div>
+    <div
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
       09:42:07 AM
        
       
        - 
       test event
     </div>
-    <div>
+    <div
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
       09:44:07 AM
        
       
