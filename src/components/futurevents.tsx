@@ -120,10 +120,12 @@ export const buildFutureEvents = (parmDate: Date, wkgroup: iSchedGroup, wksched:
                             const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
                             retDate.setMinutes(Number(minParts[0]), wkSeconds);
                         }
+                    } else {
+                        console.warn("unknown date - bad characters", wkTlang);
                     }
                     break;
                 default:
-                    // console.log("unknown date", wkTlang);
+                    console.warn("unknown date - bad format", wkTlang);
                     break;
             }
         }
