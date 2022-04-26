@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
+import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -736,9 +737,13 @@ const HomePage = () => {
                </Typography>
              }
              {(nextEvs.status === 'current') &&
+               <Box width='70%'>
                <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-curr'>
                  Active
                </Typography>
+               <LinearProgress/>
+               </Box>
+
              }
              {(nextEvs.status === 'ack') &&
                <Typography variant='h6' sx={{fontWeight: 600,backgroundColor: '#dddddd'}} data-testid='ev-ack'>
