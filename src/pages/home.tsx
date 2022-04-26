@@ -600,7 +600,7 @@ const HomePage = () => {
     };
 
     return(
-      <Layout><Seo title="Scottschedule v1.2.4b" />
+      <Layout><Seo title="Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
