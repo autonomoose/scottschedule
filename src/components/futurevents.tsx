@@ -67,10 +67,11 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   get the Task rules that match
 //   process rules into events dict w/ tstamp key
 //   convert dict to sorted array w/ earliest events first
-export const buildFutureEvents = (currdate: Date, wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
+export const buildFutureEvents = (parmDate: Date, wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
-    // let currdate = new Date(Date.now());
+    let currdate = new Date(parmDate.valueOf());
     if (optInfo['tomorrow']) {
+        // set schedule start to 12:00:01 am tomorrow
         currdate.setHours(currdate.getHours() + 24);
         currdate.setHours(0);
         currdate.setMinutes(0);
@@ -85,14 +86,11 @@ export const buildFutureEvents = (currdate: Date, wkgroup: iSchedGroup, wksched:
             switch(dateParts.length) {
                 case 1: // minutes only (offset only) or word
                     if (/^\+?\d+#?\d*$/.test(wkTlang)) {
-                        if (wkTlang[0] === '+') {
-                            // offset
-                            const minParts = wkTlang.split('#');
+                        const minParts = wkTlang.split('#');
+                        if (wkTlang[0] === '+') { // offset
                             const wkSeconds = (minParts.length > 1)? retDate.getSeconds() + Number(minParts[1]): 0;
                             retDate.setMinutes(retDate.getMinutes() + Number(minParts[0].substring(1)), wkSeconds);
-                        } else {
-                            // constant
-                            const minParts = wkTlang.split('#');
+                        } else { // constant
                             const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
                             retDate.setMinutes(Number(wkTlang.substring(1)), wkSeconds);
                         }
@@ -111,17 +109,16 @@ export const buildFutureEvents = (currdate: Date, wkgroup: iSchedGroup, wksched:
                     }
                     break;
                 case 2: // hours and minutes (constant or offset)
-                    if (/^\+?\d+$/.test(dateParts[0]) && /^\d+\.?\d*$/.test(dateParts[1])) {
-                        if (wkTlang[0] === '+') {
-                            // offset
+                    if (/^\+?\d+$/.test(dateParts[0]) && /^\d+#?\d*$/.test(dateParts[1])) {
+                        const minParts = dateParts[1].split('#');
+                        if (wkTlang[0] === '+') { // offset
                             retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
-                            retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
-                            retDate.setSeconds(0);
-                        } else {
-                            // constant
+                            const wkSeconds = (minParts.length > 1)? retDate.getSeconds() + Number(minParts[1]): 0;
+                            retDate.setMinutes(retDate.getMinutes() + Number(minParts[0]), wkSeconds);
+                        } else { // constant
                             retDate.setHours(Number(dateParts[0]));
-                            retDate.setMinutes(Number(dateParts[1]));
-                            retDate.setSeconds(0);
+                            const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
+                            retDate.setMinutes(Number(minParts[0]), wkSeconds);
                         }
                     }
                     break;
