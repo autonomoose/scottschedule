@@ -572,13 +572,20 @@ const HomePage = () => {
     };
 
     const showTimeLeft = () => {
-      if (nextEvs.evs.length === 0) return("");
-      return(showTimeDiff(nextEvs.evs[0].evTstamp));
+      let retStr = '';
+      if (nextEvs.evs.length > 0) {
+        if (nextEvs.evs[0].evTstamp > Date.now()) {
+            retStr = 'Next Up' + showTimeDiff(nextEvs.evs[0].evTstamp);
+        } else {
+            retStr = 'Active for' + showTimeDiff(nextEvs.evs[0].evTstamp+15000);
+        }
+      }
+      return(retStr);
     }
 
     const showTimeDiff = (inTstamp: number) => {
       let retString = '0';
-      const msLeft = Math.abs(new Date(Date.now()).valueOf() - inTstamp);
+      const msLeft = Math.abs(Date.now() - inTstamp);
       let minLeft = Math.floor(msLeft / 60000);
       let secLeft = Math.ceil((msLeft % 60000)/1000);
       // edge case from the way we are rounding
@@ -724,30 +731,34 @@ const HomePage = () => {
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
           background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-         <Box mx={1}>
-           <Box display="flex" justifyContent="space-between" alignItems="baseline">
+         <Box>
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline"
+             sx={{backgroundColor: (currSched === 'off')? '#e0e0e0'
+                                 : (nextEvs.status ==='ack')? ' #d2b4de'
+                                 : (nextEvs.status ==='pending')? '#fcf3cf'
+                                 : '#fadbd8'}}>
              {(nextEvs.status === 'pending') &&
                <Typography variant='h6' data-testid='ev-pend'>
-                 Next Up <span id='countDown'>0m 0s</span>
+                 <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon' sx={{fontWeight: 600,backgroundColor: '#ffdddd'}}>
-                 Next Up <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid='ev-soon'>
+                 <span id='countDown'>0m 0s</span>
                </Typography>
              }
              {(nextEvs.status === 'current') &&
                <Box width='70%'>
-               <Typography variant='h6' sx={{fontWeight: 600,}} data-testid='ev-curr'>
-                 Active
+               <Typography variant='h6' data-testid='ev-curr'>
+                 <span id='countDown'>0m 0s</span>
                </Typography>
                <LinearProgress/>
                </Box>
 
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' sx={{fontWeight: 600,backgroundColor: '#dddddd'}} data-testid='ev-ack'>
-                 Next Up <span id='countDown'>0m 0s</span> (Silenced)
+               <Typography variant='h6' data-testid='ev-ack'>
+                 <span id='countDown'>0m 0s</span> (Silenced)
                </Typography>
              }
 
