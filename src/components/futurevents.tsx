@@ -14,10 +14,28 @@ interface DisplayFutureEventProps {
 const DisplayFutureEvent = (props: DisplayFutureEventProps) => {
     const wkdate = new Date(props.item.evTstamp);
     const wkdescr = (props.descr)? props.descr: props.item.evTaskId;
+    const stamp = wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+    let wksize = (wkdescr.length < 25)? 'body1': 'caption';
+    let offset = '';
+    if (props.item.begTstamp && props.item.begTstamp !== props.item.evTstamp) {
+        const sTotLeft = Math.round((props.item.evTstamp - props.item.begTstamp)/1000);
+        if (sTotLeft > 0) {
+            const minLeft = Math.floor(sTotLeft / 60);
+            const hourLeft = Math.floor(minLeft / 60);
+            // offset = hourLeft < 99? ('00'+hourLeft).slice(-2): '' + hourLeft;
+            offset = '+' + hourLeft;
+            offset += ':' + ('00' + (minLeft - (hourLeft*60))).slice(-2);
+            offset += ':' + ('00' + (sTotLeft - (minLeft*60) - (hourLeft*3600))).slice(-2);
+            wksize = 'caption';
+        } else {
+            offset ='old';
+            wksize = 'caption';
+        }
+    }
     return (
-      <div>
-        {wkdate.toLocaleString('en-US', {hour: "2-digit", minute: "2-digit"})} - {wkdescr}
-      </div>
+      <Typography variant={wksize as any} component='div'>
+        {stamp} {offset} - {wkdescr}
+      </Typography>
 )};
 export default DisplayFutureEvent
 
@@ -49,10 +67,11 @@ export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
 //   get the Task rules that match
 //   process rules into events dict w/ tstamp key
 //   convert dict to sorted array w/ earliest events first
-export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
+export const buildFutureEvents = (parmDate: Date, wkgroup: iSchedGroup, wksched: string, taskInfo: iTask, optInfo: iSchedOptions): iFutureEvs => {
     let wkEvents: iFutureEvent[] = [];
-    let currdate = new Date(Date.now());
+    let currdate = new Date(parmDate.valueOf());
     if (optInfo['tomorrow']) {
+        // set schedule start to 12:00:01 am tomorrow
         currdate.setHours(currdate.getHours() + 24);
         currdate.setHours(0);
         currdate.setMinutes(0);
@@ -66,42 +85,47 @@ export const buildFutureEvents = (wkgroup: iSchedGroup, wksched: string, taskInf
             const dateParts = wkTlang.split(':');
             switch(dateParts.length) {
                 case 1: // minutes only (offset only) or word
-                    if (/^\+?\d+$/.test(wkTlang)) {
-                        // numeric is minutes only
-                        if (wkTlang[0] === '+') {
-                            // offset
-                            retDate.setMinutes(retDate.getMinutes() + Number(dateParts[0]));
-                            retDate.setSeconds(0);
-                        } else {
-                            // constant
-                            retDate.setMinutes(Number(dateParts[0]));
-                            retDate.setSeconds(0);
+                    if (/^\+?\d+#?\d*$/.test(wkTlang)) {
+                        const minParts = wkTlang.split('#');
+                        if (wkTlang[0] === '+') { // offset
+                            const wkSeconds = (minParts.length > 1)? retDate.getSeconds() + Number(minParts[1]): 0;
+                            retDate.setMinutes(retDate.getMinutes() + Number(minParts[0].substring(1)), wkSeconds);
+                        } else { // constant
+                            const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
+                            retDate.setMinutes(Number(wkTlang.substring(1)), wkSeconds);
                         }
                     } else {
                         switch(wkTlang) {
+                            case 'press':  // run-time option press
+                                retDate = new Date(Date.now());
+                                break;
+                            case 'start': // based on schedule start
                             case 'now':
                                 break;
                             default:
-                                // console.log("unknown date - bad command", wkTlang);
+                                console.warn("unknown date - bad command", wkTlang);
                                 break;
                         }
                     }
                     break;
                 case 2: // hours and minutes (constant or offset)
-                    if (wkTlang[0] === '+') {
-                        // offset
-                        retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
-                        retDate.setMinutes(retDate.getMinutes() + Number(dateParts[1]));
-                        retDate.setSeconds(0);
+                    if (/^\+?\d+$/.test(dateParts[0]) && /^\d+#?\d*$/.test(dateParts[1])) {
+                        const minParts = dateParts[1].split('#');
+                        if (wkTlang[0] === '+') { // offset
+                            retDate.setHours(retDate.getHours() + Number(dateParts[0].substring(1)));
+                            const wkSeconds = (minParts.length > 1)? retDate.getSeconds() + Number(minParts[1]): 0;
+                            retDate.setMinutes(retDate.getMinutes() + Number(minParts[0]), wkSeconds);
+                        } else { // constant
+                            retDate.setHours(Number(dateParts[0]));
+                            const wkSeconds = (minParts.length > 1)? Number(minParts[1]): 0;
+                            retDate.setMinutes(Number(minParts[0]), wkSeconds);
+                        }
                     } else {
-                        // constant
-                        retDate.setHours(Number(dateParts[0]));
-                        retDate.setMinutes(Number(dateParts[1]));
-                        retDate.setSeconds(0);
+                        console.warn("unknown date - bad characters", wkTlang);
                     }
                     break;
                 default:
-                    // console.log("unknown date", wkTlang);
+                    console.warn("unknown date - bad format", wkTlang);
                     break;
             }
         }

@@ -32,6 +32,14 @@ interface iSchedGroup {
     name?: string,
     descr: string,
     schedNames: iSchedule[],
+    notomorrow?: boolean,
+};
+interface iSchedGroupList {
+    [name: string]: {
+        descr: string,
+        schedNames: iSchedule[],
+        notomorrow?: boolean,
+    };
 };
 
 // schedule options
@@ -57,6 +65,7 @@ interface iEvsWarn {
     sound?: iEvsSound,
 };
 
+// adds a status to the next event
 interface iNextEvs {
     evs: iFutureEvent[],
     status: string,
@@ -67,20 +76,16 @@ interface iNextEvs {
 interface iFutureEvent {
     evTstamp: number,
     evTaskId: string,
+    begTstamp?: number,
+    descr?: string,
 };
 
+// adds schedule begin and default schedule sounds
 interface iFutureEvs {
     evs: iFutureEvent[],
     begins?: number,
     sound?: iEvsSound,
     warn?: iEvsWarn,
-};
-
-interface iSchedGroupList {
-    [name: string]: {
-        descr: string,
-        schedNames: iSchedule[],
-    };
 };
 
 interface iGrpSchedTask {

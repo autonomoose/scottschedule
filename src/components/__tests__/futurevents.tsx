@@ -70,6 +70,7 @@ describe("futurevents", () => {
 
   it("creates basic futurevents", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       eventList,
@@ -84,10 +85,11 @@ describe("futurevents", () => {
     const specEventList = {
       'testev': {
         descr: 'test event',
-        schedRules: ['begin 50,++2,++2',],
+        schedRules: ['begin 50#30,++2#30,++2',],
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -101,10 +103,11 @@ describe("futurevents", () => {
     const specEventList = {
       'testev': {
         descr: 'test event',
-        schedRules: ['begin 20:00,++2,++2',],
+        schedRules: ['begin 22:00#30,++1:2#30,++2',],
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -113,14 +116,15 @@ describe("futurevents", () => {
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
   });
-  it("handles hour offsets", () => {
+  it("handles start keyword", () => {
     const specEventList = {
       'testev': {
         descr: 'test event',
-        schedRules: ['begin +1:00,++1:00,++1:00',],
+        schedRules: ['begin start,++1:00,++1:00',],
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -141,6 +145,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -158,6 +163,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -174,6 +180,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -191,6 +198,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -208,6 +216,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -224,6 +233,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -240,6 +250,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -253,6 +264,7 @@ describe("futurevents", () => {
   //
   it("uses tomorrow option", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       eventList,
@@ -269,6 +281,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -286,6 +299,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -302,13 +316,53 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
       {tomorrow: false, }
     );
     expect(newEvs).toStrictEqual({evs: [], begins: mockNow});
-    expect(newEvs.begins).toBe(mockNow);
+  });
+  it("handles 'option - press' setup", () => {
+    const specEventList = {
+      'testev': {
+        descr: 'test event',
+        schedRules: ['option button1 press',],
+      }
+    };
+    const newEvs = buildFutureEvents(
+      new Date(Date.now()),
+      testSchedGroup,
+      'testsched',
+      specEventList,
+      {tomorrow: false, button1: false,}
+    );
+    expect(newEvs).toStrictEqual({evs: [], begins: mockNow});
+  });
+  it("handles 'option - press' active", () => {
+    const specEventList = {
+      'testev': {
+        descr: 'test event',
+        schedRules: ['option button1 press',],
+      }
+    };
+    const newEvs = buildFutureEvents(
+      new Date(Date.now()),
+      testSchedGroup,
+      'testsched',
+      specEventList,
+      {tomorrow: false, button1: true,}
+    );
+    expect(newEvs).toStrictEqual(
+      {evs: [
+        {
+        evTstamp: expect.any(Number),
+        evTaskId: 'testev',
+        },
+      ],
+      begins: mockNow
+      });
   });
 
   // multi-events ---------------
@@ -332,8 +386,9 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
-      'testsched',
+      'testsched.8:00',
       specEventList,
       {tomorrow: false, }
     );
@@ -368,6 +423,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched.8:00',
       eventList,
@@ -389,6 +445,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -411,6 +468,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -430,6 +488,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -439,6 +498,7 @@ describe("futurevents", () => {
     expect(newEvs.begins).toBe(mockNow);
   });
   it("handles bad command not expected as now", () => {
+    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const specEventList = {
       'testev': {
         descr: 'test event',
@@ -446,6 +506,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -453,9 +514,13 @@ describe("futurevents", () => {
     );
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
+
+    expect(consoleWarnFn).toHaveBeenCalledTimes(1);
+    consoleWarnFn.mockRestore();
   });
 
   it("handles more than one bad command by ignoring it ", () => {
+    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const specEventList = {
       'testev': {
         descr: 'test event',
@@ -463,6 +528,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -470,9 +536,32 @@ describe("futurevents", () => {
     );
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
+    expect(consoleWarnFn).toHaveBeenCalledTimes(2);
+    consoleWarnFn.mockRestore();
+  });
+  it("handles bad characters in two part tlang time", () => {
+    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
+    const specEventList = {
+      'testev': {
+        descr: 'test event',
+        schedRules: ['begin ++c:01,++2,++2,++2',],
+      }
+    };
+    const newEvs = buildFutureEvents(
+      new Date(Date.now()),
+      testSchedGroup,
+      'testsched',
+      specEventList,
+      {tomorrow: false, }
+    );
+    expect(newEvs).toStrictEqual(evsExpected);
+    expect(newEvs.begins).toBe(mockNow);
+    expect(consoleWarnFn).toHaveBeenCalledTimes(1);
+    consoleWarnFn.mockRestore();
   });
 
   it("handles extra time parts as now", () => {
+    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const specEventList = {
       'testev': {
         descr: 'test event',
@@ -480,6 +569,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -487,6 +577,8 @@ describe("futurevents", () => {
     );
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
+    expect(consoleWarnFn).toHaveBeenCalledTimes(1);
+    consoleWarnFn.mockRestore();
   });
   it("handles inital no time by ignoring it", () => {
     const specEventList = {
@@ -496,6 +588,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -512,6 +605,7 @@ describe("futurevents", () => {
       }
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'testsched',
       specEventList,
@@ -520,6 +614,7 @@ describe("futurevents", () => {
     expect(newEvs).toStrictEqual(evsExpected);
     expect(newEvs.begins).toBe(mockNow);
   });
+
   // bad parms in call ---------------
   //
   it("handles bad event", () => {
@@ -535,6 +630,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,
@@ -545,6 +641,7 @@ describe("futurevents", () => {
   });
   it("handles bad sched", () => {
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       testSchedGroup,
       'badsched',
       eventList,
@@ -565,6 +662,7 @@ describe("futurevents", () => {
             }]
     };
     const newEvs = buildFutureEvents(
+      new Date(Date.now()),
       specSchedGroup,
       'testsched',
       eventList,

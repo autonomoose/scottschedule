@@ -6,6 +6,7 @@ interface OptionsButtonsProps {
     options: iSchedOptions,
     onClick(name: string): void,
 }
+// if present, strip out tomorrow button and make it go last
 export const OptionsButtons = (props: OptionsButtonsProps) => {
     return (
       <>
@@ -16,10 +17,13 @@ export const OptionsButtons = (props: OptionsButtonsProps) => {
             {item}
           </Button>
         )})}
-          <Button size='large' key={'tomorrow'} variant={(props.options['tomorrow'])? "contained": "outlined"}
-            color="primary" onClick={() => props.onClick('tomorrow')}>
-            tomorrow
+      {Object.keys(props.options).filter(item => item === 'tomorrow').map(item => {
+        return (
+          <Button size='large' key={item} variant={(props.options[item])? "contained": "outlined"}
+            color="primary" onClick={() => props.onClick(item)}>
+            {item}
           </Button>
+        )})}
       </>
 )};
 
@@ -74,7 +78,8 @@ export const buildOptions = (wkSchedGroup: iSchedGroup, wkTasks: iTask) : iSched
     const optionSchedReduce = (outDict: iSchedOptions, item: iSchedule) => {
         return item.schedTasks.reduce(optionTaskReduce, outDict)
     }
-    const starterOptions = {'tomorrow': false};
+    let starterOptions: { [key: string]: boolean } = {'tomorrow': false};
+    if (wkSchedGroup.notomorrow) starterOptions = {};
 
     const retres = wkSchedGroup.schedNames.reduce(optionSchedReduce, starterOptions);
     return (retres);

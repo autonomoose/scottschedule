@@ -555,7 +555,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
                         >
                           <div
-                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-178cqt3-MuiButtonBase-root-MuiListItemButton-root"
                             data-testid="qstart1"
                             role="button"
                             tabindex="0"
@@ -583,7 +583,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
                         >
                           <div
-                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-178cqt3-MuiButtonBase-root-MuiListItemButton-root"
                             data-testid="qstart2"
                             role="button"
                             tabindex="0"
@@ -611,7 +611,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-1nxmd3h-MuiListItem-root"
                         >
                           <div
-                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-1m4u3pv-MuiButtonBase-root-MuiListItemButton-root"
+                            class="MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiButtonBase-root css-178cqt3-MuiButtonBase-root-MuiListItemButton-root"
                             data-testid="qstart3"
                             role="button"
                             tabindex="0"

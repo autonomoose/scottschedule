@@ -267,13 +267,43 @@ exports[`IndexPage renders snapshot correctly 1`] = `
           class="MuiBox-root css-pntgf1"
         >
           <h1
+            class="MuiTypography-root MuiTypography-h3 css-gepadz-MuiTypography-root"
             id="site-name"
           >
             Scottschedule
           </h1>
-          This tool is designed to help manage complex caregiver schedules, but it can also be used to manage a wide variety of recurring reminders.
+          <p
+            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+          >
+            This tool is designed to help manage complex schedules for caregivers, but can also be used to manage a wide variety of recurring timers.
+          </p>
+          <a
+            href="/home"
+          >
+            <button
+              class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1a2bqzx-MuiButtonBase-root-MuiButton-root"
+              tabindex="0"
+              type="button"
+            >
+              Sign In
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </a>
+            (or signup!)
         </div>
       </div>
+      <h2
+        class="MuiTypography-root MuiTypography-h5 css-ag7rrr-MuiTypography-root"
+      >
+        Current Version: 1.2.5-beta
+      </h2>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+      >
+        04/27/22 - patches, minor features logging,countdown
+      </p>
     </main>
     <footer
       style="padding-top: 40px;"
