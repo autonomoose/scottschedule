@@ -112,12 +112,10 @@ const HomePage = () => {
                             chains.slice(1).forEach(item => {newOptions[item] = true});
                         }
                         setSchedOptions(newOptions);
-                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
+                        const newStart = new Date(Date.now());
+                        setStarted(newStart);
                         setRunNumber(() => runNumber + 1);
-                        setExpiredEvs([
-                            {descr: 'chain begin #' + (runNumber + 1) + ' ' + newsched, evTstamp: Date.now(), evTaskId: '-'},
-                            ...expiredEvs
-                            ]);
+                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, newStart);
                     } else {
                         resetOptions();
                         setCurrSched("off");
