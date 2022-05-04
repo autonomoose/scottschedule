@@ -89,7 +89,7 @@ const HomePage = () => {
                 const logEvents: iFutureEvent[] = stripEvents.reverse().map(item => {
                     return({...item, begTstamp: started.valueOf()})
                 });
-                setExpiredEvs(logEvents.concat(expiredEvs));
+                setExpiredEvs(prevEvs => (logEvents.concat(prevEvs)));
 
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
@@ -97,10 +97,6 @@ const HomePage = () => {
                     setStarted(new Date(Date.now()));
 
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
-                    setExpiredEvs([
-                        {descr: 'end #' + runNumber, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
-                        ...expiredEvs
-                        ]);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
@@ -115,8 +111,17 @@ const HomePage = () => {
                         const newStart = new Date(Date.now());
                         setStarted(newStart);
                         setRunNumber(() => runNumber + 1);
+                        setExpiredEvs(prevEvs => ([
+                            {descr: 'end #' + runNumber + ' chain to ' + newsched, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
+                            ...prevEvs
+                        ]));
+
                         cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, newStart);
                     } else {
+                        setExpiredEvs(prevEvs => ([
+                            {descr: 'end #' + runNumber, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
+                            ...prevEvs
+                        ]));
                         resetOptions();
                         setCurrSched("off");
                         setHstatus("Completed");
@@ -367,7 +372,7 @@ const HomePage = () => {
                 logEvents.push(
                    {descr: 'Begin #' + (runNumber+1) + ' ' + wksched, evTstamp: startdate.valueOf(), begTstamp: startdate.valueOf(),evTaskId: '-beg'},
                 );
-                setExpiredEvs(logEvents.concat(expiredEvs));
+                setExpiredEvs(prevEvs => (logEvents.concat(prevEvs)));
             }
 
             let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
@@ -393,13 +398,13 @@ const HomePage = () => {
 
         if (currSched !== 'off') {
             const label = (newOptions[item])? 'On:': 'Off:';
-            setExpiredEvs([
+            setExpiredEvs(prevEvs => ([
                 { descr:  label + item + ' #' + runNumber,
                   evTstamp: toggleTime, begTstamp: started.valueOf(),
                   evTaskId: 'opt-' + item,
                 },
-                ...expiredEvs
-            ]);
+                ...prevEvs
+            ]));
 
             if ((nextEvs?.evs[0].evTstamp - toggleTime) > 16000) {
                 // don't rebuild if we are about to rebuild with a running event
@@ -422,19 +427,15 @@ const HomePage = () => {
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
                 // set log using previous value of started as begTstamp
-                setExpiredEvs([
+                setExpiredEvs(prevEvs => ([
                     {descr: 'Off #' + runNumber, evTstamp: startDate.valueOf(), begTstamp: started.valueOf(), evTaskId: '-'},
-                   ...expiredEvs
-                ]);
+                   ...prevEvs
+                ]));
                 resetOptions();
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
                 setRunNumber(() => runNumber + 1);
-                // setExpiredEvs([
-                //     {descr: 'begin #' + (runNumber + 1) + ' ' + wksched, evTstamp: startDate.valueOf(), evTaskId: '-'},
-                //     ...expiredEvs
-                // ]);
             }
         }
     }
