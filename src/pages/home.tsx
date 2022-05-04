@@ -392,17 +392,14 @@ const HomePage = () => {
         setSchedOptions(newOptions);
 
         if (currSched !== 'off') {
-            if (newOptions[item]) {
-                // log the new option into a running schedule
-                // note that this will override logging option now events from cleanRebuild below
-                setExpiredEvs([
-                    { descr: 'Opt:'+ item + ' #' + runNumber,
-                      evTstamp: toggleTime, begTstamp: started.valueOf(),
-                      evTaskId: 'opt-' + item,
-                    },
-                    ...expiredEvs
-                ]);
-            }
+            const label = (newOptions[item])? 'On:': 'Off:';
+            setExpiredEvs([
+                { descr:  label + item + ' #' + runNumber,
+                  evTstamp: toggleTime, begTstamp: started.valueOf(),
+                  evTaskId: 'opt-' + item,
+                },
+                ...expiredEvs
+            ]);
 
             if ((nextEvs?.evs[0].evTstamp - toggleTime) > 16000) {
                 // don't rebuild if we are about to rebuild with a running event
