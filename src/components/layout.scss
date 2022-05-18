@@ -2,24 +2,6 @@
   background-attachment: fixed;
 }
 
-html {
-  font-family: "Roboto", sans-serif;
-  text-decoration: none;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  text-decoration: none;
-  color: black;
-}
-
 article,
 aside,
 details,
@@ -52,6 +34,8 @@ template {
   display: none;
 }
 a {
+  text-decoration: none;
+  color: black;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
@@ -197,10 +181,14 @@ textarea {
   font: inherit;
 }
 html {
-  font: 112.5%/1.45em georgia, serif;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   box-sizing: border-box;
   overflow-y: scroll;
 }
+
 * {
   box-sizing: inherit;
 }
@@ -211,11 +199,14 @@ html {
   box-sizing: inherit;
 }
 body {
+  margin: 0;
   color: hsla(0, 0%, 0%, 0.8);
   font-family: "Roboto", sans-serif;
   font-weight: normal;
   word-wrap: break-word;
   font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -moz-font-feature-settings: "kern", "liga", "clig", "calt";
   -ms-font-feature-settings: "kern", "liga", "clig", "calt";
   -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
