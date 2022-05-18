@@ -44,9 +44,9 @@ class WbenchErrorBoundary extends Component<{}, EboundaryState> {
     }
 }
 
- // this uses hooks to store the callback function
- //    when it changes and reset the timer when the delay changes
- // this keeps page timer from being reset with every render
+// this uses hooks to store the callback function
+//    when it changes and reset the timer when the delay changes
+// this keeps page timer from being reset with every render
 //  type CallBackFunction = {
 //         (): void,
 //  }
@@ -75,10 +75,10 @@ class WbenchErrorBoundary extends Component<{}, EboundaryState> {
 //    }
 
 interface LayoutProps {
-        children: React.ReactNode,
-        permit?: string,
-        usrSetup?: string,
-        vdebug?: string,
+     children: React.ReactNode,
+     permit?: string,
+     usrSetup?: string,
+     vdebug?: string,
 }
 
 interface GetDataValues extends IgetCurrentUser {
@@ -89,175 +89,173 @@ interface HdataValues {
         data: {getCurrentUser: GetDataValues},
 }
 
- const Layout = (props: LayoutProps) => {
-     const { enqueueSnackbar } = useSnackbar();
-     const [uname, setUname] = useState('')
-     const [uid, setUid] = useState('')
+const Layout = (props: LayoutProps) => {
+    const { enqueueSnackbar } = useSnackbar();
+    const [uname, setUname] = useState('')
+    const [uid, setUid] = useState('')
 
-     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
+    const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
 
-     // const vdebug = true;    // test and dev settings
-     const vdebug = (props.vdebug || false);  // production settings
+    // const vdebug = true;    // test and dev settings
+    const vdebug = (props.vdebug || false);  // production settings
 
-     // get the username and uid from session accessToken
-     // using memoized fetchUname to keep renders from
-     //   triggering useeffects listing it in dependencies
-     // NOTE: this could be simply defined in the useeffect
-     //   without usecallback since it is only used by one useeffect
-     const fetchUname = useCallback(async () => {
-         try {
-             // @ts-expect-error: until aws-amplify gets formal typing
-             const {accessToken} = await Auth.currentSession();
-             const uname = accessToken.payload['username'];
-             setUname(uname);
-             const uid = accessToken.payload['sub'];
-             setUid(uid);
-         } catch (error) {
-             setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTH-CURRENSESSION"}}});
-             setUname('');
-             }
-         }, []);
+    // get the username and uid from session accessToken
+    // using memoized fetchUname to keep renders from
+    //   triggering useeffects listing it in dependencies
+    // NOTE: this could be simply defined in the useeffect
+    //   without usecallback since it is only used by one useeffect
+    const fetchUname = useCallback(async () => {
+        try {
+            // @ts-expect-error: until aws-amplify gets formal typing
+            const {accessToken} = await Auth.currentSession();
+            const uname = accessToken.payload['username'];
+            setUname(uname);
+            const uid = accessToken.payload['sub'];
+            setUid(uid);
+        } catch (error) {
+            setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTH-CURRENSESSION"}}});
+            setUname('');
+            }
+        }, []);
 
-     // every time the page loads
-     useEffect(() => {
-         fetchUname();
-     }, [fetchUname, vdebug]);
+    // every time the page loads
+    useEffect(() => {
+        fetchUname();
+    }, [fetchUname, vdebug]);
 
-     // log out user after an hour
-     // useInterval(() => {
-     //     async function signOut() {
-     //       try {
-     //           await Auth.signOut({ global: true });
-     //       } catch (error) {
-     //           console.log('error signing out: ', error);
-     //       }
-     //     };
-     //
-     //     signOut();
-     //     // fetchUname();
-     // }, (uname === 'no user' || uname === '')? 0: 3600000);
+    // log out user after an hour
+    // useInterval(() => {
+    //     async function signOut() {
+    //       try {
+    //           await Auth.signOut({ global: true });
+    //       } catch (error) {
+    //           console.log('error signing out: ', error);
+    //       }
+    //     };
+    //
+    //     signOut();
+    //     // fetchUname();
+    // }, (uname === 'no user' || uname === '')? 0: 3600000);
 
-     // get the user record from dynamodb
-     // everytime the user changes to a valid name
-     useEffect(() => {
-         async function fetchUser() {
-           try {
-             const result: any = await API.graphql({query: currUsersInfo});
-             setHdata(result);
-             } catch (error) {
-               setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
-             }
-           };
+    // get the user record from dynamodb
+    // everytime the user changes to a valid name
+    useEffect(() => {
+        async function fetchUser() {
+          try {
+            const result: any = await API.graphql({query: currUsersInfo});
+            setHdata(result);
+            } catch (error) {
+              setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
+            }
+          };
 
-         if (uname !== 'no user' && uname !=='') {
-             fetchUser();
-       }
-     }, [uname, vdebug]);
+        if (uname !== 'no user' && uname !=='') {
+            fetchUser();
+      }
+    }, [uname, vdebug]);
 
-   // subscribe to any changes in auth status
-   useEffect(() => {
-       const hubListener = (data: any) => {
-           switch (data.payload.event) {
-           case 'signIn':
-               window.location.reload();
-               enqueueSnackbar(`Sign-on successful`, {variant: 'success'});
-               break;
-           case 'tokenRefresh_failure':
-               // setUname('no user');
-               window.location.reload();
-               enqueueSnackbar(`user timed out`, {variant: 'success'});
-               // navigate("/");
-               break;
-           case 'signOut':
-               // setUname('no user');
-               enqueueSnackbar(`user logged off`, {variant: 'success'});
-               break;
-           case 'tokenRefresh':
-               console.log('user refreshed session');
-               break;
-           case 'signIn_failure':
-           case 'signUp':
-               break;
-           default:
-               console.log('Uncaught Auth module hub signal', data.payload.event);
-               break;
-           }
-       };
+    // subscribe to any changes in auth status
+    useEffect(() => {
+        const hubListener = (data: any) => {
+            switch (data.payload.event) {
+            case 'signIn':
+                window.location.reload();
+                enqueueSnackbar(`Sign-on successful`, {variant: 'success'});
+                break;
+            case 'tokenRefresh_failure':
+                // setUname('no user');
+                window.location.reload();
+                enqueueSnackbar(`user timed out`, {variant: 'success'});
+                // navigate("/");
+                break;
+            case 'signOut':
+                // setUname('no user');
+                enqueueSnackbar(`user logged off`, {variant: 'success'});
+                break;
+            case 'tokenRefresh':
+                console.log('user refreshed session');
+                break;
+            case 'signIn_failure':
+            case 'signUp':
+                break;
+            default:
+                console.log('Uncaught Auth module hub signal', data.payload.event);
+                break;
+            }
+        };
 
-       Hub.listen('auth', hubListener);
-       return () => {Hub.remove('auth', hubListener)};
-   }, [enqueueSnackbar, vdebug]);
+        Hub.listen('auth', hubListener);
+        return () => {Hub.remove('auth', hubListener)};
+    }, [enqueueSnackbar, vdebug]);
 
-   return (
-       <AmplifyAuthenticator>
-       <div style={{textAlign: 'center'}}>
-       <div style={{margin: `1rem auto`, minHeight: '100vh', backgroundColor: '#eeeeee', textAlign: 'left' }} >
-         <Header uname={uname}/>
-         <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
+    return (
+        <AmplifyAuthenticator>
+        <div style={{textAlign: 'center'}}>
+        <div style={{margin: `1rem auto`, minHeight: '100vh', backgroundColor: '#eeeeee', textAlign: 'left' }} >
+          <Header uname={uname}/>
+          <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
 
-           <main>
-             {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
-                 <>
-                 { ((!props.permit) || (hdata.data.getCurrentUser.agroups && hdata.data.getCurrentUser.agroups.includes(props.permit))) ?
-                     <WbenchErrorBoundary ><div data-testid='mainPageDisplay'> {props.children} </div></WbenchErrorBoundary>
-                     : <div data-testid='notpermitted' style={{textAlign: 'center'}}>
-                       <h3 style={{marginTop: '30px'}}>Sorry! Not Permitted. </h3>
-                       This user needs {props.permit} privileges to access this page.
-                     </div>
-                 } </>:
+            <main>
+              {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
+                <>
+                  { ((!props.permit) || (hdata.data.getCurrentUser.agroups && hdata.data.getCurrentUser.agroups.includes(props.permit))) ?
+                    <WbenchErrorBoundary ><div data-testid='mainPageDisplay'> {props.children} </div></WbenchErrorBoundary>
+                      : <div data-testid='notpermitted' style={{textAlign: 'center'}}>
+                        <h3 style={{marginTop: '30px'}}>Sorry! Not Permitted. </h3>
+                        This user needs {props.permit} privileges to access this page.
+                      </div>
+                  }
+                </>:
 
-                 <>
-                 { (hdata.data.getCurrentUser && hdata.data.getCurrentUser.loading) ?
-                     <div style={{textAlign: 'center'}}>
-                       <h3 style={{marginTop: '30px'}} data-testid="authentCheckDB"><CircularProgress /> </h3>
-                     </div> :
+                <>
+                  { (hdata.data.getCurrentUser && hdata.data.getCurrentUser.loading) ?
+                    <div style={{textAlign: 'center'}}>
+                      <h3 style={{marginTop: '30px'}} data-testid="authentCheckDB"><CircularProgress /> </h3>
+                    </div> :
 
-                     <>
-                     { (hdata.data.getCurrentUser && hdata.data.getCurrentUser.progError) ?
-                       <div style={{textAlign: 'center'}}>
-                       <h3 style={{marginTop: '30px'}}  data-testid="authentFail"> Authentication Error! </h3>
-                         <p>We have encountered an expected error during authentication.
-                           <br /> This is an unusual error, please wait a few minutes before retrying.
-                           <br /><br /> If this error persists, please contact technical support at
-                           support@wernerdigital.com and report error {hdata.data.getCurrentUser.progError}.  Our apologies for the inconvenience!
-                         </p>
-                       </div> :
+                    <>
+                      { (hdata.data.getCurrentUser && hdata.data.getCurrentUser.progError) ?
+                        <div style={{textAlign: 'center'}}>
+                        <h3 style={{marginTop: '30px'}}  data-testid="authentFail"> Authentication Error! </h3>
+                          <p>We have encountered an expected error during authentication.
+                            <br /> This is an unusual error, please wait a few minutes before retrying.
+                            <br /><br /> If this error persists, please contact technical support at
+                            support@wernerdigital.com and report error {hdata.data.getCurrentUser.progError}.  Our apologies for the inconvenience!
+                          </p>
+                        </div> :
 
-                       <div style={{textAlign: 'center'}}>
-                       <h3 style={{marginTop: '30px'}} data-testid="authentNewUser"> Welcome, new user! </h3>
-                         <p>Your userkey is {uid}.  <br /><small>Give this userkey to your administrator to join an existing account.</small></p>
-                         <p>To setup as a new account please <br /><Button variant='outlined' size='small' ><Link to='/setup2'>Accept Terms of Service</Link></Button> to continue
-                         </p>
-                       </div>
-                     }
-                     </>
-                 }
-                 </>
+                        <div style={{textAlign: 'center'}}>
+                        <h3 style={{marginTop: '30px'}} data-testid="authentNewUser"> Welcome, new user! </h3>
+                          <p>Your userkey is {uid}.  <br /><small>Give this userkey to your administrator to join an existing account.</small></p>
+                          <p>To setup as a new account please <br /><Button variant='outlined' size='small' ><Link to='/setup2'>Accept Terms of Service</Link></Button> to continue
+                          </p>
+                        </div>
+                      }
+                    </>
+                  }
+                </>
+              }
+            </main>
 
-             }
-
-           </main>
-
-           <footer style={{ paddingTop: 40 }}>
-             <Divider />
-             <Box display='flex' justifyContent='space-around'>
-               <Link to='/home'>Home</Link>
-               <Link to='/usermaint'>Account</Link>
-               <Link to='/scheds'>Schedules</Link>
-               <Link to='/events'>Events</Link>
-               <Link to='/help'>Help</Link>
-             </Box>
-             <Divider />
-             <Typography variant='caption' mx={2}>
-               &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc
-             </Typography>
-           </footer>
-         </div>
-       </div>
-       </div>
-       </AmplifyAuthenticator>
-
-   ) // end of anonymous return
- }
+            <footer style={{ paddingTop: 40 }}>
+              <Divider />
+              <Box display='flex' justifyContent='space-around'>
+                <Link to='/home'>Home</Link>
+                <Link to='/usermaint'>Account</Link>
+                <Link to='/scheds'>Schedules</Link>
+                <Link to='/events'>Events</Link>
+                <Link to='/help'>Help</Link>
+              </Box>
+              <Divider />
+              <Typography variant='caption' mx={2}>
+                &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc
+              </Typography>
+            </footer>
+          </div>
+        </div>
+        </div>
+        </AmplifyAuthenticator>
+    ) // end of anonymous return
+}
 
 export default Layout
