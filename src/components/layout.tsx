@@ -188,10 +188,10 @@ const Layout = (props: LayoutProps) => {
         return () => {Hub.remove('auth', hubListener)};
     }, [enqueueSnackbar, vdebug]);
 
+
     return (
         <AmplifyAuthenticator>
-        <div style={{textAlign: 'center'}}>
-        <div style={{margin: `1rem auto`, minHeight: '100vh', backgroundColor: '#eeeeee', textAlign: 'left' }} >
+        <div style={{backgroundColor: window.document.documentElement.style.getPropertyValue('--color-background'), margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
           <Header uname={uname}/>
           <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
 
@@ -252,7 +252,6 @@ const Layout = (props: LayoutProps) => {
               </Typography>
             </footer>
           </div>
-        </div>
         </div>
         </AmplifyAuthenticator>
     ) // end of anonymous return
