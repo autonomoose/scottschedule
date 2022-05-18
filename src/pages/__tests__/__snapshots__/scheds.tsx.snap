@@ -587,7 +587,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
             </div>
              
           </div>
-           
         </main>
         <footer
           style="padding-top: 40px;"

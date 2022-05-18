@@ -687,7 +687,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
             </div>
              
           </div>
-           
         </main>
         <footer
           style="padding-top: 40px;"

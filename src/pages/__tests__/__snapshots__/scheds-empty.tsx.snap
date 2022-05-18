@@ -946,7 +946,6 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
             </div>
              
           </div>
-           
         </main>
         <footer
           style="padding-top: 40px;"
