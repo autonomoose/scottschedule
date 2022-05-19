@@ -95,7 +95,7 @@ const Layout = (props: LayoutProps) => {
     const [uid, setUid] = useState('')
 
     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
-    const currBackground = window.document.documentElement.style.getPropertyValue('--color-background') || 'white';
+    const [currBackground, setCurrBackground] = useState('white');
 
     // const vdebug = true;    // test and dev settings
     const vdebug = (props.vdebug || false);  // production settings
@@ -154,6 +154,10 @@ const Layout = (props: LayoutProps) => {
             fetchUser();
       }
     }, [uname, vdebug]);
+
+    useEffect(() => {
+        setCurrBackground(window.document.documentElement.style.getPropertyValue('--color-background'));
+    }, []);
 
     // subscribe to any changes in auth status
     useEffect(() => {
