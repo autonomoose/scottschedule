@@ -95,6 +95,7 @@ const Layout = (props: LayoutProps) => {
     const [uid, setUid] = useState('')
 
     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
+    const currBackground = window.document.documentElement.style.getPropertyValue('--color-background') || 'white';
 
     // const vdebug = true;    // test and dev settings
     const vdebug = (props.vdebug || false);  // production settings
@@ -191,7 +192,7 @@ const Layout = (props: LayoutProps) => {
 
     return (
         <AmplifyAuthenticator>
-        <div style={{backgroundColor: window.document.documentElement.style.getPropertyValue('--color-background'), margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
+        <div style={{backgroundColor: currBackground, margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
           <Header uname={uname}/>
           <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
 
