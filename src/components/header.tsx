@@ -92,8 +92,8 @@ const Header = ({uname}: HeaderProps) => {
   const homePage = (uname !== '')? "/home": "/";
   return(
     <div>
-      <AppBar position="fixed" elevation={0}
-      style={{ height: "54px", borderRadius: '0 0 5px 5px' }} >
+      <AppBar position="fixed" elevation={0} color="inherit"
+      style={{ height: "54px", borderRadius: '0 0 5px 5px', boxShadow: '-5px 5px 12px #888888'}} >
         <Toolbar sx={{ justifyContent: 'space-around'}}>
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
             <MenuIcon />
