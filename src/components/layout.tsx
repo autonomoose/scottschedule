@@ -94,6 +94,7 @@ const Layout = (props: LayoutProps) => {
     const [uname, setUname] = useState('')
     const [uid, setUid] = useState('')
 
+
     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
     const [currBackground, setCurrBackground] = useState('white');
 

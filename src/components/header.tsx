@@ -7,7 +7,6 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -17,8 +16,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
+import MenuIcon from '@mui/icons-material/Menu';
 import StarIcon from '@mui/icons-material/Star';
 
 interface ListItemMenuBasics {
@@ -90,18 +91,12 @@ const Header = ({uname}: HeaderProps) => {
 
   const homePage = (uname !== '')? "/home": "/";
   return(
-    <div><CssBaseline />
+    <div>
       <AppBar position="fixed" elevation={0}
-      style={{ height: "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)',
-          boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
-      >
+      style={{ height: "54px", borderRadius: '0 0 5px 5px' }} >
         <Toolbar sx={{ justifyContent: 'space-around'}}>
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
-            <svg viewBox="0 0 100 80" width="40" height="40">
-              <rect x="10" y="10" width="80" height="10"></rect>
-              <rect x="10" y="30" width="80" height="10"></rect>
-              <rect x="10" y="50" width="80" height="10"></rect>
-            </svg>
+            <MenuIcon />
           </IconButton>
 
           <Link to={homePage}>
@@ -135,7 +130,7 @@ const Header = ({uname}: HeaderProps) => {
       </AppBar>
 
       <Drawer variant="persistent" anchor="left" open={open} >
-        <div style={{ width:"178px", height: (uname !== '')? "39px": "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)', padding: '8px 8px',
+        <div style={{ width:"178px", height: (uname !== '')? "39px": "54px", padding: '8px 8px',
               boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
         >
           <Box ml={4} display='flex' alignItems='center'>
@@ -143,9 +138,7 @@ const Header = ({uname}: HeaderProps) => {
             Main&nbsp;Menu
           </Typography>
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
-            <svg viewBox="0 0 100 80" width="40" height="40">
-              <polygon points="70 10,10 35, 70 65"></polygon>
-            </svg>
+            <ArrowDropDownIcon />
           </IconButton>
           </Box>
         </div>
