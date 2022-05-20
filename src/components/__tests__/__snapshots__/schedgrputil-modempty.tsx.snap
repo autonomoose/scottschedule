@@ -6,7 +6,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
 >
   <div
     class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
-    style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; background: rgb(250, 250, 250); box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+    style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
   >
     <div
       class="MuiBox-root css-ibnnmb"

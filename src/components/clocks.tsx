@@ -13,9 +13,9 @@ export const ClockDigital2 = (props: ClockProps) => {
       <>
         <Button data-testid='change clock' sx={{margin: 0}} onClick={() => props.onComplete('scheduler')}>
           <Typography variant='h1' id='mainclock' data-testid='mainclock'
-            sx={{fontSize:150, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>00:00</Typography>
+            sx={{fontSize:150, fontWeight: 600, padding: 0, margin: 0}}>00:00</Typography>
         </Button>
-        <Typography variant='subtitle1' id='mainpm' data-testid='mainpm' sx={{fontSize:20, fontWeight: 600, color: 'black'}}>
+        <Typography variant='subtitle1' id='mainpm' data-testid='mainpm' sx={{fontSize:20, fontWeight: 600}}>
           PM
         </Typography>
         <Box mx={4} display='flex' justifyContent='space-between'>
@@ -32,21 +32,21 @@ export const ClockDigital1 = (props: ClockProps) => {
           <Box display='flex' justifyContent='flex-start' alignItems='stretch'>
             <Box mt={1} display='flex' alignItems='flex-start'>
               <Typography id='mainpm' data-testid='mainpm'
-               sx={{lineHeight:1, fontSize:20, fontWeight: 600, color: 'black'}}>
+               sx={{lineHeight:1, fontSize:20, fontWeight: 600}}>
                 PM
               </Typography>
             </Box>
             <Typography id='compclock' data-testid='compclock'
-             sx={{marginLeft: '-2px', letterSpacing: '-30px', lineHeight:.8, fontSize:230, fontWeight: 600, color: 'black', padding: 0, margin: 0}}>
+             sx={{marginLeft: '-2px', letterSpacing: '-30px', lineHeight:.8, fontSize:230, fontWeight: 600, padding: 0, margin: 0}}>
                0
             </Typography>
             <Box ml={3} mt={1}>
               <Typography id='compminutes' data-testid='compminutes'
-               sx={{letterSpacing: '-4px',lineHeight:.92, fontSize:150, fontWeight: 800, color: 'black', padding: 0, margin: 0}}>
+               sx={{letterSpacing: '-4px',lineHeight:.92, fontSize:150, fontWeight: 800, padding: 0, margin: 0}}>
                 00
               </Typography>
               <Typography id='maindate' data-testid='maindate'
-               sx={{ textTransform: 'none', lineHeight:1, fontSize:26, color:'black', padding: 0, margin: 0}}>
+               sx={{ textTransform: 'none', lineHeight:1, fontSize:26, padding: 0, margin: 0}}>
                 Day, 01/01
               </Typography>
             </Box>

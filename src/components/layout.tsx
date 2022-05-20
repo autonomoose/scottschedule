@@ -1,10 +1,12 @@
-// import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
-import React, { useState, useEffect, useCallback, Component } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Component } from 'react';
 import { Link } from 'gatsby';
 import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
 import { useSnackbar } from 'notistack';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -12,9 +14,11 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 import Header from './header';
+import { darkTheme } from "../themes/dark";
+import { lightTheme } from "../themes/light";
 
 import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
-import './layout.scss';
+// import './layout.scss';
 
 interface EboundaryState {
         errorMsg : string | null,
@@ -35,8 +39,8 @@ class WbenchErrorBoundary extends Component<{}, EboundaryState> {
         if (this.state.errorMsg) {
             return (
               <div style={{textAlign: 'center'}}>
-                <h3 data-testid="errorboundary" style={{marginTop: '30px', color: '#000000'}}>Sorry! Something went wrong. </h3>
-                <span style={{color: '#000000'}}>This event has been logged.  We apologize for the issue, please contact tech support for more information.</span>
+                <h3 data-testid="errorboundary" style={{marginTop: '30px'}}>Sorry! Something went wrong. </h3>
+                <span>This event has been logged.  We apologize for the issue, please contact tech support for more information.</span>
               </div>
             );
         }
@@ -95,10 +99,14 @@ const Layout = (props: LayoutProps) => {
     const [uid, setUid] = useState('')
 
     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
-    const [currBackground, setCurrBackground] = useState('white');
+    const [mode, setMode] = useState("light");
 
     // const vdebug = true;    // test and dev settings
     const vdebug = (props.vdebug || false);  // production settings
+
+    const theme = useMemo(
+        () => createTheme(mode === "light" ? lightTheme : darkTheme), [mode]
+    );
 
     // get the username and uid from session accessToken
     // using memoized fetchUname to keep renders from
@@ -156,7 +164,8 @@ const Layout = (props: LayoutProps) => {
     }, [uname, vdebug]);
 
     useEffect(() => {
-        setCurrBackground(window.document.documentElement.style.getPropertyValue('--color-background'));
+        const root = window.document.documentElement;
+        setMode(root.style.getPropertyValue('--color-mode'));
     }, []);
 
     // subscribe to any changes in auth status
@@ -196,9 +205,10 @@ const Layout = (props: LayoutProps) => {
 
     return (
         <AmplifyAuthenticator>
-        <div style={{backgroundColor: currBackground, margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
+        <ThemeProvider theme={theme}> <CssBaseline enableColorScheme />
+        <div style={{margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
           <Header uname={uname}/>
-          <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960, color: `#000000` }} >
+          <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960 }} >
 
             <main>
               {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
@@ -258,6 +268,7 @@ const Layout = (props: LayoutProps) => {
             </footer>
           </div>
         </div>
+        </ThemeProvider>
         </AmplifyAuthenticator>
     ) // end of anonymous return
 }
