@@ -16,7 +16,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -138,7 +138,7 @@ const Header = ({uname}: HeaderProps) => {
             Main&nbsp;Menu
           </Typography>
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
-            <ArrowDropDownIcon />
+            <ArrowDropUpIcon />
           </IconButton>
           </Box>
         </div>
