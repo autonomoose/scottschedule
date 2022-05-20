@@ -63,7 +63,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="newGroup" onSubmit={handleSubmit(formNewGroupSubmit)}>
@@ -160,7 +160,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="modGroup" onSubmit={handleSubmit(formModGroupSubmit)}>
@@ -327,7 +327,7 @@ export const ManSched = (props: ManSchedProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="manSched" onSubmit={handleSubmit(formManSchedSubmit)}>
@@ -471,7 +471,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
     };
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="connectTask" onSubmit={handleSubmit(formConnectTaskSubmit)}>

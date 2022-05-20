@@ -304,15 +304,12 @@ const HomePage = () => {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: 'numeric', minute: '2-digit'});
             const localComp = localTime.split(' ')[0].split(':');
-            let wkColor = '#000000';
             const swPM : boolean = (localTime.split(' ')[1] === 'PM');
 
             compclock.textContent = localComp[0];
-            compclock.style.color = wkColor;
             const compminutes = document.getElementById('compminutes');
             if (compminutes) {
                 compminutes.textContent = localComp[1];
-                compminutes.style.color = wkColor;
             }
 
             let mainpm = document.getElementById('mainpm');
@@ -607,7 +604,7 @@ const HomePage = () => {
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Box display={(showClock === "digital1" || showClock === "digital1-color")? 'flex': 'none'} flexDirection='column'>
@@ -645,11 +642,11 @@ const HomePage = () => {
         <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
             <Button data-testid='change clock' onClick={() => changeClock('digital1')}>
-              <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600, color: 'black'}}>
+              <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600}}>
                 00:00
               </Typography>
             </Button>
-            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12}}>
               PM
             </Typography>
           </Box>
@@ -725,14 +722,9 @@ const HomePage = () => {
      <Box>
        { (nextEvs && nextEvs.evs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
-          background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box>
-           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline"
-             sx={{backgroundColor: (currSched === 'off')? '#e0e0e0'
-                                 : (nextEvs.status ==='ack')? ' #d2b4de'
-                                 : (nextEvs.status ==='pending')? '#fcf3cf'
-                                 : '#fadbd8'}}>
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline">
              {(nextEvs.status === 'pending') &&
                <Typography variant='h6' data-testid='ev-pend'>
                  <span id='countDown'>0m 0s</span>
@@ -784,10 +776,10 @@ const HomePage = () => {
        }
 
        { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box >
-           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" sx={{backgroundColor: '#e9e9e9'}}>
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" >
              <Box display="flex"  alignItems="baseline">
              <Typography variant='h6'>
                Log #{runNumber} {currSched}
