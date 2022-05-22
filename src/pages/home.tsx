@@ -602,7 +602,7 @@ const HomePage = () => {
     return(
       <Layout><Seo title="Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box display="flex" flexWrap="wrap" justifyContent="center">
 
       <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
@@ -719,7 +719,7 @@ const HomePage = () => {
 
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
-     <Box>
+     <Box ml={4}>
        { (nextEvs && nextEvs.evs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>

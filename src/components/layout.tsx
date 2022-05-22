@@ -206,15 +206,19 @@ const Layout = (props: LayoutProps) => {
     return (
         <AmplifyAuthenticator>
         <ThemeProvider theme={theme}> <CssBaseline enableColorScheme />
-        <div style={{margin: `1rem auto`, minHeight: '100vh', textAlign: 'left' }} >
+        <div style={{margin: `1rem auto`, minHeight: '100vh', textAlign: 'center' }} >
           <Header uname={uname}/>
-          <div style={{ margin: `0 auto`, padding: `50px 0.5rem 1.45rem`, maxWidth: 960 }} >
+          <Box mt={8}>
 
             <main>
               {(props.usrSetup || (hdata.data.getCurrentUser && hdata.data.getCurrentUser.userid)) ?
                 <>
-                  { ((!props.permit) || (hdata.data.getCurrentUser.agroups && hdata.data.getCurrentUser.agroups.includes(props.permit))) ?
-                    <WbenchErrorBoundary ><div data-testid='mainPageDisplay'> {props.children} </div></WbenchErrorBoundary>
+                  { ((!props.permit) || (hdata.data.getCurrentUser.agroups && hdata.data.getCurrentUser.agroups.includes(props.permit)))
+                      ? <WbenchErrorBoundary>
+                          <div data-testid='mainPageDisplay' style={{textAlign: 'left'}}>
+                              {props.children}
+                          </div>
+                        </WbenchErrorBoundary>
                       : <div data-testid='notpermitted' style={{textAlign: 'center'}}>
                         <h3 style={{marginTop: '30px'}}>Sorry! Not Permitted. </h3>
                         This user needs {props.permit} privileges to access this page.
@@ -251,6 +255,7 @@ const Layout = (props: LayoutProps) => {
                 </>
               }
             </main>
+          </Box>
 
             <footer style={{ paddingTop: 40 }}>
               <Divider />
@@ -266,7 +271,6 @@ const Layout = (props: LayoutProps) => {
                 &copy; 2021-{new Date().getFullYear()}, Werner Digital Technology Inc
               </Typography>
             </footer>
-          </div>
         </div>
         </ThemeProvider>
         </AmplifyAuthenticator>
