@@ -93,16 +93,24 @@ const Header = ({uname}: HeaderProps) => {
   return(
     <div>
       <AppBar position="fixed" elevation={0} color="inherit"
-      style={{ height: "54px", borderRadius: '0 0 5px 5px', boxShadow: '-5px 5px 12px #888888'}} >
+        sx={{
+          height: "54px", borderRadius: '0 0 5px 5px',
+          boxShadow: '-5px 5px 12px #888888',
+        }}
+      >
         <Toolbar sx={{ justifyContent: 'space-around'}}>
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
             <MenuIcon />
           </IconButton>
 
           <Link to={homePage}>
-            <Box display='flex'>
+            <Box display='flex' >
             <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"/>
-            <Typography variant='body1'>Scottschedule</Typography>
+            <Typography variant='body1' sx={{
+              color: (theme) => (theme.palette.text.primary),
+            }}>
+              Scottschedule
+            </Typography>
             </Box>
           </Link>
 
@@ -130,8 +138,13 @@ const Header = ({uname}: HeaderProps) => {
       </AppBar>
 
       <Drawer variant="persistent" anchor="left" open={open} >
-        <div style={{ width:"178px", height: (uname !== '')? "39px": "54px", padding: '8px 8px',
-              boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
+        <Box sx={{
+          width:"178px",
+          height: (uname !== '')? "39px": "54px",
+          padding: '8px 8px',
+          boxShadow: '0 1px 20px #000000',
+          borderRadius: '0 0 5px 5px'
+        }}
         >
           <Box ml={4} display='flex' alignItems='center'>
           <Typography variant='subtitle1'>
@@ -141,7 +154,7 @@ const Header = ({uname}: HeaderProps) => {
             <ArrowDropUpIcon />
           </IconButton>
           </Box>
-        </div>
+        </Box>
         <Divider />
 
         <List>
