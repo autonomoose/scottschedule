@@ -91,14 +91,14 @@ const Header = ({uname}: HeaderProps) => {
 
   const homePage = (uname !== '')? "/home": "/";
   return(
-    <div>
-      <AppBar position="fixed" elevation={0} color="inherit"
+    <Box>
+      <AppBar position="fixed" elevation={0} color='transparent'
         sx={{
+          bgcolor: 'site.main',
           height: "54px", borderRadius: '0 0 5px 5px',
           boxShadow: '-5px 5px 12px #888888',
-        }}
-      >
-        <Toolbar sx={{ justifyContent: 'space-around'}}>
+        }}>
+        <Toolbar sx={{ justifyContent: 'space-around' }}>
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
             <MenuIcon />
           </IconButton>
@@ -176,7 +176,7 @@ const Header = ({uname}: HeaderProps) => {
           }
         </List>
       </Drawer>
-    </div>
+    </Box>
   )
 };
 
