@@ -7,12 +7,8 @@ export const darkTheme: ThemeOptions = {
       main: "#1f1311",
       contrastText: "#ffffff",
       },
-    idle: {
-      main: "#3e2723",
-      contrastText: "#ffffff",
-      },
     ack: {
-      main: "#3e2723",
+      main: "#27233e",
       contrastText: "#ffffff",
       },
     pending: {

@@ -19,7 +19,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
-import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -704,14 +703,6 @@ const HomePage = () => {
         </Box>
         </>
         }
-
-        <Divider />
-        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-          Test <audio className="audio-element" controls >
-            <source src={DefaultSound} type="audio/wav" />
-            Your browser doesn't support audio
-          </audio>
-        </Box>
         </>
         }
 
@@ -724,30 +715,47 @@ const HomePage = () => {
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box>
-           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline">
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline"
+             sx={{ backgroundColor: (nextEvs.status === 'ack' || nextEvs.status === 'pending')? nextEvs.status + '.main'
+                : 'site.main'
+             }}
+           >
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6' data-testid='ev-pend'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: nextEvs.status + '.contrastText' }}
+               >
+                 0m 0s
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: 'warning.main' }}
+               >
+                 0m 0s
                </Typography>
              }
              {(nextEvs.status === 'current') &&
                <Box width='70%'>
-               <Typography variant='h6' data-testid='ev-curr'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: 'error.main' }}
+               >
+                 0m 0s
                </Typography>
                <LinearProgress/>
                </Box>
 
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' data-testid='ev-ack'>
-                 <span id='countDown'>0m 0s</span> (Silenced)
+               <>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: nextEvs.status + '.contrastText' }}
+               >
+                 0m 0s
                </Typography>
+               <Typography variant='h6'>
+                 (Silenced)
+               </Typography>
+               </>
              }
 
              <Button variant='outlined'

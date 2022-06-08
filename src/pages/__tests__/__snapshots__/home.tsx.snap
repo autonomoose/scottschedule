@@ -554,24 +554,6 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     />
                   </button>
                 </div>
-                <hr
-                  class="MuiDivider-root MuiDivider-fullWidth css-rr7dug-MuiDivider-root"
-                />
-                <div
-                  class="MuiBox-root css-8ljrm5"
-                >
-                  Test 
-                  <audio
-                    class="audio-element"
-                    controls=""
-                  >
-                    <source
-                      src="test-file-stub"
-                      type="audio/wav"
-                    />
-                    Your browser doesn't support audio
-                  </audio>
-                </div>
               </div>
             </div>
           </div>
