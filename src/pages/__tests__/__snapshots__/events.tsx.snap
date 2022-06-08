@@ -8,13 +8,14 @@ exports[`EventsPage renders snapshot correctly 1`] = `
   <div
     style="margin: 1rem auto; min-height: 100vh; text-align: center;"
   >
-    <div>
+    <div
+      class="MuiBox-root css-0"
+    >
       <header
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorInherit MuiAppBar-positionFixed mui-fixed css-1cv9fry-MuiPaper-root-MuiAppBar-root"
-        style="height: 54px; border-radius: 0 0 5px 5px; box-shadow: -5px 5px 12px #888888;"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorTransparent MuiAppBar-positionFixed mui-fixed css-1bzzxac-MuiPaper-root-MuiAppBar-root"
       >
         <div
-          class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-1kf0d50-MuiToolbar-root"
+          class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-1ti0wu3-MuiToolbar-root"
         >
           <button
             aria-label="Open menu"
@@ -49,7 +50,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
                 width="26"
               />
               <p
-                class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-4peds9-MuiTypography-root"
               >
                 Scottschedule
               </p>
@@ -85,11 +86,11 @@ exports[`EventsPage renders snapshot correctly 1`] = `
         class="MuiDrawer-root MuiDrawer-docked css-7ik032-MuiDrawer-docked"
       >
         <div
-          class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiDrawer-paper MuiDrawer-paperAnchorLeft MuiDrawer-paperAnchorDockedLeft css-15b8vjn-MuiPaper-root-MuiDrawer-paper"
+          class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiDrawer-paper MuiDrawer-paperAnchorLeft MuiDrawer-paperAnchorDockedLeft css-1hrb81m-MuiPaper-root-MuiDrawer-paper"
           style="visibility: hidden; webkit-transform: translateX(-0px); transform: translateX(-0px);"
         >
           <div
-            style="width: 178px; height: 39px; padding: 8px 8px; box-shadow: 0 1px 20px #000000; border-radius: 0 0 5px 5px;"
+            class="MuiBox-root css-1ecnymn"
           >
             <div
               class="MuiBox-root css-xwg089"
@@ -411,7 +412,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
               class="MuiBox-root css-0"
             >
               <div
-                class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bj2p8a-MuiPaper-root-MuiCard-root"
+                class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1gyd2pn-MuiPaper-root-MuiCard-root"
                 style="max-width: 432px; min-width: 394px; flex: 1 1; box-shadow: 5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
               >
                 <div

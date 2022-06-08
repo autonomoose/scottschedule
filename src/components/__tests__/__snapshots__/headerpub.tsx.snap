@@ -1,13 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HeaderPub renders snapshot correctly 1`] = `
-<div>
+<div
+  class="MuiBox-root css-0"
+>
   <header
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorInherit MuiAppBar-positionFixed mui-fixed css-yiikg7-MuiPaper-root-MuiAppBar-root"
-    style="height: 54px; border-radius: 0 0 5px 5px; box-shadow: -5px 5px 12px #888888;"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorTransparent MuiAppBar-positionFixed mui-fixed css-1mhswv-MuiPaper-root-MuiAppBar-root"
   >
     <div
-      class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-1kf0d50-MuiToolbar-root"
+      class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-1ti0wu3-MuiToolbar-root"
     >
       <button
         aria-label="Open menu"
@@ -42,7 +43,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
             width="26"
           />
           <p
-            class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            class="MuiTypography-root MuiTypography-body1 css-1gqyz35-MuiTypography-root"
           >
             Scottschedule
           </p>
@@ -77,7 +78,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
       style="visibility: hidden; webkit-transform: translateX(-0px); transform: translateX(-0px);"
     >
       <div
-        style="width: 178px; height: 54px; padding: 8px 8px; box-shadow: 0 1px 20px #000000; border-radius: 0 0 5px 5px;"
+        class="MuiBox-root css-xt39a6"
       >
         <div
           class="MuiBox-root css-xwg089"
