@@ -163,9 +163,18 @@ const Layout = (props: LayoutProps) => {
       }
     }, [uname, vdebug]);
 
+    // setup dark/light mode on initial load and add listener
     useEffect(() => {
         const root = window.document.documentElement;
         setMode(root.style.getPropertyValue('--color-mode'));
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            setMode(event.matches ? "dark" : "light");
+        })
+
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', () => {});
+        };
     }, []);
 
     // subscribe to any changes in auth status
@@ -265,6 +274,7 @@ const Layout = (props: LayoutProps) => {
                 <Link to='/scheds'>Schedules</Link>
                 <Link to='/events'>Events</Link>
                 <Link to='/help'>Help</Link>
+                <Button onClick={() => (mode === 'light') ? setMode('dark'): setMode('light')}>mode</Button>
               </Box>
               <Divider />
               <Typography variant='caption' mx={2}>
