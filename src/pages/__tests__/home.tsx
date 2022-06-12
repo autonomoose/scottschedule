@@ -125,23 +125,23 @@ describe("HomePage", () => {
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
-      expect(utils.getByTestId('ev-pend')).toBeVisible();
+      expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
 
     // should run pre-alarm and reschedule
     Date.now = jest.fn(() => mockNow + 60000);
     act(() => {jest.runOnlyPendingTimers()});
-    expect(utils.getByTestId('ev-pend')).toBeVisible();
+    expect(utils.getByTestId('ev-pending')).toBeVisible();
 
     // should fire the current alarm and reschedule
     Date.now = jest.fn(() => mockNow + 120000);
     act(() => {jest.runOnlyPendingTimers()});
-    expect(utils.getByTestId('ev-curr')).toBeVisible();
+    expect(utils.getByTestId('ev-current')).toBeVisible();
 
     // cleanup and show the next one
     Date.now = jest.fn(() => mockNow + 136000);
     act(() => {jest.runOnlyPendingTimers()});
-    expect(utils.getByTestId('ev-pend')).toBeVisible();
+    expect(utils.getByTestId('ev-pending')).toBeVisible();
 
     userEvent.click(utils.getByRole('button', {name: /off/i}));
     expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
@@ -182,7 +182,7 @@ describe("HomePage", () => {
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
-      expect(utils.getByTestId('ev-pend')).toBeVisible();
+      expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
 
     // handles multiple presses
@@ -212,7 +212,7 @@ describe("HomePage", () => {
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
-      expect(utils.getByTestId('ev-pend')).toBeVisible();
+      expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
 
     // should run event fun before ack
@@ -238,13 +238,13 @@ describe("HomePage", () => {
     const utils = await mySetup();
     userEvent.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
-      expect(utils.getByTestId('ev-pend')).toBeVisible();
+      expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
 
     // should fire the current alarm and reschedule
     Date.now = jest.fn(() => mockNow + 120000);
     act(() => {jest.runOnlyPendingTimers()});
-    expect(utils.getByTestId('ev-curr')).toBeVisible();
+    expect(utils.getByTestId('ev-current')).toBeVisible();
 
     // run as postevent
     Date.now = jest.fn(() => mockNow + 600000);

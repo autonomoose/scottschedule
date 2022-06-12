@@ -1,5 +1,14 @@
 import "@testing-library/jest-dom/extend-expect"
 
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  dispatchEvent: jest.fn(),
+})
+
 jest.mock("gatsby-plugin-image", () => {
     const React = require("react")
     const plugin = jest.requireActual("gatsby-plugin-image")

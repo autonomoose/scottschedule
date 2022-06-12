@@ -163,9 +163,26 @@ const Layout = (props: LayoutProps) => {
       }
     }, [uname, vdebug]);
 
+    // setup dark/light mode on initial load and add listener
     useEffect(() => {
-        const root = window.document.documentElement;
-        setMode(root.style.getPropertyValue('--color-mode'));
+        let localColor = window.localStorage.getItem('color-mode');
+
+        if (typeof localColor !== 'string') {
+            const root = window.document.documentElement;
+            localColor = root.style.getPropertyValue('--color-mode');
+            window.localStorage.setItem('color-mode', localColor);
+        }
+        setMode(localColor);
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const newMode = event.matches ? "dark" : "light";
+            setMode(newMode);
+            window.localStorage.setItem('color-mode', newMode);
+        })
+
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', () => {});
+        };
     }, []);
 
     // subscribe to any changes in auth status
@@ -207,7 +224,7 @@ const Layout = (props: LayoutProps) => {
         <AmplifyAuthenticator>
         <ThemeProvider theme={theme}> <CssBaseline enableColorScheme />
         <div style={{margin: `1rem auto`, minHeight: '100vh', textAlign: 'center' }} >
-          <Header uname={uname}/>
+          <Header uname={uname} mode={mode} setMode={setMode} />
           <Box mt={8}>
 
             <main>
