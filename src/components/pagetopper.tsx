@@ -20,7 +20,7 @@ const linkDebug = (plink: string, vdebug: string): string => {
 export const LinkD = (props: any) => {
     const { to, vdebug, children, ...pass_props } = props;
     return (
-        <Link to={linkDebug(to, vdebug)} {...pass_props} style={{ color: "blue" }}>{children}</Link>
+        <Link to={linkDebug(to, vdebug)} {...pass_props}>{children}</Link>
     );
 }
 

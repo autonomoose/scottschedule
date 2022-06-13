@@ -19,7 +19,6 @@ exports[`PageTopper renders home snapshot correctly 1`] = `
         >
           <a
             href="/bcrumblink1"
-            style="color: blue;"
           >
             bcrumb1
           </a>
@@ -35,7 +34,6 @@ exports[`PageTopper renders home snapshot correctly 1`] = `
         >
           <a
             href="/bcrumblink2?test=special"
-            style="color: blue;"
           >
             bcrumb2
           </a>
@@ -70,7 +68,6 @@ exports[`PageTopper renders home snapshot correctly 1`] = `
     >
       <a
         href="/xtralink1"
-        style="color: blue;"
       >
         <small>
           xtra1
@@ -88,7 +85,6 @@ exports[`PageTopper renders home snapshot correctly 1`] = `
     >
       <a
         href="/xtralink2"
-        style="color: blue;"
       >
         <small>
           xtra2

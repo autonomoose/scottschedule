@@ -8,7 +8,7 @@ exports[`ClockDigital2 renders snapshot correctly 1`] = `
   type="button"
 >
   <h1
-    class="MuiTypography-root MuiTypography-h1 css-1xwtaui-MuiTypography-root"
+    class="MuiTypography-root MuiTypography-h1 css-1b8j965-MuiTypography-root"
     data-testid="mainclock"
     id="mainclock"
   >

@@ -19,7 +19,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
-import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -89,7 +88,7 @@ const HomePage = () => {
                 const logEvents: iFutureEvent[] = stripEvents.reverse().map(item => {
                     return({...item, begTstamp: started.valueOf()})
                 });
-                setExpiredEvs(logEvents.concat(expiredEvs));
+                setExpiredEvs(prevEvs => (logEvents.concat(prevEvs)));
 
                 setFutureEvs({...futureEvs, evs: wkEvents});
                 if (wkEvents.length === 0) {
@@ -97,10 +96,6 @@ const HomePage = () => {
                     setStarted(new Date(Date.now()));
 
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
-                    setExpiredEvs([
-                        {descr: 'end #' + runNumber, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
-                        ...expiredEvs
-                        ]);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
                         const newsched = chains[0];
@@ -112,13 +107,20 @@ const HomePage = () => {
                             chains.slice(1).forEach(item => {newOptions[item] = true});
                         }
                         setSchedOptions(newOptions);
-                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, started);
+                        const newStart = new Date(Date.now());
+                        setStarted(newStart);
                         setRunNumber(() => runNumber + 1);
-                        setExpiredEvs([
-                            {descr: 'chain begin #' + (runNumber + 1) + ' ' + newsched, evTstamp: Date.now(), evTaskId: '-'},
-                            ...expiredEvs
-                            ]);
+                        setExpiredEvs(prevEvs => ([
+                            {descr: 'end #' + runNumber + ' chain to ' + newsched, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
+                            ...prevEvs
+                        ]));
+
+                        cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, newsched, newOptions, newStart);
                     } else {
+                        setExpiredEvs(prevEvs => ([
+                            {descr: 'end #' + runNumber, evTstamp: Date.now(), begTstamp: started.valueOf(), evTaskId: '-'},
+                            ...prevEvs
+                        ]));
                         resetOptions();
                         setCurrSched("off");
                         setHstatus("Completed");
@@ -301,15 +303,12 @@ const HomePage = () => {
             const localTime = wkdate.toLocaleTimeString(
               "en-US", {hour: 'numeric', minute: '2-digit'});
             const localComp = localTime.split(' ')[0].split(':');
-            let wkColor = '#000000';
             const swPM : boolean = (localTime.split(' ')[1] === 'PM');
 
             compclock.textContent = localComp[0];
-            compclock.style.color = wkColor;
             const compminutes = document.getElementById('compminutes');
             if (compminutes) {
                 compminutes.textContent = localComp[1];
-                compminutes.style.color = wkColor;
             }
 
             let mainpm = document.getElementById('mainpm');
@@ -369,7 +368,7 @@ const HomePage = () => {
                 logEvents.push(
                    {descr: 'Begin #' + (runNumber+1) + ' ' + wksched, evTstamp: startdate.valueOf(), begTstamp: startdate.valueOf(),evTaskId: '-beg'},
                 );
-                setExpiredEvs(logEvents.concat(expiredEvs));
+                setExpiredEvs(prevEvs => (logEvents.concat(prevEvs)));
             }
 
             let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
@@ -394,17 +393,14 @@ const HomePage = () => {
         setSchedOptions(newOptions);
 
         if (currSched !== 'off') {
-            if (newOptions[item]) {
-                // log the new option into a running schedule
-                // note that this will override logging option now events from cleanRebuild below
-                setExpiredEvs([
-                    { descr: 'Opt:'+ item + ' #' + runNumber,
-                      evTstamp: toggleTime, begTstamp: started.valueOf(),
-                      evTaskId: 'opt-' + item,
-                    },
-                    ...expiredEvs
-                ]);
-            }
+            const label = (newOptions[item])? 'On:': 'Off:';
+            setExpiredEvs(prevEvs => ([
+                { descr:  label + item + ' #' + runNumber,
+                  evTstamp: toggleTime, begTstamp: started.valueOf(),
+                  evTaskId: 'opt-' + item,
+                },
+                ...prevEvs
+            ]));
 
             if ((nextEvs?.evs[0].evTstamp - toggleTime) > 16000) {
                 // don't rebuild if we are about to rebuild with a running event
@@ -427,19 +423,15 @@ const HomePage = () => {
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
                 // set log using previous value of started as begTstamp
-                setExpiredEvs([
+                setExpiredEvs(prevEvs => ([
                     {descr: 'Off #' + runNumber, evTstamp: startDate.valueOf(), begTstamp: started.valueOf(), evTaskId: '-'},
-                   ...expiredEvs
-                ]);
+                   ...prevEvs
+                ]));
                 resetOptions();
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
                 setRunNumber(() => runNumber + 1);
-                // setExpiredEvs([
-                //     {descr: 'begin #' + (runNumber + 1) + ' ' + wksched, evTstamp: startDate.valueOf(), evTaskId: '-'},
-                //     ...expiredEvs
-                // ]);
             }
         }
     }
@@ -609,9 +601,9 @@ const HomePage = () => {
     return(
       <Layout><Seo title="Scottschedule" />
       <PageTopper pname="Home" vdebug={vdebug} helpPage="/help/home" />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box display="flex" flexWrap="wrap" justifyContent="center">
 
-      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
+      <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Box display={(showClock === "digital1" || showClock === "digital1-color")? 'flex': 'none'} flexDirection='column'>
@@ -649,11 +641,11 @@ const HomePage = () => {
         <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
             <Button data-testid='change clock' onClick={() => changeClock('digital1')}>
-              <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600, color: 'black'}}>
+              <Typography variant='h4' id='mainclock' sx={{fontSize:40, fontWeight: 600}}>
                 00:00
               </Typography>
             </Button>
-            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12, color: 'black'}}>
+            <Typography variant='subtitle1' id='mainpm' sx={{fontSize:12}}>
               PM
             </Typography>
           </Box>
@@ -711,14 +703,6 @@ const HomePage = () => {
         </Box>
         </>
         }
-
-        <Divider />
-        <Box mx={1} my={1} display="flex" justifyContent="space-between" alignItems="center">
-          Test <audio className="audio-element" controls >
-            <source src={DefaultSound} type="audio/wav" />
-            Your browser doesn't support audio
-          </audio>
-        </Box>
         </>
         }
 
@@ -726,40 +710,52 @@ const HomePage = () => {
 
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
-     <Box>
+     <Box ml={4}>
        { (nextEvs && nextEvs.evs.length > 0) &&
        <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 350, flex: '1 1',
-          background: (nextEvs.status === 'pending')? '#FAFAFA': (nextEvs.status === 'ack')? '#F5F5E6': '#FFFFFF',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box>
            <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline"
-             sx={{backgroundColor: (currSched === 'off')? '#e0e0e0'
-                                 : (nextEvs.status ==='ack')? ' #d2b4de'
-                                 : (nextEvs.status ==='pending')? '#fcf3cf'
-                                 : '#fadbd8'}}>
+             sx={{ backgroundColor: (nextEvs.status === 'ack' || nextEvs.status === 'pending')? nextEvs.status + '.main'
+                : 'site.main'
+             }}
+           >
              {(nextEvs.status === 'pending') &&
-               <Typography variant='h6' data-testid='ev-pend'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: nextEvs.status + '.contrastText' }}
+               >
+                 0m 0s
                </Typography>
              }
              {(nextEvs.status === 'soon') &&
-               <Typography variant='h6' data-testid='ev-soon'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: 'warning.main' }}
+               >
+                 0m 0s
                </Typography>
              }
              {(nextEvs.status === 'current') &&
                <Box width='70%'>
-               <Typography variant='h6' data-testid='ev-curr'>
-                 <span id='countDown'>0m 0s</span>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: 'error.main' }}
+               >
+                 0m 0s
                </Typography>
                <LinearProgress/>
                </Box>
 
              }
              {(nextEvs.status === 'ack') &&
-               <Typography variant='h6' data-testid='ev-ack'>
-                 <span id='countDown'>0m 0s</span> (Silenced)
+               <>
+               <Typography variant='h6' data-testid={'ev-' + nextEvs.status} id='countDown'
+                 sx={{ color: nextEvs.status + '.contrastText' }}
+               >
+                 0m 0s
                </Typography>
+               <Typography variant='h6'>
+                 (Silenced)
+               </Typography>
+               </>
              }
 
              <Button variant='outlined'
@@ -788,10 +784,10 @@ const HomePage = () => {
        }
 
        { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1', background: '#FAFAFA',
+       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1',
           boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
          <Box >
-           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" sx={{backgroundColor: '#e9e9e9'}}>
+           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" >
              <Box display="flex"  alignItems="baseline">
              <Typography variant='h6'>
                Log #{runNumber} {currSched}

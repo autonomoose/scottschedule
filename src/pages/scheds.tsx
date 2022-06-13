@@ -113,7 +113,7 @@ const SchedsPage = () => {
       <PageTopper pname="Schedules" vdebug={vdebug} helpPage="/help/scheds" />
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
 
-        <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1', background: '#F5F5E6',
+        <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
          boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
           <Box mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
             Groups ({Object.keys(schedGroups).length})

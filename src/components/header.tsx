@@ -7,7 +7,6 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -17,8 +16,12 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
+import MenuIcon from '@mui/icons-material/Menu';
 import StarIcon from '@mui/icons-material/Star';
 
 interface ListItemMenuBasics {
@@ -74,10 +77,20 @@ const ListItemMenu = (props: ListItemMenuProps) => {
 
 interface HeaderProps {
         uname?: string,
+        mode?: string,
+        setMode?: (arg0:string) => void,
 }
 
-const Header = ({uname}: HeaderProps) => {
+const Header = (props: HeaderProps) => {
   const [open, setOpen] = useState(false);
+  // handle user changing dark/light mode with button
+  const handleDarkClick = (oldMode?: string) => {
+      if (typeof oldMode === 'string' && props.setMode) {
+          const newMode = (oldMode === 'dark') ? "light" : "dark";
+          props.setMode(newMode);
+          window.localStorage.setItem('color-mode', newMode);
+      }
+  };
 
   async function signOut() {
     try {
@@ -88,33 +101,35 @@ const Header = ({uname}: HeaderProps) => {
     }
   };
 
-  const homePage = (uname !== '')? "/home": "/";
+  const homePage = (props.uname && props.uname !== '')? "/home": "/";
   return(
-    <div><CssBaseline />
-      <AppBar position="fixed" elevation={0}
-      style={{ height: "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)',
-          boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
-      >
-        <Toolbar sx={{ justifyContent: 'space-around'}}>
+    <Box>
+      <AppBar position="fixed" elevation={0} color='transparent'
+        sx={{
+          bgcolor: 'site.main',
+          height: "54px", borderRadius: '0 0 5px 5px',
+          boxShadow: '-5px 5px 12px #888888',
+        }}>
+        <Toolbar sx={{ justifyContent: 'space-around' }}>
           <IconButton aria-label="Open menu" onClick={() => {setOpen(true);}} edge="start"  >
-            <svg viewBox="0 0 100 80" width="40" height="40">
-              <rect x="10" y="10" width="80" height="10"></rect>
-              <rect x="10" y="30" width="80" height="10"></rect>
-              <rect x="10" y="50" width="80" height="10"></rect>
-            </svg>
+            <MenuIcon />
           </IconButton>
 
           <Link to={homePage}>
-            <Box display='flex'>
+            <Box display='flex' >
             <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"/>
-            <Typography variant='body1'>Scottschedule</Typography>
+            <Typography variant='body1' sx={{
+              color: (theme) => (theme.palette.text.primary),
+            }}>
+              Scottschedule
+            </Typography>
             </Box>
           </Link>
 
-          { (uname !== '') ?
+          { (props.uname && props.uname !== '') ?
               <Box display='flex' alignItems='center' sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
                   <Link to="/usermaint" style={{ marginRight: `1em`}} >
-                    <Typography variant='body1'>{uname}</Typography>
+                    <Typography variant='body1'>{props.uname}</Typography>
 
                   </Link>
                   <Button variant="outlined" onClick={signOut}>
@@ -130,29 +145,35 @@ const Header = ({uname}: HeaderProps) => {
                  </Link>
                </Box>
           }
+          <IconButton aria-label="Dark/light mode" onClick={() => handleDarkClick(props.mode)} edge="start"  >
+            {(props.mode === 'dark') ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
 
         </Toolbar>
       </AppBar>
 
       <Drawer variant="persistent" anchor="left" open={open} >
-        <div style={{ width:"178px", height: (uname !== '')? "39px": "54px", background: 'linear-gradient(to right,  #F5F5E6, #FAFAFA)', padding: '8px 8px',
-              boxShadow: '0 1px 20px #000000', borderRadius: '0 0 5px 5px' }}
+        <Box sx={{
+          width:"178px",
+          height: (props.uname && props.uname !== '')? "39px": "54px",
+          padding: '8px 8px',
+          boxShadow: '0 1px 20px #000000',
+          borderRadius: '0 0 5px 5px'
+        }}
         >
           <Box ml={4} display='flex' alignItems='center'>
           <Typography variant='subtitle1'>
             Main&nbsp;Menu
           </Typography>
           <IconButton onClick={() => {setOpen(false);}} aria-label="Close menu" >
-            <svg viewBox="0 0 100 80" width="40" height="40">
-              <polygon points="70 10,10 35, 70 65"></polygon>
-            </svg>
+            <ArrowDropUpIcon />
           </IconButton>
           </Box>
-        </div>
+        </Box>
         <Divider />
 
         <List>
-          { (uname !== '') ?
+          { (props.uname && props.uname !== '') ?
             <>
             <ListItemMenu link="/home" icon={<HomeIcon />} text="Home" />
             <ListItemMenu link="/usermaint" icon={<StarIcon />} text="Account" />
@@ -170,7 +191,7 @@ const Header = ({uname}: HeaderProps) => {
           }
         </List>
       </Drawer>
-    </div>
+    </Box>
   )
 };
 

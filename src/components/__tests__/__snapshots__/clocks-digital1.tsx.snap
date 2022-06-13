@@ -14,7 +14,7 @@ exports[`ClockDigital1 renders snapshot correctly 1`] = `
       class="MuiBox-root css-1mxzarq"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 css-18ux7l4-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-bnbzw0-MuiTypography-root"
         data-testid="mainpm"
         id="mainpm"
       >
@@ -22,7 +22,7 @@ exports[`ClockDigital1 renders snapshot correctly 1`] = `
       </p>
     </div>
     <p
-      class="MuiTypography-root MuiTypography-body1 css-c2znhc-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 css-1qk3xk8-MuiTypography-root"
       data-testid="compclock"
       id="compclock"
     >
@@ -32,14 +32,14 @@ exports[`ClockDigital1 renders snapshot correctly 1`] = `
       class="MuiBox-root css-1b3ucee"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 css-i75upi-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-14da47l-MuiTypography-root"
         data-testid="compminutes"
         id="compminutes"
       >
         00
       </p>
       <p
-        class="MuiTypography-root MuiTypography-body1 css-1suml8u-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 css-q6tqwp-MuiTypography-root"
         data-testid="maindate"
         id="maindate"
       >

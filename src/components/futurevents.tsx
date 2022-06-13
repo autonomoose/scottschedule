@@ -46,7 +46,7 @@ interface DisplayFutureCardProps {
 export const DisplayFutureCard = (props: DisplayFutureCardProps) => {
     return (
       <Card style={{marginTop: '3px', maxWidth: 432, minWidth: 404, flex: '1 1',
-          background: '#F5F5E6', boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <Typography variant='h6'>
             Upcoming Events

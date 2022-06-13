@@ -53,7 +53,7 @@ export const CreateEvent = (props: CreateEventProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="newEv" onSubmit={handleSubmit(formNewEvSubmit)}>
@@ -134,7 +134,7 @@ export const CreateRule = (props: CreateRuleProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="newRule" onSubmit={handleSubmit(formNewRuleSubmit)}>
@@ -239,7 +239,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
 
     return(
       <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1', background: '#FAFAFA',
+      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box mx={1}>
           <form key="newEv" onSubmit={handleSubmit(formModEvSubmit)}>
