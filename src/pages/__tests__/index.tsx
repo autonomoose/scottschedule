@@ -15,7 +15,7 @@ jest.mock('notistack', () => ({
 
 describe("IndexPage", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(<IndexPage />);
+    const {container, getByTestId} = render(<IndexPage />);
     expect(container.firstChild).toMatchSnapshot();
   });
 });
