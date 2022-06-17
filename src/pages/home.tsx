@@ -9,7 +9,7 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import { ClockDigital1, ClockDigital2 } from '../components/clocks';
+import { ClockWidget, ClockDigital1, ClockDigital2 } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
 import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
@@ -460,6 +460,7 @@ const HomePage = () => {
         if (newClock === '' || newClock === 'close') {
             setShowClock('scheduler');
         } else {
+            // validate this and show error wo/ changing it
             setShowClock(newClock);
         }
     };
@@ -606,37 +607,7 @@ const HomePage = () => {
       <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
-        <Box display={(showClock === "digital1" || showClock === "digital1-color")? 'flex': 'none'} flexDirection='column'>
-          { (showClock === "digital1" || showClock === "digital1-color") &&
-          <ClockDigital1 onComplete={changeClock} />
-          }
-
-          {(currSched !== "off") &&
-          <Box ml={1} mb={1} display="flex">
-            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
-            <Box mx={1}>
-              {currSched} - {schedGroups[currGroup].descr}
-            </Box>
-          </Box>
-          }
-        </Box>
-
-        <Box display={(showClock === "digital2" || showClock === "digital2-color")? 'block': 'none'}>
-          { (showClock === "digital2" || showClock === "digital2-color") &&
-          <ClockDigital2 onComplete={changeClock} />
-          }
-
-          {(currSched !== "off") &&
-          <Box ml={1} mb={1} display="flex">
-            <Button variant="contained" color="error" onClick={() => toggleScheds("off")}>Off</Button>
-            <Box mx={1}>
-              {currSched} - {schedGroups[currGroup].descr}
-            </Box>
-          </Box>
-          }
-        </Box>
-
-        {(showClock === 'scheduler' || showClock === '') &&
+        {(showClock === 'scheduler' || showClock === '') ?
         <>
         <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
           <Box display="flex" alignItems="baseline">
@@ -686,6 +657,13 @@ const HomePage = () => {
           </Box>
         }
 
+        </>
+        :
+        <>
+          <ClockWidget currClock={showClock} onComplete={changeClock} />
+        </>
+        }
+
         { (Object.keys(schedButtons).length > 0) &&
         <>
         <Box mx={1} mb={1}>
@@ -701,8 +679,6 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
-        </>
-        }
         </>
         }
 

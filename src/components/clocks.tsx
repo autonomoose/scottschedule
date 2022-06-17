@@ -1,9 +1,31 @@
-// extra clocks
+// more clocks
+//   - clocks must avoid hooks, clocks are conditionals
+//   - define new clock and register it with widget
+
 import React from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
+// use this as an outside interface to clocks
+interface ClockWidgetProps {
+  currClock: string,
+  onComplete: (status: string) => void,
+  currSched?: string,
+  descrSched?: string,
+}
+export const ClockWidget = (props: ClockWidgetProps) => {
+    return(
+      <Box display='flex' flexDirection='column'>
+      {
+        {
+          'digital1': <ClockDigital1 onComplete={props.onComplete} />,
+          'digital2': <ClockDigital2 onComplete={props.onComplete} />,
+        }[props.currClock]
+      }
+      </Box>
+)}
 
 interface ClockProps {
   onComplete: (status: string) => void,
