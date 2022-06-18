@@ -14,11 +14,16 @@ import { fetchEventsDB } from '../components/eventsutil';
 import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
 import { useSnackbar } from 'notistack';
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -40,6 +45,7 @@ const HomePage = () => {
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
     const [showClock, setShowClock] = useState('');
+    const [showControls, setShowControls] = useState(true);
 
     const [started, setStarted] = useState(new Date(Date.now()));
     const [currGroup, setCurrGroup] = useState('');
@@ -418,6 +424,7 @@ const HomePage = () => {
     const toggleScheds = (wksched: string) => {
         if (currSched !== wksched) {
             setCurrSched(wksched);
+            setShowControls(false);
             const startDate = new Date(Date.now());
             setStarted(startDate);
             cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
@@ -664,14 +671,16 @@ const HomePage = () => {
         </>
         }
 
-        { (Object.keys(schedButtons).length > 0) &&
-        <>
-        <Box mx={1} mb={1}>
+        <Box mx={1}>
           <Button size='large' variant={(currSched === "off")? "contained": "outlined"} color="error" onClick={() => toggleScheds("off")}>Off</Button>
           <OptionsButtons options={schedOptions} onClick={toggleOptions}/>
         </Box>
 
-        <Box mx={1} my={1}>
+        { (Object.keys(schedButtons).length > 0) &&
+        <Accordion expanded={showControls} onChange={() => setShowControls(!showControls)} disableGutters elevation={0}>
+        <AccordionSummary sx={{bgcolor: 'site.main'}} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
+        <AccordionDetails>
+        <Box mx={1}>
           {Object.keys(schedButtons).map(item => {
           return (
             <Button size='large' key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
@@ -679,7 +688,8 @@ const HomePage = () => {
             </Button>
           )})}
         </Box>
-        </>
+        </AccordionDetails>
+        </Accordion>
         }
 
      </Card></Box>
