@@ -422,11 +422,97 @@ exports[`HomePage renders snapshot correctly 1`] = `
                 style="max-width: 432px; min-width: 394px; flex: 1 1; box-shadow: 5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
               >
                 <div
-                  class="MuiBox-root css-dduipi"
-                />
-                <div
-                  class="MuiBox-root css-1hyfx7x"
-                />
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded css-vrg8eu-MuiPaper-root-MuiAccordion-root"
+                >
+                  <div
+                    aria-expanded="false"
+                    class="MuiButtonBase-root MuiAccordionSummary-root css-1sd74mc-MuiButtonBase-root-MuiAccordionSummary-root"
+                    m="0"
+                    px="1"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <div
+                      class="MuiAccordionSummary-content css-1betqn-MuiAccordionSummary-content"
+                    >
+                      <div
+                        class="MuiBox-root css-q03fcs"
+                      >
+                        <p
+                          class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+                        >
+                          Status: (
+                          off
+                          ) 
+                          for
+                        </p>
+                        <h6
+                          class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+                          id="countUp"
+                        >
+                           0s 
+                        </h6>
+                        <p
+                          class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+                        >
+                          Run 
+                          0
+                        </p>
+                        <button
+                          class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
+                          tabindex="0"
+                          type="button"
+                        >
+                          Clear
+                          <span
+                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                          />
+                        </button>
+                        <span
+                          class="MuiTypography-root MuiTypography-caption css-1sn4lm3-MuiTypography-root"
+                        >
+                          Log
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="MuiAccordionSummary-expandIconWrapper css-19hn6xk-MuiAccordionSummary-expandIconWrapper"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                        data-testid="ExpandMoreIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-hidden css-bz4dnt-MuiCollapse-root"
+                    style="min-height: 0px;"
+                  >
+                    <div
+                      class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                    >
+                      <div
+                        class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                      >
+                        <div
+                          class="MuiAccordion-region"
+                          role="region"
+                        >
+                          <div
+                            class="MuiAccordionDetails-root css-15v22id-MuiAccordionDetails-root"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   class="MuiBox-root css-1iuufgg"
                   data-testid="clock-scheduler"
@@ -538,7 +624,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiBox-root css-5uisrr"
+                  class="MuiBox-root css-ibnnmb"
                 >
                   <button
                     class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root  css-1v6ey5s-MuiButtonBase-root-MuiButton-root"
@@ -562,18 +648,73 @@ exports[`HomePage renders snapshot correctly 1`] = `
                   </button>
                 </div>
                 <div
-                  class="MuiBox-root css-1iie599"
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded Mui-expanded css-vrg8eu-MuiPaper-root-MuiAccordion-root"
                 >
-                  <button
-                    class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-1571p40-MuiButtonBase-root-MuiButton-root"
+                  <div
+                    aria-expanded="true"
+                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-1sd74mc-MuiButtonBase-root-MuiAccordionSummary-root"
+                    m="0"
+                    px="1"
+                    role="button"
                     tabindex="0"
-                    type="button"
                   >
-                    test1
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
-                  </button>
+                    <div
+                      class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
+                    >
+                      Schedule Buttons
+                    </div>
+                    <div
+                      class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-19hn6xk-MuiAccordionSummary-expandIconWrapper"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                        data-testid="ExpandMoreIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pwcg7p-MuiCollapse-root"
+                    style="min-height: 0px;"
+                  >
+                    <div
+                      class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                    >
+                      <div
+                        class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                      >
+                        <div
+                          class="MuiAccordion-region"
+                          role="region"
+                        >
+                          <div
+                            class="MuiAccordionDetails-root css-15v22id-MuiAccordionDetails-root"
+                          >
+                            <div
+                              class="MuiBox-root css-ibnnmb"
+                            >
+                              <button
+                                class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-1571p40-MuiButtonBase-root-MuiButton-root"
+                                tabindex="0"
+                                type="button"
+                              >
+                                test1
+                                <span
+                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -9,7 +9,7 @@ import DisplayFutureEvent, {DisplayFutureCard, buildFutureEvents} from '../compo
 import {OptionsButtons, buildButtons, buildOptions} from '../components/schedbuttons';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import { ClockWidget, ClockDigital1, ClockDigital2 } from '../components/clocks';
+import { ClockWidget } from '../components/clocks';
 import { fetchEventsDB } from '../components/eventsutil';
 import { fetchSchedGroupsDB, ChoiceSchedGroup } from '../components/schedgrputil';
 
@@ -435,6 +435,7 @@ const HomePage = () => {
                    ...prevEvs
                 ]));
                 resetOptions();
+                setShowControls(true);
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
@@ -453,6 +454,7 @@ const HomePage = () => {
     //   global schedGroups, currGroup, currSched, schedOptions
     const changeGroup = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrGroup(event.target.value);
+        setShowControls(true);
         if (currSched !== "off") {
             setCurrSched("off");
             // uses old group in call, thats OK as long as schedule is set to off
@@ -466,6 +468,7 @@ const HomePage = () => {
     const changeClock = (newClock: string) => {
         if (newClock === '' || newClock === 'close') {
             setShowClock('scheduler');
+            setShowControls(true);
         } else {
             // validate this and show error wo/ changing it
             setShowClock(newClock);
@@ -614,6 +617,42 @@ const HomePage = () => {
       <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
+        <Accordion disableGutters elevation={0}>
+          <AccordionSummary px={1} m={0} sx={{bgcolor: 'site.main', minHeight: 32, maxHeight: 32,}} expandIcon={<ExpandMoreIcon />} >
+          <Box width='100%' display='flex' alignItems='baseline' justifyContent='space-between'>
+              <Typography variant='body2'>
+                Status: ({currSched}) {(currSched === 'off')? 'for': 'running' }
+              </Typography>
+              <Typography variant='h6' id='countUp'>
+                0m 0s
+              </Typography>
+            <Typography variant='body2'>
+              Run {runNumber}
+            </Typography>
+            <Button onClick={() => {setExpiredEvs([]); setRunNumber(0)}}>
+              Clear
+            </Button>
+            <Typography variant='caption'>
+              Log
+            </Typography>
+          </Box>
+
+          </AccordionSummary>
+          <AccordionDetails>
+
+            { (expiredEvs.length > 0) &&
+                <Box sx={{maxHeight: 100, overflow: 'auto' }}>
+                { expiredEvs.map(item => <DisplayFutureEvent
+                  key={`${item.evTstamp}:${item.evTaskId}`} item={item}
+                  descr={(item.descr)? item.descr: (allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
+                }
+                </Box>
+            }
+
+
+          </AccordionDetails>
+        </Accordion>
+
         {(showClock === 'scheduler' || showClock === '') ?
         <>
         <Box data-testid='clock-scheduler' m={0} p={0} display="flex" justifyContent="space-around" alignItems="flex-start">
@@ -678,7 +717,7 @@ const HomePage = () => {
 
         { (Object.keys(schedButtons).length > 0) &&
         <Accordion expanded={showControls} onChange={() => setShowControls(!showControls)} disableGutters elevation={0}>
-        <AccordionSummary sx={{bgcolor: 'site.main'}} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
+        <AccordionSummary sx={{bgcolor: 'site.main', minHeight: 32, maxHeight: 32,}} px={1} m={0} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
         <AccordionDetails>
         <Box mx={1}>
           {Object.keys(schedButtons).map(item => {
@@ -769,38 +808,6 @@ const HomePage = () => {
        </Card>
        }
 
-       { (expiredEvs.length > 0) &&
-       <Card style={{marginTop: '3px', maxHeight: 132, overflow: 'auto', maxWidth: 432, minWidth: 360, flex: '1 1',
-          boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-         <Box >
-           <Box px={1} display="flex" justifyContent="space-between" alignItems="baseline" >
-             <Box display="flex"  alignItems="baseline">
-             <Typography variant='h6'>
-               Log #{runNumber} {currSched}
-             </Typography>
-
-             <Typography variant='body1' sx={{marginLeft: 1, marginRight: 1}}>
-               {(currSched === 'off')? 'for': 'running' }
-             </Typography>
-
-             <Typography variant='h6'>
-             <span id='countUp'>0m 0s</span>
-             </Typography>
-             </Box>
-
-             <Button onClick={() => {setExpiredEvs([]); setRunNumber(0)}}>
-               Clear
-             </Button>
-           </Box>
-           <Box mx={1}>
-           { expiredEvs.map(item => <DisplayFutureEvent
-             key={`${item.evTstamp}:${item.evTaskId}`} item={item}
-             descr={(item.descr)? item.descr: (allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
-           }
-           </Box>
-         </Box>
-       </Card>
-       }
 
        { (futureEvs.evs.length > 0) &&
          <DisplayFutureCard evs={futureEvs.evs} tasks={allTasks} />
