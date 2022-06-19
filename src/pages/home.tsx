@@ -618,7 +618,10 @@ const HomePage = () => {
         boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
 
         <Accordion disableGutters elevation={0}>
-          <AccordionSummary px={1} m={0} sx={{bgcolor: 'site.main', minHeight: 32, maxHeight: 32,}} expandIcon={<ExpandMoreIcon />} >
+          <AccordionSummary sx={{
+            bgcolor: 'site.main', minHeight: 32, maxHeight: 32,
+            padding: '0px 4px', margin: 0,
+            }} expandIcon={<ExpandMoreIcon />} >
           <Box width='100%' display='flex' alignItems='baseline' justifyContent='space-between'>
               <Typography variant='body2'>
                 Status: ({currSched}) {(currSched === 'off')? 'for': 'running' }
@@ -717,7 +720,10 @@ const HomePage = () => {
 
         { (Object.keys(schedButtons).length > 0) &&
         <Accordion expanded={showControls} onChange={() => setShowControls(!showControls)} disableGutters elevation={0}>
-        <AccordionSummary sx={{bgcolor: 'site.main', minHeight: 32, maxHeight: 32,}} px={1} m={0} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
+        <AccordionSummary sx={{
+            bgcolor: 'site.main', minHeight: 32, maxHeight: 32,
+            padding: '0px 4px', margin: 0,
+          }} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
         <AccordionDetails>
         <Box mx={1}>
           {Object.keys(schedButtons).map(item => {

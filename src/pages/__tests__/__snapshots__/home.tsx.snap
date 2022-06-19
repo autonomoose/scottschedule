@@ -426,9 +426,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                 >
                   <div
                     aria-expanded="false"
-                    class="MuiButtonBase-root MuiAccordionSummary-root css-1sd74mc-MuiButtonBase-root-MuiAccordionSummary-root"
-                    m="0"
-                    px="1"
+                    class="MuiButtonBase-root MuiAccordionSummary-root css-u8i35i-MuiButtonBase-root-MuiAccordionSummary-root"
                     role="button"
                     tabindex="0"
                   >
@@ -652,9 +650,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                 >
                   <div
                     aria-expanded="true"
-                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-1sd74mc-MuiButtonBase-root-MuiAccordionSummary-root"
-                    m="0"
-                    px="1"
+                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-u8i35i-MuiButtonBase-root-MuiAccordionSummary-root"
                     role="button"
                     tabindex="0"
                   >
