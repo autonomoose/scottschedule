@@ -88,13 +88,27 @@ describe("HomePage empty", () => {
     });
     expect(mockEnqueue).toHaveBeenCalledWith(`Copy successful!`, {variant: 'success', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
 
-    (API.post as jest.Mock).mockImplementation(() => Promise.resolve({}));
+  });
+
+  it("handles quicksetup without good api return", async () => {
+    (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({}));
+    (fetchEventsDB as jest.Mock).mockImplementation(() => Promise.resolve({}));
+    (API.post as jest.Mock).mockImplementation(() => Promise.resolve({'Response': 'error'}));
+
+    const utils = await mySetup();
+
+    const qstart2 = utils.getByTestId('qstart2');
+    expect(qstart2).toBeVisible();
+
+    mockEnqueue.mockClear();
     userEvent.click(qstart2);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(mockEnqueue).toHaveBeenCalledWith(`setup failed`, {variant: 'error',});
 
+    mockEnqueue.mockClear();
+    const qstart3 = utils.getByTestId('qstart3');
     (API.post as jest.Mock).mockImplementation(() => Promise.reject('mock failed'));
     userEvent.click(qstart3);
     await waitFor(() => {
@@ -103,5 +117,6 @@ describe("HomePage empty", () => {
     expect(mockEnqueue).toHaveBeenCalledWith(`setup api failed`, {variant: 'error',});
 
   });
+
 
 });

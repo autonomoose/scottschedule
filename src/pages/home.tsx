@@ -707,7 +707,7 @@ const HomePage = () => {
           </Box>
         </Box>
 
-        { (Object.keys(schedGroups).length === 0) &&
+        { (Object.keys(schedGroups).length === 0 && statusGs === 'Ready') &&
           <Box m={2}>
             <Typography variant='h4'>Welcome, new user!</Typography>
             <List dense={true}>
