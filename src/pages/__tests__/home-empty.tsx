@@ -56,14 +56,14 @@ describe("HomePage empty", () => {
     (fetchEventsDB as jest.Mock).mockImplementation(() => Promise.reject('mockReject'));
     await mySetup();
 
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`error retrieving events`, {variant: 'error'});
+    expect(mockEnqueue).toHaveBeenLastCalledWith(`error retrieving data`, {variant: 'error'});
   });
 
   it("handles grp/sched lookup error", async () => {
     (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.reject('mockReject'));
     await mySetup();
 
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`error retrieving sched/groups`, {variant: 'error'});
+    expect(mockEnqueue).toHaveBeenLastCalledWith(`error retrieving data`, {variant: 'error'});
   });
 
   it("handles quicksetup", async () => {
@@ -86,21 +86,21 @@ describe("HomePage empty", () => {
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`Copy successful!`, {variant: 'success', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
+    expect(mockEnqueue).toHaveBeenCalledWith(`Copy successful!`, {variant: 'success', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
 
     (API.post as jest.Mock).mockImplementation(() => Promise.resolve({}));
     userEvent.click(qstart2);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`setup failed`, {variant: 'error',});
+    expect(mockEnqueue).toHaveBeenCalledWith(`setup failed`, {variant: 'error',});
 
     (API.post as jest.Mock).mockImplementation(() => Promise.reject('mock failed'));
     userEvent.click(qstart3);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`setup api failed`, {variant: 'error',});
+    expect(mockEnqueue).toHaveBeenCalledWith(`setup api failed`, {variant: 'error',});
 
   });
 

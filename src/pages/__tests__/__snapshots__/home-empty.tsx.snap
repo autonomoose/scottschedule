@@ -448,7 +448,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
                           id="countUp"
                         >
-                          0m 0s
+                           0s 
                         </h6>
                         <p
                           class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
@@ -528,7 +528,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         class="MuiTypography-root MuiTypography-h4 css-18ljsam-MuiTypography-root"
                         id="mainclock"
                       >
-                        00:00
+                        06:36
                       </h4>
                       <span
                         class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
@@ -548,7 +548,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                       class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
                       id="maindate"
                     >
-                      01/01/00
+                      Wed, Dec 21
                     </h6>
                     <span
                       class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
