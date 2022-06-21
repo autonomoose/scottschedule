@@ -1,4 +1,4 @@
-// prototype scottscheduler home page
+// scottscheduler main app page
 
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
@@ -41,9 +41,13 @@ interface iAudioComp {
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const startParm = useQueryParam('start', '');
     const vdebug = useQueryParam('debug', '');
 
-    const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
+    const [statusEv, setStatusEv] = useState('Loading'); // describes ev data loading
+    const [statusGs, setStatusGs] = useState('Loading'); // descrives groups, schedule data loading
+    const [hstatus, setHstatus] = useState('Loading'); // controls page spinner and backdrop display
+
     const [showClock, setShowClock] = useState('');
     const [showControls, setShowControls] = useState(true);
 
@@ -198,6 +202,28 @@ const HomePage = () => {
             clearTimeout(eventId);
             setEventId(0);
         }
+    };
+
+    // expect a URL parm with scheduler instructions
+    interface startParmOutput {
+        clock?: string,
+        group?: string,
+        sched: string,
+    }
+    const startParmParser= (startParm: string) => {
+        const retIn: startParmOutput = {sched: 'off'};
+        if (startParm) {
+            const [parmGroup, parmSched, ..._parmComp] = startParm.split(';');
+            if (parmGroup) {
+                if (parmGroup === '_clock') {
+                    retIn['clock'] = (parmSched)? parmSched: 'scheduler';
+                } else {
+                    retIn['group'] = parmGroup;
+                    retIn['sched'] = (parmSched)? parmSched: 'off';
+                }
+            }
+        }
+        return(retIn);
     };
 
     // when nextEvs change, maintain the next event timer, and update state eventId
@@ -421,13 +447,14 @@ const HomePage = () => {
     };
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     //   global schedGroups, currGroup, currSched, schedOptions
-    const toggleScheds = (wksched: string) => {
+    const toggleScheds = (wksched: string, pdgroup?: string) => {
         if (currSched !== wksched) {
+            const wkgroup = (pdgroup)? pdgroup: currGroup;
             setCurrSched(wksched);
             setShowControls(false);
             const startDate = new Date(Date.now());
             setStarted(startDate);
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
+            cleanRebuildFutureEvents({name:wkgroup,...schedGroups[wkgroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
                 // set log using previous value of started as begTstamp
                 setExpiredEvs(prevEvs => ([
@@ -476,62 +503,99 @@ const HomePage = () => {
     };
 
     // init Data
-    // load allTasks
+    //   whenever dataSerial changes
+    //     async load event and schedgroup data
+    //   when the data above completes
+    //     set initial currGroup, currSched, showClock, started time
+    //   whenever currGroup changes
+    //     build schedButtons, schedOptions
+    //     set group quick description on clock
+
+    // load events, allTasks and statusEv
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setStatusEv('Loading');
                 const newTasks = await fetchEventsDB();
                 if (newTasks && Object.keys(newTasks).length > 0) {
                     setAllTasks(newTasks);
                 } else {
-                    setHstatus('Ready');
+                    setAllTasks({});
                 }
+                setStatusEv('Ready');
             } catch (result) {
-                enqueueSnackbar(`error retrieving events`, {variant: 'error'});
+                setStatusEv('Error');
             }
         };
 
-        setHstatus('Loading');
         fetchData();
-    }, [enqueueSnackbar, dataSerial] );
+    }, [dataSerial] );
 
-    // load all schedules, groups
+    // load all schedules/groups, schedGroups and statusGs
     useEffect(() => {
       const fetchData = async () => {
           try {
+              setStatusGs('Loading');
               const newSchedgrps = await fetchSchedGroupsDB();
               if (newSchedgrps && Object.keys(newSchedgrps).length > 0) {
-                  enqueueSnackbar(`loaded schedules`,
-                    {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                   setSchedGroups(newSchedgrps);
               } else {
-                  setHstatus('Ready');
+                  setSchedGroups({});
               }
-          } catch (result) {
-              enqueueSnackbar(`error retrieving sched/groups`, {variant: 'error'});
-              setHstatus('Ready');
-          }
+              setStatusGs('Ready');
 
+          } catch (result) {
+              setStatusGs('Error');
+          }
       };
 
-      setHstatus('Loading');
       fetchData();
-    }, [enqueueSnackbar, dataSerial] );
+    }, [dataSerial] );
 
+    // init page when data is finished loading
     useEffect(() => {
-        // post data init
-        killEventTask();
-        setNextEvs({evs: [], status: 'none'});
-        setFutureEvs({evs: []});
-        setShowClock('scheduler');
+        // killEventTask();
+        // setNextEvs({evs: [], status: 'none'});
+        // setFutureEvs({evs: []});
 
-        if (schedGroups && Object.keys(schedGroups).length > 0) {
-            let wkGroup = 'default';
-            setCurrGroup(wkGroup);
-            setCurrSched('off');
+        if (statusEv !== 'Loading' && statusGs !== 'Loading') {
+            if (statusEv === 'Error' || statusGs === 'Error') {
+                enqueueSnackbar(`error retrieving data`, {variant: 'error'});
+            } else {
+                enqueueSnackbar(`data loaded`,
+                  {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+            }
+            setHstatus('Ready');
+            setStarted(new Date(Date.now()));
+            let newClock = 'scheduler';
+            let newGroup = '';
+            let newSched = 'off';
+
+            if (schedGroups && Object.keys(schedGroups).length > 0) {
+                newGroup = 'default';
+            }
+
+            // process start parm from URL group schedule start
+            const parsedStart = startParmParser(startParm);
+            if (parsedStart['clock']) {
+                newClock = parsedStart['clock'];
+            }
+            setShowClock(newClock);
+            if (parsedStart['group']) {
+                newGroup = parsedStart['group'];
+            }
+            setCurrGroup(newGroup);
+
+            if (parsedStart['sched']) {
+                newSched = parsedStart['sched'];
+                toggleScheds(newSched, newGroup);
+            }
+            setCurrSched(newSched);
+
+        } else {
+            setHstatus('Loading');
         }
-
-    }, [schedGroups]);
+    }, [enqueueSnackbar, statusEv, statusGs]);
 
     // update when currGroup updates, or the background schedGroups,allTasks updates
     useEffect(() => {
@@ -681,7 +745,7 @@ const HomePage = () => {
           </Box>
         </Box>
 
-        { (Object.keys(schedGroups).length === 0) &&
+        { (Object.keys(schedGroups).length === 0 && statusGs === 'Ready') &&
           <Box m={2}>
             <Typography variant='h4'>Welcome, new user!</Typography>
             <List dense={true}>
