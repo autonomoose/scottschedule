@@ -41,6 +41,7 @@ interface iAudioComp {
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const startParm = useQueryParam('start', '');
     const vdebug = useQueryParam('debug', '');
 
     const [statusEv, setStatusEv] = useState('Loading'); // describes ev data loading
@@ -201,6 +202,28 @@ const HomePage = () => {
             clearTimeout(eventId);
             setEventId(0);
         }
+    };
+
+    // expect a URL parm with scheduler instructions
+    interface startParmOutput {
+        clock?: string,
+        group?: string,
+        sched: string,
+    }
+    const startParmParser= (startParm: string) => {
+        const retIn: startParmOutput = {sched: 'off'};
+        if (startParm) {
+            const [parmGroup, parmSched, ..._parmComp] = startParm.split(';');
+            if (parmGroup) {
+                if (parmGroup === '_clock') {
+                    retIn['clock'] = (parmSched)? parmSched: 'scheduler';
+                } else {
+                    retIn['group'] = parmGroup;
+                    retIn['sched'] = (parmSched)? parmSched: 'off';
+                }
+            }
+        }
+        return(retIn);
     };
 
     // when nextEvs change, maintain the next event timer, and update state eventId
@@ -424,13 +447,14 @@ const HomePage = () => {
     };
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     //   global schedGroups, currGroup, currSched, schedOptions
-    const toggleScheds = (wksched: string) => {
+    const toggleScheds = (wksched: string, pdgroup?: string) => {
         if (currSched !== wksched) {
+            const wkgroup = (pdgroup)? pdgroup: currGroup;
             setCurrSched(wksched);
             setShowControls(false);
             const startDate = new Date(Date.now());
             setStarted(startDate);
-            cleanRebuildFutureEvents({name:currGroup,...schedGroups[currGroup]}, wksched, schedOptions, startDate);
+            cleanRebuildFutureEvents({name:wkgroup,...schedGroups[wkgroup]}, wksched, schedOptions, startDate);
             if (wksched === "off") {
                 // set log using previous value of started as begTstamp
                 setExpiredEvs(prevEvs => ([
@@ -551,9 +575,23 @@ const HomePage = () => {
                 newGroup = 'default';
             }
 
+            // process start parm from URL group schedule start
+            const parsedStart = startParmParser(startParm);
+            if (parsedStart['clock']) {
+                newClock = parsedStart['clock'];
+            }
             setShowClock(newClock);
+            if (parsedStart['group']) {
+                newGroup = parsedStart['group'];
+            }
             setCurrGroup(newGroup);
+
+            if (parsedStart['sched']) {
+                newSched = parsedStart['sched'];
+                toggleScheds(newSched, newGroup);
+            }
             setCurrSched(newSched);
+
         } else {
             setHstatus('Loading');
         }
