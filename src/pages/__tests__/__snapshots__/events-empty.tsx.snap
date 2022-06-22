@@ -427,7 +427,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
             </div>
           </div>
           <div
-            class="MuiBox-root css-1b1zfbw"
+            class="MuiBox-root css-7m4n47"
           >
             <div
               class="MuiBox-root css-0"
@@ -436,42 +436,107 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                 class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1gyd2pn-MuiPaper-root-MuiCard-root"
                 style="max-width: 432px; min-width: 394px; flex: 1 1; box-shadow: 5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
               >
-                <div
-                  class="MuiBox-root css-1kytcjp"
+                <h6
+                  class="MuiTypography-root MuiTypography-h6 css-1eaq3q5-MuiTypography-root"
                 >
-                  Events (
-                  0
-                  )
-                  <button
-                    class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root Mui-disabled  css-1vbvugf-MuiButtonBase-root-MuiButton-root"
-                    disabled=""
-                    tabindex="-1"
-                    type="button"
+                  Event Definition Editor
+                </h6>
+                <p
+                  class="MuiTypography-root MuiTypography-body2 css-17f9bli-MuiTypography-root"
+                >
+                  Create and modify individual timing rules and conditions
+                </p>
+                <div
+                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAccordion-root MuiAccordion-rounded Mui-expanded css-vrg8eu-MuiPaper-root-MuiAccordion-root"
+                >
+                  <div
+                    aria-expanded="true"
+                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-1l7dji-MuiButtonBase-root-MuiAccordionSummary-root"
+                    role="button"
+                    tabindex="0"
                   >
-                    New Event
-                  </button>
+                    <div
+                      class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
+                    >
+                      <div
+                        class="MuiBox-root css-pvuze6"
+                      >
+                        Events List (
+                        0
+                        )
+                        <button
+                          class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1vbvugf-MuiButtonBase-root-MuiButton-root"
+                          data-testid="create-event"
+                          tabindex="0"
+                          type="button"
+                        >
+                          New Event
+                          <span
+                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-19hn6xk-MuiAccordionSummary-expandIconWrapper"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                        data-testid="ExpandMoreIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pwcg7p-MuiCollapse-root"
+                    style="min-height: 0px;"
+                  >
+                    <div
+                      class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
+                    >
+                      <div
+                        class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
+                      >
+                        <div
+                          class="MuiAccordion-region"
+                          role="region"
+                        >
+                          <div
+                            class="MuiAccordionDetails-root css-kn56md-MuiAccordionDetails-root"
+                          >
+                            <ul
+                              class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <ul
-                  class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
-                />
               </div>
             </div>
             <div
               class="MuiBox-root css-0"
             >
               <div
-                class="MuiBox-root css-13o7eu2"
+                class="MuiBox-root css-c98n24"
               >
                 <div
                   class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1gyd2pn-MuiPaper-root-MuiCard-root"
-                  style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+                  style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
                 >
                   <div
-                    class="MuiBox-root css-ibnnmb"
+                    class="MuiBox-root css-0"
                   >
                     <form>
                       <div
-                        class="MuiBox-root css-h9yv4t"
+                        class="MuiBox-root css-2cmwy2"
                       >
                         <h6
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -480,7 +545,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </h6>
                       </div>
                       <div
-                        class="MuiBox-root css-0"
+                        class="MuiBox-root css-o3707h"
                       >
                         <label>
                           Name 
@@ -494,7 +559,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </label>
                       </div>
                       <div
-                        class="MuiBox-root css-0"
+                        class="MuiBox-root css-o3707h"
                       >
                         <label>
                            Description
@@ -508,7 +573,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </label>
                       </div>
                       <div
-                        class="MuiBox-root css-10igwnb"
+                        class="MuiBox-root css-1ol4ztf"
                       >
                         <button
                           class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1is3qj5-MuiButtonBase-root-MuiButton-root"
@@ -532,18 +597,18 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                 </div>
               </div>
               <div
-                class="MuiBox-root css-1hyfx7x"
+                class="MuiBox-root css-c98n24"
               >
                 <div
                   class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1gyd2pn-MuiPaper-root-MuiCard-root"
-                  style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+                  style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
                 >
                   <div
-                    class="MuiBox-root css-ibnnmb"
+                    class="MuiBox-root css-0"
                   >
                     <form>
                       <div
-                        class="MuiBox-root css-h9yv4t"
+                        class="MuiBox-root css-2cmwy2"
                       >
                         <h6
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -552,12 +617,12 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </h6>
                       </div>
                       <div
-                        class="MuiBox-root css-70qvj9"
+                        class="MuiBox-root css-bqdthe"
                       >
                         
                       </div>
                       <div
-                        class="MuiBox-root css-0"
+                        class="MuiBox-root css-o3707h"
                       >
                         <label>
                           <input
@@ -570,7 +635,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </label>
                       </div>
                       <div
-                        class="MuiBox-root css-10igwnb"
+                        class="MuiBox-root css-1m55zth"
                       >
                         <button
                           class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1is3qj5-MuiButtonBase-root-MuiButton-root"
@@ -591,7 +656,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                       </div>
                     </form>
                     <div
-                      class="MuiBox-root css-3uedfb"
+                      class="MuiBox-root css-soic1s"
                     >
                       <span>
                         Rules (
