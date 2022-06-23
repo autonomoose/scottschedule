@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 
 import { ManSched, CreateGroup, ModifyGroup } from '../../components/schedgrputil';
 import SchedsPage from "../scheds";
@@ -30,6 +32,12 @@ export const mockModifyGroup = (props: mockModifyGroupProps) => {
       <Box data-testid='modifyGroup' display={(props.open)?'block': 'none'}>
       <Button onClick={() => props.onComplete(props.group)}>Save Mod</Button>
       <Button onClick={() => props.onComplete('')}>Cancel Mod</Button>
+      <List disablePadding dense sx={{marginLeft: '1em'}}>
+        <ListItem button key='testsched' onClick={() => props.onComplete('_testgrp!testsched')}>
+            testsched - test sched
+        </ListItem>
+      </List>
+
       </Box>
 )};
 
@@ -87,7 +95,7 @@ const mySetup = async () => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
 
-    const newGroupButton = utils.getByRole('button', {name: /new group/i});
+    const newGroupButton = utils.getByTestId('create-group');
     const newGroupPanel = utils.getByTestId('newGroup');
     const modGroupPanel = utils.getByTestId('modifyGroup');
     const manSchedPanel = utils.getByTestId('manSched');
@@ -210,40 +218,49 @@ describe("SchedsPage", () => {
   });
 
 
-  it("opens modify schedule panel", async () => {
+  it("opens modify schedule panel and handles cancel", async () => {
     const utils = await mySetup();
 
-    const modGroupButton = utils.getByRole('button', {name: /testsched - test sched/i});
+    // open group
+    const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
     userEvent.click(modGroupButton);
+    await waitFor(() => {
+      expect(utils.modGroupPanel).toBeVisible();
+    });
+
+    // open sched
+    const modSchedButton = utils.getByRole('button', {name: /testsched - test sched/i});
+    userEvent.click(modSchedButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).toBeVisible();
     });
     expect(utils.newGroupPanel).not.toBeVisible();
     expect(utils.modGroupPanel).not.toBeVisible();
 
-  });
-
-  it("handles modify schedule cancel", async () => {
-    const utils = await mySetup();
-
-    const modGroupButton = utils.getByRole('button', {name: /testsched - test sched/i});
-    userEvent.click(modGroupButton);
-    await waitFor(() => {
-      expect(utils.manSchedPanel).toBeVisible();
-    });
+    // cancel sched
     const cancelButton = utils.getByRole('button', {name: /cancel sched/i});
     userEvent.click(cancelButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).not.toBeVisible();
     });
 
+    // should show group list
+    expect(modGroupButton).toBeVisible();
   });
 
   it("handles modify schedule save", async () => {
     const utils = await mySetup();
 
-    const modGroupButton = utils.getByRole('button', {name: /testsched - test sched/i});
+    // open group
+    const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
     userEvent.click(modGroupButton);
+    await waitFor(() => {
+      expect(utils.modGroupPanel).toBeVisible();
+    });
+
+    // open sched
+    const modSchedButton = utils.getByRole('button', {name: /testsched - test sched/i});
+    userEvent.click(modSchedButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).toBeVisible();
     });
@@ -254,6 +271,7 @@ describe("SchedsPage", () => {
       expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
 
+    expect(utils.manSchedPanel).toBeVisible();
   });
 
 });

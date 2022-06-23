@@ -62,32 +62,32 @@ export const CreateGroup = (props: CreateGroupProps) => {
     };
 
     return(
-      <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Box ml={4} display={(props.open)?'block': 'none'}>
+      <Card style={{marginTop: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
+        <Box>
           <form key="newGroup" onSubmit={handleSubmit(formNewGroupSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
-              Add New Group
+              Add New Schedule Group
             </Typography>
-            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton size='small' onClick={() => funComplete('')}>X</IconButton>
           </Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Name <input type="text" size={12} data-testid="nameInput"
              {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
              aria-invalid={errors.name ? "true" : "false"}
             />
           </label></Box>
-          <Box><label> Description
+          <Box px='0.5em'><label> Description
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box px='0.5em' mt={2} mb={1} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
@@ -159,37 +159,37 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
     };
 
     return(
-      <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Box ml={4} display={(props.open)?'block': 'none'}>
+      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
+        <Box>
           <form key="modGroup" onSubmit={handleSubmit(formModGroupSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>Modify Group</Typography>
-            <IconButton size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton size='small' onClick={() => funComplete('')}>X</IconButton>
           </Box>
-          <Box display='flex' alignItems='center'>
+          <Box px='0.5em' display='flex' alignItems='center'>
             {wkName}
             { (wkGroup && wkGroup.schedNames.length === 0) &&
             <IconButton data-testid='delete' size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
             }
           </Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
           </form>
           { (wkGroup) &&
           <>
-            <Box mb={1} display='flex' justifyContent='space-around'>
+            <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
               <span>Schedules ({wkGroup.schedNames.length}) </span>
               <Button onClick={() => funComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
             </Box>
@@ -326,22 +326,22 @@ export const ManSched = (props: ManSchedProps) => {
     };
 
     return(
-      <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Box ml={4} display={(props.open)?'block': 'none'}>
+      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
+        <Box>
           <form key="manSched" onSubmit={handleSubmit(formManSchedSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
               { (schedName && schedName !== '_NEW_')
                 ? <span>Modify Schedules </span>
                 : <span>Add Schedule ({groupName})</span>
               }
             </Typography>
-            <IconButton data-testid='cancel' size='small' color='error' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton data-testid='cancel' size='small' onClick={() => funComplete('')}>X</IconButton>
           </Box>
 
-          <Box display='flex' justifyContent='space-between'>
+          <Box px='0.5em'  display='flex' justifyContent='space-between'>
             <Box display={(schedName && schedName !== '_NEW_')?'none':'flex'}><label>
               Name <input type="text" size={12} data-testid="nameInput"
                {...register('schedName', { required: true, pattern: /\S+/, maxLength:16 })}
@@ -366,42 +366,42 @@ export const ManSched = (props: ManSchedProps) => {
             </label></Box>
           </Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Begins <textarea rows={1} cols={27} data-testid="beginsInput"
              {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
              aria-invalid={errors.begins ? "true" : "false"}
             ></textarea>
           </label></Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Sound <input type="text" size={10} data-testid="soundInput"
              {...register('sound', { pattern: /\S+/, maxLength:20 })}
              aria-invalid={errors.sound ? "true" : "false"}
             />
           </label></Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Repeat <input type="text" size={2} data-testid="soundRepeatInput"
              {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
              aria-invalid={errors.soundrepeat ? "true" : "false"}
             />
           </label></Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Warn <input type="text" size={10} data-testid="warnInput"
              {...register('warn', { pattern: /\S+/, maxLength:20 })}
              aria-invalid={errors.warn ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
@@ -409,9 +409,11 @@ export const ManSched = (props: ManSchedProps) => {
           </form>
           { (currSchedule) &&
           <>
-            <Box mb={1} display='flex' justifyContent='space-around'>
+            <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
               <span>Events ({currSchedule.schedTasks.length}) </span>
-              <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">Add Event</Button>
+              <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">
+                Add Event
+              </Button>
             </Box>
             <ConnectTask evList={props.evList} schedName={schedEv} onComplete={formCallback} open={(schedEv !== '')} />
             {
@@ -498,7 +500,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
             />
           </Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box my={2} mr={1} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
             <Button size="small" variant="outlined" onClick={() => reset()}>Reset</Button>
             <Button size="small" variant="contained" type="submit">Save</Button>
