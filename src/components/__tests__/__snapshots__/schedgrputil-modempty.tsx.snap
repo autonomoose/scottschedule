@@ -2,18 +2,18 @@
 
 exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
 <div
-  class="MuiBox-root css-13o7eu2"
+  class="MuiBox-root css-2t3rs8"
 >
   <div
     class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
-    style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+    style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
   >
     <div
-      class="MuiBox-root css-ibnnmb"
+      class="MuiBox-root css-0"
     >
       <form>
         <div
-          class="MuiBox-root css-h9yv4t"
+          class="MuiBox-root css-1j6jckw"
         >
           <h6
             class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
@@ -21,7 +21,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
             Modify Group
           </h6>
           <button
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorError MuiIconButton-sizeSmall css-1mk6yu1-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"
           >
@@ -32,7 +32,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
           </button>
         </div>
         <div
-          class="MuiBox-root css-70qvj9"
+          class="MuiBox-root css-bqdthe"
         >
           testgrp
           <button
@@ -48,7 +48,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
           </button>
         </div>
         <div
-          class="MuiBox-root css-0"
+          class="MuiBox-root css-o3707h"
         >
           <label>
             <input
@@ -61,7 +61,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
           </label>
         </div>
         <div
-          class="MuiBox-root css-10igwnb"
+          class="MuiBox-root css-1m55zth"
         >
           <button
             class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
@@ -82,7 +82,7 @@ exports[`schedgrputil - modify empty group renders snapshot correctly 1`] = `
         </div>
       </form>
       <div
-        class="MuiBox-root css-3uedfb"
+        class="MuiBox-root css-brm5ry"
       >
         <span>
           Schedules (

@@ -54,10 +54,11 @@ const EventsPage = () => {
                   {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 setAllTasks(newTasks);
                 let wkEvName = evName;
-                if (wkEvName === '' && startParm) {
+                if (wkEvName === '' && startParm && pgserial === 0) {
                     wkEvName = startParm;
                 }
 
+                // console.log('try ev name', wkEvName);
                 if (wkEvName === '' || wkEvName in newTasks === false) {
                     setEvName('');
                 } else {
@@ -69,6 +70,7 @@ const EventsPage = () => {
         };
 
         fetchEvs();
+        // console.log('ev fetch', pgserial, startParm);
     }, [enqueueSnackbar, vdebug, pgserial, startParm] );
 
     return(

@@ -5,21 +5,30 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplaySchedGroup, { ManSched, CreateGroup, ModifyGroup, fetchSchedGroupsDB } from '../components/schedgrputil';
+import { ManSched, CreateGroup, ModifyGroup, fetchSchedGroupsDB } from '../components/schedgrputil';
 import { fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CircularProgress from '@mui/material/CircularProgress';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Typography from '@mui/material/Typography';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const SchedsPage = () => {
     const { enqueueSnackbar } = useSnackbar();
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
+    const [showList, setShowList] = useState(true);
     const [schedGroups, setSchedGroups] = useState<iSchedGroupList>({});
     const [groupName, setGroupName] = useState('');
     const [schedName, setSchedName] = useState('');
@@ -28,6 +37,7 @@ const SchedsPage = () => {
 
     const [pgserial, setPgserial] = useState(0);
 
+    // group name changes
     const buttonSetGroupName = async (newGroupName: string) => {
         if (newGroupName[0] === '_' && newGroupName != '_NEW_') {
             setGroupName('');
@@ -35,16 +45,21 @@ const SchedsPage = () => {
         } else {
             setGroupName(newGroupName);
             setSchedName('');
+            setShowList(false);
         }
     }
 
+    // handler for dialog report data changes
     const formSchedCallback = async (status: string) => {
         setSchedName((status[0] === '_')? '': status);
         if (status !== '') {
             setPgserial(pgserial+1);
+        } else {
+            setShowList(true);
         }
     };
 
+    // handler for group dialog to control group and schedule dialogs
     const formGroupCallback = async (status: string) => {
         if (status[0] === '_') {
           // call to open schedule from group form
@@ -54,6 +69,8 @@ const SchedsPage = () => {
           setGroupName(status);
           if (status !== '') {
               setPgserial(pgserial+1);
+          } else {
+            setShowList(true);
           }
         }
     }
@@ -111,28 +128,49 @@ const SchedsPage = () => {
     return(
       <Layout><Seo title="Schedules - Scottschedule" />
       <PageTopper pname="Schedules" vdebug={vdebug} helpPage="/help/scheds" />
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+      <Box display="flex" flexWrap="wrap" justifyContent="center">
 
         <Box><Card style={{maxWidth: 432, minWidth: 394, flex: '1 1',
          boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-          <Box mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
-            Groups ({Object.keys(schedGroups).length})
 
-            <Button variant='outlined' disabled={(groupName === '_NEW_')} onClick={() => {buttonSetGroupName('_NEW_');}}>
-              New Group
-            </Button>
-          </Box>
+          <Typography variant='h6' sx={{padding: '0 0.5em 0', bgcolor: 'site.main'}}>
+          Schedule and Schedule Groups Editor
+          </Typography><Typography variant='body2' sx={{margin: '1px 4px'}}>
+          Create and modify schedules, and organize them into groups
+          </Typography>
 
-          {
-            Object.keys(schedGroups).map(groupname => {
-            return(
-                <DisplaySchedGroup key={`${groupname}ev`}
-                 group={groupname}
-                 groupSched={schedGroups[groupname]}
-                 select={buttonSetGroupName}
-                />
-            )})
-          }
+          <Accordion expanded={showList} onChange={() => setShowList(!showList)} disableGutters elevation={0}>
+            <AccordionSummary sx={{
+              bgcolor: 'site.main', minHeight: 45, maxHeight: 45,
+              padding: '0px 4px 0px 0px', margin: '6px 0px 0px 0px',
+              }} expandIcon={<ExpandMoreIcon />} >
+              <Box width='100%' mx={1} display='flex'
+                justifyContent='space-between' alignItems='baseline'>
+
+                Schedule Groups List ({Object.keys(schedGroups).length})
+                <Button variant='outlined' disabled={(groupName === '_NEW_')}
+                  onClick={(event) => {buttonSetGroupName('_NEW_');event.stopPropagation();}}
+                  data-testid='create-group'>
+
+                  New Group
+                </Button>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails sx={{maxHeight: '9rem', overflow: 'auto' }}>
+              <List disablePadding dense sx={{marginLeft: '1em'}}>
+              {
+                Object.keys(schedGroups).map(groupname => {
+                return(
+                    <ListItem button key={`${groupname}ev`}
+                      onClick={() => {buttonSetGroupName(groupname);}}>
+
+                      {groupname} - {schedGroups[groupname].descr}
+                    </ListItem>
+                )})
+              }
+              </List>
+            </AccordionDetails>
+          </Accordion>
         </Card></Box>
 
       <CreateGroup onComplete={formGroupCallback} open={(groupName === '_NEW_')}/>
