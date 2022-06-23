@@ -330,7 +330,11 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
             class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
           />
         </button>
-        testev
+        <a
+          href="/events?start=testev"
+        >
+          testev
+        </a>
       </div>
     </div>
   </div>
