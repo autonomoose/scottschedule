@@ -216,10 +216,17 @@ const HomePage = () => {
             const [parmGroup, parmSched, ..._parmComp] = startParm.split(';');
             if (parmGroup) {
                 if (parmGroup === '_clock') {
+                    // needs to be validated
                     retIn['clock'] = (parmSched)? parmSched: 'scheduler';
-                } else {
+                } else if (schedGroups[parmGroup]) {
                     retIn['group'] = parmGroup;
-                    retIn['sched'] = (parmSched)? parmSched: 'off';
+
+                    if (parmSched) {
+                        const schedList = schedGroups[parmGroup].schedNames.filter(item => item.schedName === parmSched);
+                        if (schedList.length > 0) {
+                            retIn['sched'] = parmSched;
+                        }
+                    }
                 }
             }
         }
@@ -684,7 +691,7 @@ const HomePage = () => {
         <Accordion disableGutters elevation={0}>
           <AccordionSummary sx={{
             bgcolor: 'site.main', minHeight: 32, maxHeight: 32,
-            padding: '0px 4px', margin: 0,
+            padding: '0px 4px', margin: '0px',
             }} expandIcon={<ExpandMoreIcon />} >
           <Box width='100%' display='flex' alignItems='baseline' justifyContent='space-between'>
               <Typography variant='body2'>
@@ -786,9 +793,9 @@ const HomePage = () => {
         <Accordion expanded={showControls} onChange={() => setShowControls(!showControls)} disableGutters elevation={0}>
         <AccordionSummary sx={{
             bgcolor: 'site.main', minHeight: 32, maxHeight: 32,
-            padding: '0px 4px', margin: 0,
+            padding: '0px 4px', margin: '6px 0px 0px 0px',
           }} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={{padding: '0px', margin: '0px'}}>
         <Box mx={1}>
           {Object.keys(schedButtons).map(item => {
           return (
