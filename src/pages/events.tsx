@@ -22,6 +22,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const EventsPage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const startParm = useQueryParam('start', '');
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
@@ -32,6 +33,9 @@ const EventsPage = () => {
 
     const buttonSetEvName = async (newEvName: string) => {
         setEvName(newEvName);
+        if (newEvName !== '') {
+            setShowList(false);
+            }
     }
 
     const formCallback = async (status: string) => {
@@ -49,15 +53,23 @@ const EventsPage = () => {
                 enqueueSnackbar(`loaded events`,
                   {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 setAllTasks(newTasks);
-                if (evName in newTasks === false) {
-                  setEvName('');
+                let wkEvName = evName;
+                if (wkEvName === '' && startParm) {
+                    wkEvName = startParm;
+                }
+
+                if (wkEvName === '' || wkEvName in newTasks === false) {
+                    setEvName('');
+                } else {
+                    setEvName(wkEvName);
+                    setShowList(false);
                 }
             }
         setHstatus('Ready');
         };
 
         fetchEvs();
-    }, [enqueueSnackbar, vdebug, pgserial] );
+    }, [enqueueSnackbar, vdebug, pgserial, startParm] );
 
     return(
       <Layout><Seo title="Events - Scottschedule" />
@@ -75,17 +87,17 @@ const EventsPage = () => {
 
         <Accordion expanded={showList} onChange={() => setShowList(!showList)} disableGutters elevation={0}>
           <AccordionSummary sx={{
-            bgcolor: 'site.main', minHeight: 32, maxHeight: 32,
-            padding: '0px 4px', margin: '6px 0px 0px 0px',
+            bgcolor: 'site.main', minHeight: 45, maxHeight: 45,
+            padding: '0px 4px 0px 0px', margin: '6px 0px 0px 0px',
             }} expandIcon={<ExpandMoreIcon />} >
             <Box width='100%' mx={1} display='flex' justifyContent='space-between' alignItems='baseline'>
               Events List ({Object.keys(allTasks).length})
-              <Button variant='outlined' disabled={(evName === '_new')} onClick={() => {buttonSetEvName('_new');}} data-testid='create-event'>
+              <Button variant='outlined' disabled={(evName === '_new')} onClick={(event) => {buttonSetEvName('_new');event.stopPropagation();}} data-testid='create-event'>
                 New Event
               </Button>
             </Box>
           </AccordionSummary>
-          <AccordionDetails sx={{maxHeight: 100, overflow: 'auto' }}>
+          <AccordionDetails sx={{maxHeight: '9rem', overflow: 'auto' }}>
             <DisplayEvents tasks={allTasks} select={buttonSetEvName} />
           </AccordionDetails>
         </Accordion>

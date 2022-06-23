@@ -451,7 +451,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
                 >
                   <div
                     aria-expanded="true"
-                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-1l7dji-MuiButtonBase-root-MuiAccordionSummary-root"
+                    class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded css-1ruslfs-MuiButtonBase-root-MuiAccordionSummary-root"
                     role="button"
                     tabindex="0"
                   >
@@ -508,7 +508,7 @@ exports[`EventsPage renders snapshot correctly 1`] = `
                           role="region"
                         >
                           <div
-                            class="MuiAccordionDetails-root css-kn56md-MuiAccordionDetails-root"
+                            class="MuiAccordionDetails-root css-62cn81-MuiAccordionDetails-root"
                           >
                             <ul
                               class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
