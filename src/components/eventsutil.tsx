@@ -52,31 +52,31 @@ export const CreateEvent = (props: CreateEventProps) => {
     };
 
     return(
-      <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Box ml={4} display={(props.open)?'block': 'none'}>
+      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
+        <Box>
           <form key="newEv" onSubmit={handleSubmit(formNewEvSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
               Add New Event
             </Typography>
           </Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             Name <input type="text" size={12} data-testid="nameInput"
              {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
              aria-invalid={errors.name ? "true" : "false"}
             />
           </label></Box>
-          <Box><label> Description
+          <Box px='0.5em'><label> Description
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box  px='0.5em' mt={2} mb={1} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
@@ -238,34 +238,34 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     };
 
     return(
-      <Box display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Box ml={4} display={(props.open)?'block': 'none'}>
+      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box mx={1}>
+        <Box>
           <form key="newEv" onSubmit={handleSubmit(formModEvSubmit)}>
-          <Box display="flex" justifyContent="space-between" alignItems="baseline">
+          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>Modify Event</Typography>
           </Box>
-          <Box display='flex' alignItems='center'>
+          <Box px='0.5em' display='flex' alignItems='center'>
             {evid}
             { (allTasks[evid] && allTasks[evid].schedRules.length === 0) &&
             <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
             }
           </Box>
 
-          <Box><label>
+          <Box px='0.5em'><label>
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
              aria-invalid={errors.descr ? "true" : "false"}
             />
           </label></Box>
 
-          <Box mt={2} display='flex' justifyContent='flex-end'>
+          <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
           </form>
-          <Box mb={1} display='flex' justifyContent='space-around'>
+          <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
             <Button onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
           </Box>

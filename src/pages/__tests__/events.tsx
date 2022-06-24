@@ -60,14 +60,12 @@ const mySetup = async () => {
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    const newEventButton = utils.getByRole('button', {name: /new event/i});
-    const saveNewButton = utils.getByRole('button', {name: /save new/i});
+    const newEventButton = utils.getByTestId('create-event');
     const testButton = utils.getByRole('button', {name: /testevt - testing/i});
 
     return {
         ...utils,
         newEventButton,
-        saveNewButton,
         testButton,
     }
 }
@@ -84,8 +82,8 @@ describe("EventsPage", () => {
   it("handles panel setup correctly", async () => {
     const utils = await mySetup();
 
-    expect(utils.newEventButton).toBeDisabled();
-    expect(utils.getByTestId('newEvent')).toBeVisible();
+    expect(utils.newEventButton).toBeEnabled();
+    expect(utils.getByTestId('newEvent')).not.toBeVisible();
     expect(utils.getByTestId('modifyEvent')).not.toBeVisible();
 
     expect(utils.testButton).toBeVisible();
@@ -94,6 +92,8 @@ describe("EventsPage", () => {
 
   it("handles cancel with callback blank", async () => {
     const utils = await mySetup();
+
+    userEvent.click(utils.newEventButton);
 
     const cancelButton = utils.getByRole('button', {name: /cancel/i});
     userEvent.click(cancelButton);

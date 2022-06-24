@@ -7,7 +7,7 @@ import LayoutPub from "../layoutpub"
 const mytest = <LayoutPub><div data-testid='test'>Test</div></LayoutPub>;
 describe("LayoutPub", () => {
   it("renders snapshot correctly", () => {
-    const {container, getByTestId} = render(mytest);
+    const {container} = render(mytest);
     expect(container.firstChild).toMatchSnapshot();
   });
 });
