@@ -1,9 +1,22 @@
 import React from 'react';
+import type { GatsbyLinkProps } from "gatsby";
 import { Link } from 'gatsby';
 
 import Box from '@mui/material/Box';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Button from '@mui/material/Button';
+import MuiLink from '@mui/material/Link';
+
+// this just gets rid of the warnings
+//  the link component from gatsby should accept refs?
+export type MyLinkProps = Omit<GatsbyLinkProps<unknown>, "ref">;
+
+const GatsbyLink = React.forwardRef<any, MyLinkProps>((props, ref) => (
+    <Link
+      innerRef={ref} activeClassName="active"
+      {...props}
+    />
+),);
 
 // general routines needed by most pages
 //   date formatting, debug support, format header
@@ -20,7 +33,7 @@ const linkDebug = (plink: string, vdebug: string): string => {
 export const LinkD = (props: any) => {
     const { to, vdebug, children, ...pass_props } = props;
     return (
-        <Link to={linkDebug(to, vdebug)} {...pass_props}>{children}</Link>
+        <MuiLink component={GatsbyLink} to={linkDebug(to, vdebug)} {...pass_props}>{children}</MuiLink>
     );
 }
 
@@ -51,7 +64,7 @@ export const PageTopper = (props: PageTopperProps) => {
         <div style={{ float: 'left' }}>
             <Breadcrumbs separator=">" aria-label="Breadcrumb">
             { (pname !== 'Home') &&
-                <LinkD key="home" to='/home' vdebug={vdebug}>Home</LinkD>
+                <LinkD color='secondary' key="home" to='/home' vdebug={vdebug}>Home</LinkD>
             }
 
            { (linksList) && linksList.map(item => (
@@ -81,7 +94,7 @@ export const PageTopper = (props: PageTopperProps) => {
 
         { (helpPage) ?
             <div >
-                <Link to={helpPage}>Help</Link>
+                <MuiLink to={helpPage} color='secondary' component={GatsbyLink}>Help</MuiLink>
             </div> :
             <div >
               &nbsp;

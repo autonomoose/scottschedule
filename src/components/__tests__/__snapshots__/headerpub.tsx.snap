@@ -32,6 +32,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
         />
       </button>
       <a
+        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
         href="/"
       >
         <div
@@ -53,6 +54,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
         class="MuiBox-root css-4q2kn1"
       >
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/home"
           style="margin-right: 1em;"
         >
@@ -139,6 +141,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
         class="MuiList-root MuiList-padding css-h4y409-MuiList-root"
       >
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/"
         >
           <div
@@ -213,6 +216,7 @@ exports[`HeaderPub renders snapshot correctly 1`] = `
           </div>
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/home"
         >
           <div
