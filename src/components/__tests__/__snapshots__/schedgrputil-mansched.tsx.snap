@@ -331,6 +331,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
           />
         </button>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/events?start=testev"
         >
           testev

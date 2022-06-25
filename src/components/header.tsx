@@ -3,6 +3,8 @@ import { StaticImage } from 'gatsby-plugin-image'
 import { navigate } from "gatsby";
 import { Auth } from 'aws-amplify';
 
+import LinkD from './linkd';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -23,8 +25,6 @@ import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import StarIcon from '@mui/icons-material/Star';
-
-import { LinkD } from './pagetopper';
 
 
 interface ListItemMenuBasics {

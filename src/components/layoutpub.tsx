@@ -11,7 +11,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 
 import Header from './header';
-import { LinkD } from './pagetopper';
+import LinkD from './linkd';
 import { darkTheme } from "../themes/dark";
 import { lightTheme } from "../themes/light";
 

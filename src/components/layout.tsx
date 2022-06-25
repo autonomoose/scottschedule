@@ -13,7 +13,7 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 import Header from './header';
-import { LinkD } from './pagetopper';
+import LinkD from './linkd';
 import { darkTheme } from "../themes/dark";
 import { lightTheme } from "../themes/light";
 

@@ -8,9 +8,10 @@
 //  ConnectTask (test -connev)
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'gatsby';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
+
+import LinkD from './linkd';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -423,7 +424,7 @@ export const ManSched = (props: ManSchedProps) => {
                   <Box mx={2} key={task.evTaskId}>
                     <IconButton data-testid={'dconn-'+task.evTaskId} size='small' color='error' onClick={() => formDelEvent({'cmd': task.evTaskId })}>X</IconButton>
 
-                    <Link to={'/events?start='+task.evTaskId}>{task.evTaskId}</Link>
+                    <LinkD to={'/events?start='+task.evTaskId}>{task.evTaskId}</LinkD>
                   </Box>
               ) } )
             }
