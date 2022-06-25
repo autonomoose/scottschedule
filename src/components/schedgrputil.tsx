@@ -64,7 +64,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
 
     return(
       <Box ml={4} display={(props.open)?'block': 'none'}>
-      <Card style={{marginTop: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
+      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box>
           <form key="newGroup" onSubmit={handleSubmit(formNewGroupSubmit)}>
