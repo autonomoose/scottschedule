@@ -24,6 +24,10 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
 import { mutAddEvents, mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
 
@@ -172,8 +176,14 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           </Box>
           <Box px='0.5em' display='flex' alignItems='center'>
             {wkName}
-            { (wkGroup && wkGroup.schedNames.length === 0) &&
-            <IconButton data-testid='delete' size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+            { (wkGroup && wkGroup.schedNames.length === 0) ?
+            <IconButton data-testid='delete' size='small' color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+              <DeleteForeverIcon sx={{height: '1.25rem'}} />
+            </IconButton>
+            :
+            <IconButton data-testid='no-del' size='small'>
+              <DeleteForeverIcon sx={{height: '1.25rem'}} />
+            </IconButton>
             }
           </Box>
 
@@ -353,8 +363,14 @@ export const ManSched = (props: ManSchedProps) => {
             {(schedName && schedName !== '_NEW_') &&
               <Box>
                 {schedName}
-                { (currSchedule && currSchedule.schedTasks.length === 0) &&
-                  <IconButton size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
+                { (currSchedule && currSchedule.schedTasks.length === 0) ?
+                  <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+                    <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                  </IconButton>
+                  :
+                  <IconButton disabled >
+                    <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                  </IconButton>
                 }
 
               </Box>
@@ -421,10 +437,11 @@ export const ManSched = (props: ManSchedProps) => {
             {
               currSchedule.schedTasks.map(task => {
                 return(
-                  <Box mx={2} key={task.evTaskId}>
-                    <IconButton data-testid={'dconn-'+task.evTaskId} size='small' color='error' onClick={() => formDelEvent({'cmd': task.evTaskId })}>X</IconButton>
-
-                    <LinkD to={'/events?start='+task.evTaskId}>{task.evTaskId}</LinkD>
+                  <Box mx={2} key={task.evTaskId} alignItems='center'>
+                    <LinkD to={'/events?start='+task.evTaskId} >{task.evTaskId} <EditIcon sx={{height: '1rem'}} /></LinkD>
+                    <IconButton data-testid={'dconn-'+task.evTaskId} color='warning' onClick={() => formDelEvent({'cmd': task.evTaskId })}>
+                      <RemoveCircleIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
                   </Box>
               ) } )
             }
