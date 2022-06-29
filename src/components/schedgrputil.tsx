@@ -1,11 +1,13 @@
-// sched and groups utilities and components
-// exports default DisplaySchedGroup (test -base)
-//    fetchSchedGroupsDB - full groups and schedules(test -base)
-//  Group components CreateGroup (test -create),
-//                     ModifyGroup (test -modify,-modempty)
-//                     ChoiceSchedGroup (test -choice)
-//  Schedule components ManSched (test -mansched)
-//  ConnectTask (test -connev)
+/* sched and groups utilities and components
+
+ exports default DisplaySchedGroup (test -base)
+    fetchSchedGroupsDB - full groups and schedules(test -base)
+  Group components CreateGroup (test -create),
+                     ModifyGroup (test -modify,-modempty)
+                     ChoiceSchedGroup (test -choice)
+  Schedule components ManSched (test -mansched)
+  ConnectTask (test -connev)
+*/
 
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
@@ -17,6 +19,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -239,7 +242,9 @@ interface FormManSchedParms {
     warn: string,
 };
 
-// manage schedule
+// manage existing schedule - modify, addconnections
+// should change name to useManSched !!!!!
+
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     let wkWords = props.groupSchedName.split('!');
@@ -247,6 +252,15 @@ export const ManSched = (props: ManSchedProps) => {
     const schedName = wkWords.shift() || '';
     const currSchedule = props.gSchedule;
     const [schedEv, setSchedEv] = useState('');
+    const [buttonNameEdit, setButtonNameEdit] = useState(false);
+    const [showCfg, setShowCfg] = useState('none');
+
+    // when form submits or resets
+    const resetTempFormButtons = () => {
+        setButtonNameEdit(false);
+        setShowCfg('none');
+    }
+
     // form states
     const formDefaultVal: FormManSchedParms = {
         schedName: '',
@@ -295,6 +309,7 @@ export const ManSched = (props: ManSchedProps) => {
         }
         const wkEvNames = wkRetNames+"!args";
 
+        resetTempFormButtons();
         try {
             const xdata = {'input': {
                 'etype': 'gs',
@@ -343,88 +358,178 @@ export const ManSched = (props: ManSchedProps) => {
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box>
           <form key="manSched" onSubmit={handleSubmit(formManSchedSubmit)}>
+          {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
               { (schedName && schedName !== '_NEW_')
-                ? <span>Modify Schedules </span>
-                : <span>Add Schedule ({groupName})</span>
+                ? <span>Modify Schedule - {schedName}
+                    { (currSchedule && currSchedule.schedTasks.length === 0) ?
+                      <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                      </IconButton>
+                      :
+                      <IconButton disabled >
+                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                      </IconButton>
+                    }
+
+                  </span>
+                : <span>Add Schedule (group {groupName})</span>
               }
             </Typography>
             <IconButton data-testid='cancel' size='small' onClick={() => funComplete('')}>X</IconButton>
           </Box>
 
-          <Box px='0.5em'  display='flex' justifyContent='space-between'>
-            <Box display={(schedName && schedName !== '_NEW_')?'none':'flex'}><label>
-              Name <input type="text" size={12} data-testid="nameInput"
-               {...register('schedName', { required: true, pattern: /\S+/, maxLength:16 })}
-               aria-invalid={errors.schedName ? "true" : "false"}
-              />
-            </label></Box>
-            {(schedName && schedName !== '_NEW_') &&
-              <Box>
-                {schedName}
-                { (currSchedule && currSchedule.schedTasks.length === 0) ?
-                  <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
-                    <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                  </IconButton>
-                  :
-                  <IconButton disabled >
-                    <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                  </IconButton>
-                }
+          {/* -------------- Main Form Grid ----------------- */}
+          <Box sx={{ flexGrow: 1}}>
 
-              </Box>
-            }
+            <Grid container spacing={2}>
+               {/* -------------- Top Line ----------------- */}
+               <Grid item xs={4}>
+                 {/* -------------- for Add this is a text box ----------------- */}
+                 <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'flex'}>
+                   <TextField label='Name' variant="outlined"
+                     size='small'
+                     {...register('schedName', { required: true,})}
+                     aria-invalid={errors.schedName ? "true" : "false"}
+                   />
+                 </Box>
 
-            <Box><label>
-              Button <input type="text" size={6} data-testid="buttonInput"
-               {...register('buttonName', { maxLength:8 })}
-               aria-invalid={errors.buttonName ? "true" : "false"}
-              />
-            </label></Box>
+                 {/* -------------- for Modify this is a button name textbox OR button ------ */}
+                 <Box px='0.5rem' display={(schedName && schedName !== '_NEW_' && buttonNameEdit)? 'flex': 'none'}>
+                   <TextField label='Button Label' variant="outlined"
+                     size='small'
+                     {...register('buttonName', { maxLength:8 })}
+                     inputProps={{'data-testid': 'buttonInput'}}
+                     aria-invalid={errors.buttonName ? "true" : "false"}
+                   />
+                 </Box>
+                 <Box px='0.5rem' pt={1} display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
+                  <Button size="small" variant="outlined" component={LinkD}
+                    to={`/home?start=${groupName};${schedName}`}>
+                    {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
+                  </Button>
+                  <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                 </Box>
+
+               </Grid>
+               <Grid item xs={8}>
+                 <TextField label='Summary' variant="outlined"
+                   size='small' fullWidth
+                   {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
+                   aria-invalid={errors.descr ? "true" : "false"}
+                   inputProps={{'data-testid': 'descrInput'}}
+                 />
+               </Grid>
+
+               <Grid item xs={4} >
+                 <Box px='0.5rem' border={1} alignSelf='stretch' sx={{bgcolor: 'site.main'}} height='100%'>
+                   <Typography variant='caption'>
+                     Start Settings
+                   </Typography>
+                   <Box display='flex'>
+                     <Typography variant='body2'>
+                       (normal)
+                     </Typography>
+                     <IconButton  size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                   </Box>
+                 </Box>
+               </Grid>
+               <Grid item xs={4}>
+                 <Box border={1} px={1} height='100%'>
+                   <Typography variant='caption'>
+                     Type
+                   </Typography>
+                   <Box display='flex'>
+                   <Typography variant='body2'>
+                     Daily Recurring
+                   </Typography>
+                   <IconButton  size='small' onClick={() => setShowCfg('type')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                   </Box>
+                 </Box>
+               </Grid>
+               <Grid item xs={4}>
+                 <Box border={1} px={1} sx={{bgcolor: 'site.main', }} height='100%'>
+                   <Typography variant='caption'>
+                     Finish Settings
+                   </Typography>
+                   <Box display='flex'>
+                     <Typography variant='body2'>
+                       (normal)
+                     </Typography>
+                     <IconButton  size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                   </Box>
+                 </Box>
+               </Grid>
+
+               <Grid item xs={12} display={(showCfg === 'start')? 'flex': 'none'}>
+                 <Box px='0.5rem' >
+                   <TextField label='Schedule Start' variant="outlined"
+                     size='small' fullWidth
+                      {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
+                     aria-invalid={errors.begins ? "true" : "false"}
+                     inputProps={{'data-testid': 'beginsInput'}}
+                   />
+                 </Box>
+               </Grid>
+               <Grid item xs={12} display={(showCfg === 'type')? 'flex': 'none'}>
+                 <Box px='0.5rem'>
+                   No tomorrow
+                 </Box>
+               </Grid>
+               <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
+                 <Box px='0.5rem'>
+                   <TextField label='Schedule Chain (optional)' variant="outlined"
+                     size='small' fullWidth
+                   />
+                 </Box>
+               </Grid>
+            </Grid>
           </Box>
 
-          <Box px='0.5em'><label>
-            <input type="text" size={30} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-             aria-invalid={errors.descr ? "true" : "false"}
-            />
-          </label></Box>
 
-          <Box px='0.5em'><label>
-            Begins <textarea rows={1} cols={27} data-testid="beginsInput"
-             {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
-             aria-invalid={errors.begins ? "true" : "false"}
-            ></textarea>
-          </label></Box>
+          {/* -------------- Old Form ----------------- */}
 
-          <Box px='0.5em'><label>
+          <Box px='0.5em' border={1}>
+            Defaults
+          </Box>
+          <Box px='0.5em' border={1} display='flex' alignItems='center' justifyContent='space-between'>
+          <Box px='0.5em'>
+            clock
+          </Box>
+
+          <Box px='0.5em'>
+          <Box><label>
             Sound <input type="text" size={10} data-testid="soundInput"
              {...register('sound', { pattern: /\S+/, maxLength:20 })}
              aria-invalid={errors.sound ? "true" : "false"}
             />
           </label></Box>
 
-          <Box px='0.5em'><label>
+          <Box><label>
             Repeat <input type="text" size={2} data-testid="soundRepeatInput"
              {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
              aria-invalid={errors.soundrepeat ? "true" : "false"}
             />
           </label></Box>
 
-          <Box px='0.5em'><label>
+          <Box><label>
             Warn <input type="text" size={10} data-testid="warnInput"
              {...register('warn', { pattern: /\S+/, maxLength:20 })}
              aria-invalid={errors.warn ? "true" : "false"}
             />
           </label></Box>
+          </Box>
+          </Box>
 
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
-            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
+            <Button size="small" variant="outlined" onClick={() => {reset();resetTempFormButtons();}} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
 
           </form>
+
+          {/* -------------- Events ----------------- */}
           { (currSchedule) &&
           <>
             <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
