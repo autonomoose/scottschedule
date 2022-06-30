@@ -19,7 +19,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
             class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
           >
             <span>
-              Modify Schedule - 
+              Schedule 
               testsched
               <button
                 class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeMedium css-78trlr-MuiButtonBase-root-MuiIconButton-root"
@@ -146,79 +146,96 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 </div>
               </div>
               <div
-                class="MuiBox-root css-bfah6"
+                class="MuiBox-root css-eh46gm"
               >
-                <a
-                  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-bwawox-MuiTypography-root-MuiLink-root-MuiButtonBase-root-MuiButton-root"
-                  href="/home?start=testgrp;testsched"
-                  tabindex="0"
+                <div
+                  class="MuiBox-root css-oj9im3"
                 >
-                  test1
                   <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
-                </a>
-                <button
-                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-                  tabindex="0"
-                  type="button"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
-                    data-testid="EditIcon"
-                    focusable="false"
-                    viewBox="0 0 24 24"
+                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
                   >
-                    <path
-                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                     Button 
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-1ljiilp"
+                >
+                  <a
+                    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-bwawox-MuiTypography-root-MuiLink-root-MuiButtonBase-root-MuiButton-root"
+                    href="/home?start=testgrp;testsched"
+                    tabindex="0"
+                  >
+                    test1
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                     />
-                  </svg>
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
-                </button>
+                  </a>
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
+                      data-testid="EditIcon"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                      />
+                    </svg>
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-8 css-vok43g-MuiGrid-root"
             >
               <div
-                aria-invalid="false"
-                class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                class="MuiBox-root css-gms5u9"
               >
-                <label
-                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
-                  data-shrink="false"
-                  for="mui-3"
-                  id="mui-3-label"
-                >
-                  Summary
-                </label>
                 <div
-                  class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                  aria-invalid="false"
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
                 >
-                  <input
-                    aria-invalid="false"
-                    class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
-                    data-testid="descrInput"
-                    id="mui-3"
-                    name="descr"
-                    type="text"
-                    value=""
-                  />
-                  <fieldset
-                    aria-hidden="true"
-                    class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                  <label
+                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="mui-3"
+                    id="mui-3-label"
                   >
-                    <legend
-                      class="css-1ftyaf0"
+                    Summary
+                  </label>
+                  <div
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                  >
+                    <input
+                      aria-invalid="false"
+                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="descrInput"
+                      id="mui-3"
+                      name="descr"
+                      type="text"
+                      value=""
+                    />
+                    <fieldset
+                      aria-hidden="true"
+                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                     >
-                      <span>
-                        Summary
-                      </span>
-                    </legend>
-                  </fieldset>
+                      <legend
+                        class="css-1in441m"
+                      >
+                        <span>
+                          Summary
+                        </span>
+                      </legend>
+                    </fieldset>
+                  </div>
                 </div>
               </div>
             </div>
@@ -226,20 +243,26 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-4 css-gj1fbr-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-g4b7do"
+                class="MuiBox-root css-120b18g"
               >
-                <span
-                  class="MuiTypography-root MuiTypography-caption css-1sn4lm3-MuiTypography-root"
-                >
-                  Start Settings
-                </span>
                 <div
-                  class="MuiBox-root css-k008qs"
+                  class="MuiBox-root css-15duso1"
+                >
+                  <span
+                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                  >
+                     Start Settings 
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-70qvj9"
                 >
                   <p
                     class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
                   >
-                    (normal)
+                    <span>
+                       (normal) 
+                    </span>
                   </p>
                   <button
                     class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
@@ -270,18 +293,24 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               <div
                 class="MuiBox-root css-1s9775"
               >
-                <span
-                  class="MuiTypography-root MuiTypography-caption css-1sn4lm3-MuiTypography-root"
-                >
-                  Type
-                </span>
                 <div
-                  class="MuiBox-root css-k008qs"
+                  class="MuiBox-root css-15duso1"
+                >
+                  <span
+                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                  >
+                     Clock 
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-70qvj9"
                 >
                   <p
                     class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
                   >
-                    Daily Recurring
+                    <span>
+                      (default)
+                    </span>
                   </p>
                   <button
                     class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
@@ -310,20 +339,26 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-4 css-gj1fbr-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-aw7tgd"
+                class="MuiBox-root css-1qdkjox"
               >
-                <span
-                  class="MuiTypography-root MuiTypography-caption css-1sn4lm3-MuiTypography-root"
-                >
-                  Finish Settings
-                </span>
                 <div
-                  class="MuiBox-root css-k008qs"
+                  class="MuiBox-root css-15duso1"
+                >
+                  <span
+                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                  >
+                     Finish Settings 
+                  </span>
+                </div>
+                <div
+                  class="MuiBox-root css-70qvj9"
                 >
                   <p
                     class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
                   >
-                    (normal)
+                    <span>
+                      none
+                    </span>
                   </p>
                   <button
                     class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
@@ -352,7 +387,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-1ozu5o9"
+                class="MuiBox-root css-8ikxjz"
               >
                 <div
                   aria-invalid="false"
@@ -400,17 +435,9 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               <div
                 class="MuiBox-root css-1ozu5o9"
               >
-                No tomorrow
-              </div>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
-            >
-              <div
-                class="MuiBox-root css-1ozu5o9"
-              >
                 <div
-                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                  aria-invalid="false"
+                  class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
                 >
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
@@ -418,15 +445,17 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     for="mui-5"
                     id="mui-5-label"
                   >
-                    Schedule Chain (optional)
+                    Clock
                   </label>
                   <div
-                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
                   >
                     <input
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="clockInput"
                       id="mui-5"
+                      name="clock"
                       type="text"
                       value=""
                     />
@@ -438,7 +467,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                         class="css-1ftyaf0"
                       >
                         <span>
-                          Schedule Chain (optional)
+                          Clock
                         </span>
                       </legend>
                     </fieldset>
@@ -446,65 +475,198 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div
-          class="MuiBox-root css-9uhv75"
-        >
-          Defaults
-        </div>
-        <div
-          class="MuiBox-root css-xabul7"
-        >
-          <div
-            class="MuiBox-root css-o3707h"
-          >
-            clock
-          </div>
-          <div
-            class="MuiBox-root css-o3707h"
-          >
             <div
-              class="MuiBox-root css-0"
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
             >
-              <label>
-                Sound 
-                <input
+              <div
+                class="MuiBox-root css-1ozu5o9"
+              >
+                <div
                   aria-invalid="false"
-                  data-testid="soundInput"
-                  name="sound"
-                  size="10"
-                  type="text"
-                />
-              </label>
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="false"
+                    for="mui-6"
+                    id="mui-6-label"
+                  >
+                    Schedule Chain
+                  </label>
+                  <div
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                  >
+                    <input
+                      aria-invalid="false"
+                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="chainInput"
+                      id="mui-6"
+                      name="chain"
+                      type="text"
+                      value=""
+                    />
+                    <fieldset
+                      aria-hidden="true"
+                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                    >
+                      <legend
+                        class="css-1ftyaf0"
+                      >
+                        <span>
+                          Schedule Chain
+                        </span>
+                      </legend>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
             </div>
             <div
-              class="MuiBox-root css-0"
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1idn90j-MuiGrid-root"
             >
-              <label>
-                Repeat 
-                <input
-                  aria-invalid="false"
-                  data-testid="soundRepeatInput"
-                  name="soundrepeat"
-                  size="2"
-                  type="text"
-                />
-              </label>
+              <div
+                class="MuiBox-root css-vyftfq"
+              >
+                Event Defaults
+              </div>
             </div>
             <div
-              class="MuiBox-root css-0"
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-8 css-vok43g-MuiGrid-root"
             >
-              <label>
-                Warn 
-                <input
+              <div
+                class="MuiBox-root css-1ozu5o9"
+              >
+                <div
                   aria-invalid="false"
-                  data-testid="warnInput"
-                  name="warn"
-                  size="10"
-                  type="text"
-                />
-              </label>
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="mui-7"
+                    id="mui-7-label"
+                  >
+                    Sound
+                  </label>
+                  <div
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                  >
+                    <input
+                      aria-invalid="false"
+                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="soundInput"
+                      id="mui-7"
+                      name="sound"
+                      type="text"
+                      value=""
+                    />
+                    <fieldset
+                      aria-hidden="true"
+                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                    >
+                      <legend
+                        class="css-1in441m"
+                      >
+                        <span>
+                          Sound
+                        </span>
+                      </legend>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-4 css-gj1fbr-MuiGrid-root"
+            >
+              <div
+                class="MuiBox-root css-1ozu5o9"
+              >
+                <div
+                  aria-invalid="false"
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="mui-8"
+                    id="mui-8-label"
+                  >
+                    Sound
+                  </label>
+                  <div
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-md26zr-MuiInputBase-root-MuiOutlinedInput-root"
+                  >
+                    <input
+                      aria-invalid="false"
+                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="soundRepeatInput"
+                      id="mui-8"
+                      name="soundrepeat"
+                      type="text"
+                      value=""
+                    />
+                    <fieldset
+                      aria-hidden="true"
+                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                    >
+                      <legend
+                        class="css-1in441m"
+                      >
+                        <span>
+                          Sound
+                        </span>
+                      </legend>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-8 css-vok43g-MuiGrid-root"
+            >
+              <div
+                class="MuiBox-root css-1ozu5o9"
+              >
+                <div
+                  aria-invalid="false"
+                  class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+                >
+                  <label
+                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                    data-shrink="true"
+                    for="mui-9"
+                    id="mui-9-label"
+                  >
+                    Warning
+                  </label>
+                  <div
+                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+                  >
+                    <input
+                      aria-invalid="false"
+                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                      data-testid="warnInput"
+                      id="mui-9"
+                      name="warn"
+                      type="text"
+                      value=""
+                    />
+                    <fieldset
+                      aria-hidden="true"
+                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                    >
+                      <legend
+                        class="css-1in441m"
+                      >
+                        <span>
+                          Warning
+                        </span>
+                      </legend>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
