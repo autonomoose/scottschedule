@@ -60,7 +60,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
             class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
           >
             <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-4 css-gj1fbr-MuiGrid-root"
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-5 css-k3f0g4-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-cfrdb"
@@ -144,6 +144,20 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     </fieldset>
                   </div>
                 </div>
+                <div
+                  class="MuiBox-root css-11jpsyv"
+                >
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    X
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
               </div>
               <div
                 class="MuiBox-root css-eh46gm"
@@ -160,41 +174,45 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 <div
                   class="MuiBox-root css-1ljiilp"
                 >
-                  <a
-                    class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-bwawox-MuiTypography-root-MuiLink-root-MuiButtonBase-root-MuiButton-root"
-                    href="/home?start=testgrp;testsched"
-                    tabindex="0"
+                  <div
+                    class="MuiBox-root css-k008qs"
                   >
-                    test1
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
-                  </a>
-                  <button
-                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-                    tabindex="0"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
-                      data-testid="EditIcon"
-                      focusable="false"
-                      viewBox="0 0 24 24"
+                    <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-bwawox-MuiTypography-root-MuiLink-root-MuiButtonBase-root-MuiButton-root"
+                      href="/home?start=testgrp;testsched"
+                      tabindex="0"
                     >
-                      <path
-                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                      test1
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
                       />
-                    </svg>
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
-                  </button>
+                    </a>
+                    <button
+                      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                      tabindex="0"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
+                        data-testid="EditIcon"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                        />
+                      </svg>
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
             <div
-              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-8 css-vok43g-MuiGrid-root"
+              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-7 css-uqwprf-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-gms5u9"
@@ -342,7 +360,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 class="MuiBox-root css-1qdkjox"
               >
                 <div
-                  class="MuiBox-root css-15duso1"
+                  class="MuiBox-root css-1bms1rh"
                 >
                   <span
                     class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
@@ -387,7 +405,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-8ikxjz"
+                class="MuiBox-root css-nor5iy"
               >
                 <div
                   aria-invalid="false"
@@ -427,13 +445,27 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     </fieldset>
                   </div>
                 </div>
+                <div
+                  class="MuiBox-root css-11jpsyv"
+                >
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    X
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-1ozu5o9"
+                class="MuiBox-root css-4ap01w"
               >
                 <div
                   aria-invalid="false"
@@ -473,13 +505,27 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     </fieldset>
                   </div>
                 </div>
+                <div
+                  class="MuiBox-root css-11jpsyv"
+                >
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    X
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
               </div>
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
             >
               <div
-                class="MuiBox-root css-1ozu5o9"
+                class="MuiBox-root css-4ap01w"
               >
                 <div
                   aria-invalid="false"
@@ -518,6 +564,20 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       </legend>
                     </fieldset>
                   </div>
+                </div>
+                <div
+                  class="MuiBox-root css-11jpsyv"
+                >
+                  <button
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                    tabindex="0"
+                    type="button"
+                  >
+                    X
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
                 </div>
               </div>
             </div>

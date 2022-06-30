@@ -322,6 +322,7 @@ export const ManSched = (props: ManSchedProps) => {
         }
 
         reset(defaultValues);
+        setShowCfg('');
     }, [schedName, currSchedule] );
 
     const formManSchedSubmit = async (data: FormManSchedParms) => {
@@ -409,7 +410,7 @@ export const ManSched = (props: ManSchedProps) => {
 
             <Grid container spacing={2}>
               {/* -------------- Top Line ----------------- */}
-              <Grid item xs={4}>
+              <Grid item xs={5}>
                 {/* -------------- for Add this is a text box ----------------- */}
                 <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'flex'}>
                   <TextField label='Name' variant="outlined"
@@ -427,6 +428,9 @@ export const ManSched = (props: ManSchedProps) => {
                     inputProps={{'data-testid': 'buttonInput'}}
                     aria-invalid={errors.buttonName ? "true" : "false"}
                   />
+                  <Box mt={-2} ml={-2.5}>
+                    <IconButton  size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
+                  </Box>
                 </Box>
 
                 <Box border={1} mt={.5} ml={.5}>
@@ -437,16 +441,23 @@ export const ManSched = (props: ManSchedProps) => {
                   </Box>
 
                   <Box px='0.5rem' pb={1} alignItems='center' display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
-                   <Button size="small" variant="outlined" component={LinkD}
-                     to={`/home?start=${groupName};${schedName}`}>
-                     {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
-                   </Button>
-                   <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                    {(currSchedule.begins === 'now')
+                    ? <Box display='flex'>
+                        <Button size="small" variant="outlined" component={LinkD}
+                          to={`/home?start=${groupName};${schedName}`}>
+                          {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
+                        </Button>
+                        <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                      </Box>
+                    : <span>
+                        Complex
+                      </span>
+                    }
                   </Box>
                 </Box>
 
               </Grid>
-              <Grid item xs={8}>
+              <Grid item xs={7}>
                 <Box mt={.5} mr={.5}>
                   <TextField label='Summary' variant="outlined"
                     size='small' fullWidth
@@ -503,7 +514,7 @@ export const ManSched = (props: ManSchedProps) => {
               <Grid item xs={4}>
                 <Box border={1} px={1} mr={.5} sx={{bgcolor: 'site.main', }} height='100%'>
                   {/* -------------- caption ------ */}
-                  <Box mt={-1.75} >
+                  <Box mt={-1.75} ml={-.5}>
                     <Typography variant='caption' sx={{bgcolor:'background.paper'}}>
                       &nbsp;Finish&nbsp;Settings&nbsp;
                     </Typography>
@@ -522,37 +533,46 @@ export const ManSched = (props: ManSchedProps) => {
 
               {/* -------------- start - begins input ------ */}
               <Grid item xs={12} display={(showCfg === 'start')? 'flex': 'none'}>
-                <Box px='0.5rem' width='100%' >
+                <Box px='0.5rem' width='100%' display='flex'>
                   <TextField label='Schedule Start' variant="outlined"
                     size='small' fullWidth
                      {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
                     aria-invalid={errors.begins ? "true" : "false"}
                     inputProps={{'data-testid': 'beginsInput'}}
                   />
+                  <Box mt={-2} ml={-2.5}>
+                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  </Box>
                 </Box>
               </Grid>
 
               {/* -------------- clock input ------ */}
               <Grid item xs={12} display={(showCfg === 'clock')? 'flex': 'none'}>
-                <Box px='0.5rem' >
+                <Box px='0.5rem' display='flex'>
                   <TextField label='Clock' variant="outlined"
                     size='small'
                      {...register('clock', { pattern: /\S+/, maxLength:15 })}
                     aria-invalid={errors.clock ? "true" : "false"}
                     inputProps={{'data-testid': 'clockInput'}}
                   />
+                  <Box mt={-2} ml={-2.5}>
+                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  </Box>
                 </Box>
               </Grid>
 
               {/* -------------- finish - chain input ------ */}
               <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
-                <Box px='0.5rem' >
+                <Box px='0.5rem' display='flex'>
                   <TextField label='Schedule Chain' variant="outlined"
                     size='small' fullWidth
                      {...register('chain', { pattern: /\S+/, maxLength:40 })}
                     aria-invalid={errors.chain ? "true" : "false"}
                     inputProps={{'data-testid': 'chainInput'}}
                   />
+                  <Box mt={-2} ml={-2.5}>
+                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  </Box>
                 </Box>
               </Grid>
 
