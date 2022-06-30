@@ -6,21 +6,30 @@ import { Link } from 'gatsby';
 
 import MuiLink from '@mui/material/Link';
 
-export type MyLinkProps = Omit<GatsbyLinkProps<unknown>, "ref">;
+/*
+    Use this to wrap gatsby link in mui components
+    such as button, etc.  link example <LinkD> below
+        component={}
+*/
 
-const GatsbyLink = React.forwardRef<any, MyLinkProps>((props, ref) => (
+export type MyLinkProps = Omit<GatsbyLinkProps<unknown>, "ref">;
+export const GatsbyLink = React.forwardRef<any, MyLinkProps>((props, ref) => (
     <Link
       innerRef={ref} activeClassName="active"
       {...props}
     />
 ),);
 
+/*
+  LinkD demonstrates the embeddable gatsby link and extends it
+    to pass an explicit debug= on the URL when passed as a parm
+    vdebug
+*/
 const linkDebug = (plink: string, vdebug: string): string => {
     if (!vdebug) { return(plink); }
     const sep = (plink.indexOf('?') > 0) ? '&': '?';
     return (plink + sep + 'debug=' + vdebug);
 }
-
 export const LinkD = (props: any) => {
     const { to, vdebug, children, ...pass_props } = props;
     return (

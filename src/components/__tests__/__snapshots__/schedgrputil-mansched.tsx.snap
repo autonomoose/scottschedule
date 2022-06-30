@@ -178,7 +178,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     class="MuiBox-root css-k008qs"
                   >
                     <a
-                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-bwawox-MuiTypography-root-MuiLink-root-MuiButtonBase-root-MuiButton-root"
+                      class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
                       href="/home?start=testgrp;testsched"
                       tabindex="0"
                     >

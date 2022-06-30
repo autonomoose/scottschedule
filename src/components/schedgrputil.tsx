@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
 
-import LinkD from './linkd';
+import {LinkD, GatsbyLink} from './linkd';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -443,7 +443,7 @@ export const ManSched = (props: ManSchedProps) => {
                   <Box px='0.5rem' pb={1} alignItems='center' display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
                     {(currSchedule.begins === 'now')
                     ? <Box display='flex'>
-                        <Button size="small" variant="outlined" component={LinkD}
+                        <Button size="small" variant="outlined" component={GatsbyLink}
                           to={`/home?start=${groupName};${schedName}`}>
                           {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
                         </Button>
