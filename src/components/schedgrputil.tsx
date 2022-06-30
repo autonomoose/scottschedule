@@ -47,6 +47,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
         defaultValues: {
             name: '',
             descr: '',
+            notomorrow: '',
         }
     });
     const { isDirty, errors } = formState;
@@ -54,6 +55,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
     interface FormNewGroupParms {
         name: string,
         descr: string,
+        notomorrow: string,
     };
     const formNewGroupSubmit = async (data: FormNewGroupParms) => {
         try {
@@ -61,6 +63,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
                 'etype': 'gs',
                 'evnames': data.name+"!args",
                 'descr': data.descr,
+                'notomorrow': data.notomorrow,
                 }
             };
             await API.graphql({query: mutAddEvents, variables: xdata});
@@ -121,6 +124,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
     const { register, handleSubmit, reset, formState } = useForm({
         defaultValues: {
             descr: '',
+            notomorrow: '',
         }
     });
     const { isDirty, errors } = formState;
@@ -128,12 +132,14 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
     useEffect(() => {
         const defaultValues = {
             descr: (wkGroup && wkGroup.descr)? wkGroup.descr : '',
+            notomorrow: (wkGroup)? 'true' : '',
         }
         reset(defaultValues);
     }, [wkGroup] );
 
     interface FormModGroupParms {
         descr: string,
+        notomorrow?: string,
     };
     const formModGroupSubmit = async (data: FormModGroupParms) => {
         try {
@@ -197,6 +203,11 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
             />
           </label></Box>
 
+          <Box px='0.5em'>
+            {(wkGroup && wkGroup.notomorrow) &&
+              <span>wkGroup.notomorrow</span>
+            }
+          </Box>
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
@@ -240,6 +251,8 @@ interface FormManSchedParms {
     sound: string,
     soundrepeat: string,
     warn: string,
+    chain: string,
+    clock: string,
 };
 
 // manage existing schedule - modify, addconnections
@@ -270,6 +283,8 @@ export const ManSched = (props: ManSchedProps) => {
         sound: '_default_',
         soundrepeat: '0',
         warn: '_none_',
+        chain: '',
+        clock: '',
     };
     const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
@@ -297,6 +312,12 @@ export const ManSched = (props: ManSchedProps) => {
                     defaultValues['warn'] = currSchedule.warn.sound.name || '_default';
                 }
             }
+            if (currSchedule.chain || currSchedule.chain === '') {
+                defaultValues['chain'] = currSchedule.chain;
+            }
+            if (currSchedule.clock || currSchedule.clock === '') {
+                defaultValues['clock'] = currSchedule.clock;
+            }
         }
 
         reset(defaultValues);
@@ -320,6 +341,7 @@ export const ManSched = (props: ManSchedProps) => {
                 'sound': data.sound,
                 'soundrepeat': data.soundrepeat,
                 'warn': data.warn,
+                'clock': data.clock,
                 }
             };
             await API.graphql({query: mutAddScheds, variables: xdata});
@@ -422,6 +444,7 @@ export const ManSched = (props: ManSchedProps) => {
                  />
                </Grid>
 
+               {/* -------------- start box ------ */}
                <Grid item xs={4} >
                  <Box px='0.5rem' border={1} alignSelf='stretch' sx={{bgcolor: 'site.main'}} height='100%'>
                    <Typography variant='caption'>
@@ -435,6 +458,8 @@ export const ManSched = (props: ManSchedProps) => {
                    </Box>
                  </Box>
                </Grid>
+
+               {/* -------------- type box ------ */}
                <Grid item xs={4}>
                  <Box border={1} px={1} height='100%'>
                    <Typography variant='caption'>
@@ -448,6 +473,8 @@ export const ManSched = (props: ManSchedProps) => {
                    </Box>
                  </Box>
                </Grid>
+
+               {/* -------------- finish box ------ */}
                <Grid item xs={4}>
                  <Box border={1} px={1} sx={{bgcolor: 'site.main', }} height='100%'>
                    <Typography variant='caption'>
@@ -455,7 +482,10 @@ export const ManSched = (props: ManSchedProps) => {
                    </Typography>
                    <Box display='flex'>
                      <Typography variant='body2'>
-                       (normal)
+                       { (currSchedule.chain)
+                       ? <span>chain {currSchedule.chain}</span>
+                       : <span>(default)</span>
+                       }
                      </Typography>
                      <IconButton  size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
                    </Box>
@@ -473,9 +503,6 @@ export const ManSched = (props: ManSchedProps) => {
                  </Box>
                </Grid>
                <Grid item xs={12} display={(showCfg === 'type')? 'flex': 'none'}>
-                 <Box px='0.5rem'>
-                   No tomorrow
-                 </Box>
                </Grid>
                <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
                  <Box px='0.5rem'>
@@ -496,6 +523,10 @@ export const ManSched = (props: ManSchedProps) => {
           <Box px='0.5em' border={1} display='flex' alignItems='center' justifyContent='space-between'>
           <Box px='0.5em'>
             clock
+            { (currSchedule.clock)
+              ? <span>{currSchedule.clock}</span>
+              : <span>(default)</span>
+            }
           </Box>
 
           <Box px='0.5em'>
@@ -737,6 +768,9 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
                 }
                 if (item.chain) {
                     schedArgs.chain = item.chain;
+                }
+                if (item.clock) {
+                    schedArgs.clock = item.clock;
                 }
                 if (item.button || item.button === '') {
                     schedArgs.buttonName = item.button;

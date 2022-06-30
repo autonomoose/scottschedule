@@ -26,6 +26,7 @@ interface iSchedule {
     sound?: iEvsSound,
     warn?: iEvsWarn,
     chain?: string,
+    clock?: string,
 }
 
 interface iSchedGroup {

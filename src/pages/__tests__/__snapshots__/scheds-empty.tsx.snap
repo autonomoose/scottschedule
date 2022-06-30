@@ -682,6 +682,9 @@ exports[`SchedsPage renders no group/scheds correctly 1`] = `
                       </label>
                     </div>
                     <div
+                      class="MuiBox-root css-o3707h"
+                    />
+                    <div
                       class="MuiBox-root css-1m55zth"
                     >
                       <button
