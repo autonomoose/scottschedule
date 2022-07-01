@@ -166,9 +166,11 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   class="MuiBox-root css-oj9im3"
                 >
                   <span
-                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-caption css-bj128m-MuiTypography-root"
                   >
-                     Button 
+                     
+                    Button
+                     
                   </span>
                 </div>
                 <div
@@ -264,12 +266,14 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 class="MuiBox-root css-120b18g"
               >
                 <div
-                  class="MuiBox-root css-15duso1"
+                  class="MuiBox-root css-1bmxsqd"
                 >
                   <span
-                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-caption css-bj128m-MuiTypography-root"
                   >
-                     Start Settings 
+                     
+                    Start Settings
+                     
                   </span>
                 </div>
                 <div
@@ -312,12 +316,14 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 class="MuiBox-root css-1s9775"
               >
                 <div
-                  class="MuiBox-root css-15duso1"
+                  class="MuiBox-root css-1bmxsqd"
                 >
                   <span
-                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-caption css-bj128m-MuiTypography-root"
                   >
-                     Clock 
+                     
+                    Clock
+                     
                   </span>
                 </div>
                 <div
@@ -360,12 +366,14 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 class="MuiBox-root css-1qdkjox"
               >
                 <div
-                  class="MuiBox-root css-1bms1rh"
+                  class="MuiBox-root css-1bmxsqd"
                 >
                   <span
-                    class="MuiTypography-root MuiTypography-caption css-uiatpk-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-caption css-bj128m-MuiTypography-root"
                   >
-                     Finish Settings 
+                     
+                    End Settings
+                     
                   </span>
                 </div>
                 <div
@@ -460,6 +468,9 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   </button>
                 </div>
               </div>
+              <div
+                class="MuiBox-root css-hhy13k"
+              />
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"
@@ -520,6 +531,9 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   </button>
                 </div>
               </div>
+              <div
+                class="MuiBox-root css-hhy13k"
+              />
             </div>
             <div
               class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-1ptpg7m-MuiGrid-root"

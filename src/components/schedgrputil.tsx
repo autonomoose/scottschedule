@@ -12,6 +12,7 @@
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
 
 import {LinkD, GatsbyLink} from './linkd';
 
@@ -325,6 +326,7 @@ export const ManSched = (props: ManSchedProps) => {
         setShowCfg('');
     }, [schedName, currSchedule] );
 
+    // only makes it here on a successful form submit
     const formManSchedSubmit = async (data: FormManSchedParms) => {
         let wkRetNames = groupName+"!"+data.schedName;
         if (schedName !== '' && schedName !== '_NEW_') {
@@ -406,221 +408,224 @@ export const ManSched = (props: ManSchedProps) => {
           </Box>
 
           {/* -------------- Main Form Grid ----------------- */}
-          <Box sx={{ flexGrow: 1}}>
+          <Box sx={{ flexGrow: 1}}><Grid container spacing={2}>
+            {/* -------------- Top Line ----------------- */}
+            <Grid item xs={5}>
+              {/* -------------- for Add this is a text box ----------------- */}
+              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'flex'}>
+                <TextField label='Name' variant="outlined"
+                  size='small'
+                  {...register('schedName', { required: true,})}
+                  aria-invalid={errors.schedName ? "true" : "false"}
+                />
+              </Box>
 
-            <Grid container spacing={2}>
-              {/* -------------- Top Line ----------------- */}
-              <Grid item xs={5}>
-                {/* -------------- for Add this is a text box ----------------- */}
-                <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'flex'}>
-                  <TextField label='Name' variant="outlined"
-                    size='small'
-                    {...register('schedName', { required: true,})}
-                    aria-invalid={errors.schedName ? "true" : "false"}
-                  />
+              {/* -------------- for Modify this is a button name textbox OR button ------ */}
+              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_' && buttonNameEdit)? 'flex': 'none'}>
+                <TextField label='Button Label' variant="outlined"
+                  size='small'
+                  {...register('buttonName', { maxLength:8 })}
+                  inputProps={{'data-testid': 'buttonInput'}}
+                  aria-invalid={errors.buttonName ? "true" : "false"}
+                />
+                <Box mt={-2} ml={-2.5}>
+                  <IconButton  size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
                 </Box>
+              </Box>
 
-                {/* -------------- for Modify this is a button name textbox OR button ------ */}
-                <Box px='0.5rem' display={(schedName && schedName !== '_NEW_' && buttonNameEdit)? 'flex': 'none'}>
-                  <TextField label='Button Label' variant="outlined"
-                    size='small'
-                    {...register('buttonName', { maxLength:8 })}
-                    inputProps={{'data-testid': 'buttonInput'}}
-                    aria-invalid={errors.buttonName ? "true" : "false"}
-                  />
-                  <Box mt={-2} ml={-2.5}>
-                    <IconButton  size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
-                  </Box>
+              <Box border={1} mt={.5} ml={.5}>
+                <CaptionBox caption='Button' />
+
+                <Box px='0.5rem' pb={1} alignItems='center' display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
+                  {(currSchedule.begins === 'now')
+                  ? <Box display='flex'>
+                      <Button size="small" variant="outlined" component={GatsbyLink}
+                        to={`/home?start=${groupName};${schedName}`}>
+                        {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
+                      </Button>
+                      <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                    </Box>
+                  : <span>
+                      Complex
+                    </span>
+                  }
                 </Box>
-
-                <Box border={1} mt={.5} ml={.5}>
-                  <Box px='0.5rem' mt={-1.75} >
-                    <Typography variant='caption' sx={{bgcolor:'background.paper'}} >
-                      &nbsp;Button&nbsp;
-                    </Typography>
-                  </Box>
-
-                  <Box px='0.5rem' pb={1} alignItems='center' display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
-                    {(currSchedule.begins === 'now')
-                    ? <Box display='flex'>
-                        <Button size="small" variant="outlined" component={GatsbyLink}
-                          to={`/home?start=${groupName};${schedName}`}>
-                          {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
-                        </Button>
-                        <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
-                      </Box>
-                    : <span>
-                        Complex
-                      </span>
-                    }
-                  </Box>
-                </Box>
-
-              </Grid>
-              <Grid item xs={7}>
-                <Box mt={.5} mr={.5}>
-                  <TextField label='Summary' variant="outlined"
-                    size='small' fullWidth
-                    {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-                    aria-invalid={errors.descr ? "true" : "false"}
-                    inputProps={{'data-testid': 'descrInput'}}
-                    InputLabelProps={{shrink: true}}
-                  />
-                </Box>
-              </Grid>
-
-              {/* -------------- start box ------ */}
-              <Grid item xs={4} >
-                <Box px='0.5rem' ml={.5} border={1} alignSelf='stretch' sx={{bgcolor: 'site.main'}} height='100%'>
-                  {/* -------------- caption ------ */}
-                  <Box mt={-1.75} >
-                    <Typography variant='caption' sx={{bgcolor:'background.paper'}}>
-                      &nbsp;Start&nbsp;Settings&nbsp;
-                    </Typography>
-                  </Box>
-
-                  {/* -------------- start summary and edit ------ */}
-                  <Box display='flex' alignItems='center'>
-                    <Typography variant='body2'>
-                      {(currSchedule.begins === 'now')? <span> (normal) </span>: <span> (complex) </span> }
-                    </Typography>
-                    <IconButton  size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- clock box ------ */}
-              <Grid item xs={4}>
-                <Box border={1} px={1} height='100%'>
-                  {/* -------------- caption ------ */}
-                  <Box mt={-1.75} >
-                    <Typography variant='caption' sx={{bgcolor:'background.paper'}}>
-                      &nbsp;Clock&nbsp;
-                    </Typography>
-                  </Box>
-                  <Box display='flex' alignItems='center'>
-                    <Typography variant='body2'>
-                      { (currSchedule.clock)
-                        ? <span>{currSchedule.clock}</span>
-                        : <span>(default)</span>
-                      }
-                    </Typography>
-                    <IconButton  size='small' onClick={() => setShowCfg('clock')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- finish box ------ */}
-              <Grid item xs={4}>
-                <Box border={1} px={1} mr={.5} sx={{bgcolor: 'site.main', }} height='100%'>
-                  {/* -------------- caption ------ */}
-                  <Box mt={-1.75} ml={-.5}>
-                    <Typography variant='caption' sx={{bgcolor:'background.paper'}}>
-                      &nbsp;Finish&nbsp;Settings&nbsp;
-                    </Typography>
-                  </Box>
-                  <Box display='flex' alignItems='center'>
-                    <Typography variant='body2'>
-                      { (currSchedule.chain)
-                      ? <span>chained</span>
-                      : <span>none</span>
-                      }
-                    </Typography>
-                    <IconButton  size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- start - begins input ------ */}
-              <Grid item xs={12} display={(showCfg === 'start')? 'flex': 'none'}>
-                <Box px='0.5rem' width='100%' display='flex'>
-                  <TextField label='Schedule Start' variant="outlined"
-                    size='small' fullWidth
-                     {...register('begins', { required: true, pattern: /\S+/, maxLength:50 })}
-                    aria-invalid={errors.begins ? "true" : "false"}
-                    inputProps={{'data-testid': 'beginsInput'}}
-                  />
-                  <Box mt={-2} ml={-2.5}>
-                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- clock input ------ */}
-              <Grid item xs={12} display={(showCfg === 'clock')? 'flex': 'none'}>
-                <Box px='0.5rem' display='flex'>
-                  <TextField label='Clock' variant="outlined"
-                    size='small'
-                     {...register('clock', { pattern: /\S+/, maxLength:15 })}
-                    aria-invalid={errors.clock ? "true" : "false"}
-                    inputProps={{'data-testid': 'clockInput'}}
-                  />
-                  <Box mt={-2} ml={-2.5}>
-                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- finish - chain input ------ */}
-              <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
-                <Box px='0.5rem' display='flex'>
-                  <TextField label='Schedule Chain' variant="outlined"
-                    size='small' fullWidth
-                     {...register('chain', { pattern: /\S+/, maxLength:40 })}
-                    aria-invalid={errors.chain ? "true" : "false"}
-                    inputProps={{'data-testid': 'chainInput'}}
-                  />
-                  <Box mt={-2} ml={-2.5}>
-                    <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* -------------- default title ------ */}
-              <Grid item xs={12}>
-                <Box px='0.5em' width='100%' sx={{textAlign: 'center', bgcolor:'site.main'}}>
-                  Event Defaults
-                </Box>
-              </Grid>
-
-              {/* -------------- sound ------ */}
-              <Grid item xs={8} >
-                <Box px='0.5rem' >
-                  <TextField label='Sound' variant="outlined"
-                    size='small' fullWidth
-                    {...register('sound', { pattern: /\S+/, maxLength:20 })}
-                    aria-invalid={errors.sound ? "true" : "false"}
-                    inputProps={{'data-testid': 'soundInput'}}
-                  />
-                </Box>
-              </Grid>
-
-              {/* -------------- sound repeat ------ */}
-              <Grid item xs={4} >
-                <Box px='0.5rem' >
-                  <TextField label='Sound' variant="outlined"
-                    size='small' fullWidth
-                    {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
-                    aria-invalid={errors.soundrepeat ? "true" : "false"}
-                    inputProps={{'data-testid': 'soundRepeatInput'}}
-                  />
-                </Box>
-              </Grid>
-
-              {/* -------------- warn ------ */}
-              <Grid item xs={8} >
-                <Box px='0.5rem' >
-                  <TextField label='Warning' variant="outlined"
-                    size='small'
-                    {...register('warn', { pattern: /\S+/, maxLength:20 })}
-                    aria-invalid={errors.warn ? "true" : "false"}
-                    inputProps={{'data-testid': 'warnInput'}}
-                  />
-                </Box>
-              </Grid>
+              </Box>
 
             </Grid>
-          </Box>
+            <Grid item xs={7}>
+              <Box mt={.5} mr={.5}>
+                <TextField label='Summary' size='small' fullWidth
+                  {...register('descr', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9 \-]+$/, message: 'no special characters'},
+                    maxLength: {value: 20, message: 'limited to 20 characters'},
+                  })}
+                  aria-invalid={errors.descr ? "true" : "false"}
+                  color={errors.descr ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'descrInput'}}
+                  InputLabelProps={{shrink: true}}
+                />
+                <ErrorMessage errors={errors} name="descr" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- start box ------ */}
+            <Grid item xs={4} >
+              <Box px='0.5rem' ml={.5} border={1} alignSelf='stretch' sx={{bgcolor: 'site.main'}} height='100%'>
+                {/* -------------- start summary and edit ------ */}
+                <CaptionBox caption='Start&nbsp;Settings' xpad='0' />
+                <Box display='flex' alignItems='center'>
+                  <Typography variant='body2'>
+                    {(currSchedule.begins === 'now')? <span> (normal) </span>: <span> (complex) </span> }
+                  </Typography>
+                  <IconButton  size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* -------------- clock box ------ */}
+            <Grid item xs={4}><Box border={1} px={1} height='100%'>
+              <CaptionBox caption='Clock' xpad='0' />
+              <Box display='flex' alignItems='center'>
+                <Typography variant='body2'>
+                  { (currSchedule.clock)
+                    ? <span>{currSchedule.clock}</span>
+                    : <span>(default)</span>
+                  }
+                </Typography>
+                <IconButton  size='small' onClick={() => setShowCfg('clock')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+              </Box>
+            </Box></Grid>
+
+            {/* -------------- finish box ------ */}
+            <Grid item xs={4}><Box border={1} px={1} mr={.5} sx={{bgcolor: 'site.main', }} height='100%'>
+              <CaptionBox caption='End&nbsp;Settings' xpad='0' />
+              <Box display='flex' alignItems='center'>
+                <Typography variant='body2'>
+                  { (currSchedule.chain)
+                  ? <span>chained</span>
+                  : <span>none</span>
+                  }
+                </Typography>
+                <IconButton  size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+              </Box>
+            </Box></Grid>
+
+            {/* -------------- start - begins input ------ */}
+            <Grid item xs={12} display={(showCfg === 'start')? 'block': 'none'}>
+              <Box px='0.5rem' width='100%' display='flex'>
+                <TextField label='Schedule Start' size='small' fullWidth
+                   {...register('begins', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9\:\,]+$/, message: 'alphanumeric, colons, and commas only'},
+                    maxLength: {value: 50, message: 'limited to 50 characters'},
+                  })}
+                  aria-invalid={errors.begins ? "true" : "false"}
+                  color={errors.begins ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'beginsInput'}}
+                />
+                <Box mt={-2} ml={-2.5}>
+                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                </Box>
+              </Box>
+              <Box px={1.5}>
+                <ErrorMessage errors={errors} name="begins" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- clock input ------ */}
+            <Grid item xs={12} display={(showCfg === 'clock')? 'block': 'none'}>
+              <Box px='0.5rem' display='flex'>
+                <TextField label='Clock' size='small'
+                  {...register('clock', {
+                    pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special characters'},
+                    maxLength: {value: 10, message: 'too long - limited to 10 characters'},
+                  })}
+                  aria-invalid={errors.clock ? "true" : "false"}
+                  color={errors.clock ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'clockInput'}}
+                />
+                <Box mt={-2} ml={-2.5}>
+                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                </Box>
+              </Box>
+              <Box px={1.5}>
+                <ErrorMessage errors={errors} name="clock" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- finish - chain input ------ */}
+            <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
+              <Box px='0.5rem' display='flex'>
+                <TextField label='Schedule Chain' variant="outlined" size='small' fullWidth
+                  {...register('chain', {
+                    pattern: {value: /^[a-zA-Z0-9\+]+$/, message: 'no special characters'},
+                    maxLength: {value: 40, message: 'limited to 40 characters'},
+                  })}
+                  aria-invalid={errors.chain ? "true" : "false"}
+                  color={errors.chain ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'chainInput'}}
+                />
+                <Box mt={-2} ml={-2.5}>
+                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                </Box>
+                <ErrorMessage errors={errors} name="chain" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- default title ------ */}
+            <Grid item xs={12}>
+              <Box px='0.5em' width='100%' sx={{textAlign: 'center', bgcolor:'site.main'}}>
+                Event Defaults
+              </Box>
+            </Grid>
+
+            {/* -------------- sound ------ */}
+            <Grid item xs={8} >
+              <Box px='0.5rem' >
+                <TextField label='Sound' variant="outlined"
+                  size='small' fullWidth
+                  {...register('sound', { pattern: /\S+/, maxLength:20 })}
+                  aria-invalid={errors.sound ? "true" : "false"}
+                  inputProps={{'data-testid': 'soundInput'}}
+                />
+              </Box>
+            </Grid>
+
+            {/* -------------- sound repeat ------ */}
+            <Grid item xs={4} >
+              <Box px='0.5rem' >
+                <TextField label='Sound' variant="outlined"
+                  size='small' fullWidth
+                  {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
+                  aria-invalid={errors.soundrepeat ? "true" : "false"}
+                  inputProps={{'data-testid': 'soundRepeatInput'}}
+                />
+              </Box>
+            </Grid>
+
+            {/* -------------- warn ------ */}
+            <Grid item xs={8} >
+              <Box px='0.5rem' >
+                <TextField label='Warning' variant="outlined"
+                  size='small'
+                  {...register('warn', { pattern: /\S+/, maxLength:20 })}
+                  aria-invalid={errors.warn ? "true" : "false"}
+                  inputProps={{'data-testid': 'warnInput'}}
+                />
+              </Box>
+            </Grid>
+
+          </Grid></Box>
 
 
           {/* -------------- Form Save/Reset Buttons ----------------- */}
@@ -874,4 +879,23 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     }
 };
 
+
+interface iCaptionBox {
+    caption: string,
+    color?: string,
+    xpad?: string, // rem
+}
+// quick caption box
+const CaptionBox = (props: iCaptionBox) => {
+    const { caption, color, xpad } = props;
+    const wkColor = color || 'inherit';
+    const wkXpad = xpad || '0.5rem';
+    return (
+      <Box px={wkXpad} mt={-1.75}>
+        <Typography variant='caption' color={wkColor}
+          sx={{ bgcolor:'background.paper', position: 'relative', zIndex: '2'}} >
+          &nbsp;{caption}&nbsp;
+        </Typography>
+      </Box>
+)}
 export default DisplaySchedGroup
