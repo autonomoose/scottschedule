@@ -32,6 +32,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
         />
       </button>
       <a
+        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
         href="/home"
       >
         <div
@@ -50,11 +51,12 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
         </div>
       </a>
       <div
-        class="MuiBox-root css-1r3535z"
+        class="MuiBox-root css-yukqif"
       >
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/usermaint"
-          style="margin-right: 1em;"
+          style="margin-right: 1rem;"
         >
           <p
             class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -144,6 +146,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
         class="MuiList-root MuiList-padding css-h4y409-MuiList-root"
       >
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/home"
         >
           <div
@@ -181,6 +184,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
           </div>
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/usermaint"
         >
           <div
@@ -218,6 +222,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
           </div>
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/scheds"
         >
           <div
@@ -255,6 +260,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
           </div>
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/events"
         >
           <div
@@ -292,6 +298,7 @@ exports[`Header renders signed-in snapshot correctly 1`] = `
           </div>
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
           href="/help"
         >
           <div

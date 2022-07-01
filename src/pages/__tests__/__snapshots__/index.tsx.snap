@@ -35,6 +35,7 @@ exports[`IndexPage renders snapshot correctly 1`] = `
           />
         </button>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
           href="/"
         >
           <div
@@ -56,6 +57,7 @@ exports[`IndexPage renders snapshot correctly 1`] = `
           class="MuiBox-root css-4q2kn1"
         >
           <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
             href="/home"
             style="margin-right: 1em;"
           >
@@ -142,6 +144,7 @@ exports[`IndexPage renders snapshot correctly 1`] = `
           class="MuiList-root MuiList-padding css-h4y409-MuiList-root"
         >
           <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
             href="/"
           >
             <div
@@ -216,6 +219,7 @@ exports[`IndexPage renders snapshot correctly 1`] = `
             </div>
           </a>
           <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
             href="/home"
           >
             <div
@@ -513,7 +517,8 @@ exports[`IndexPage renders snapshot correctly 1`] = `
         class="MuiBox-root css-1bnxa12"
       >
         <a
-          href="/home"
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
+          href="/"
         >
           <svg
             aria-hidden="true"
@@ -529,6 +534,7 @@ exports[`IndexPage renders snapshot correctly 1`] = `
            Home
         </a>
         <a
+          color="secondary"
           href="https://www.wernerdigital.com/about"
         >
           <svg

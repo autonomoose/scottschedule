@@ -31,7 +31,6 @@ export const listEventsFull = `query queryEvents {
 
 // list of fields for groups and schedules
 export interface iSchedGroupListDB {
-      notomorrow?: string,
       descr?: string,
       begins: string,
       button?: string,
@@ -40,6 +39,8 @@ export interface iSchedGroupListDB {
       soundrepeat?: string,
       warn?: string,
       chain?: string,
+      notomorrow?: string,
+      clock?: string,
 }
 export const listSchedGroupsFull = `query queryEvents {
   listSchedGroups {
@@ -53,6 +54,7 @@ export const listSchedGroupsFull = `query queryEvents {
       warn
       chain
       notomorrow
+      clock
     }
     nextToken
 
