@@ -486,9 +486,9 @@ export const ManSched = (props: ManSchedProps) => {
               </Box>
             </Grid>
 
-            {/* -------------- clock box ------ */}
+            {/* -------------- defaults box ------ */}
             <Grid item xs={4}><Box border={1} px={1} height='100%'>
-              <CaptionBox caption='Clock' xpad='0' />
+              <CaptionBox caption='Defaults' xpad='0' />
               <Box display='flex' alignItems='center'>
                 <Typography variant='body2'>
                   { (currSchedule.clock)
@@ -496,7 +496,7 @@ export const ManSched = (props: ManSchedProps) => {
                     : <span>(default)</span>
                   }
                 </Typography>
-                <IconButton  size='small' onClick={() => setShowCfg('clock')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                <IconButton  size='small' onClick={() => setShowCfg('defaults')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
               </Box>
             </Box></Grid>
 
@@ -538,28 +538,98 @@ export const ManSched = (props: ManSchedProps) => {
               </Box>
             </Grid>
 
-            {/* -------------- clock input ------ */}
-            <Grid item xs={12} display={(showCfg === 'clock')? 'block': 'none'}>
-              <Box px='0.5rem' display='flex'>
-                <TextField label='Clock' size='small'
-                  {...register('clock', {
-                    pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special characters'},
-                    maxLength: {value: 10, message: 'too long - limited to 10 characters'},
-                  })}
-                  aria-invalid={errors.clock ? "true" : "false"}
-                  color={errors.clock ? 'error' : 'primary'}
-                  inputProps={{'data-testid': 'clockInput'}}
-                />
-                <Box mt={-2} ml={-2.5}>
+            {/* -------------- defaults input ------ */}
+            <Box mt={1} ml={5} mr={3} display={(showCfg === 'defaults')? 'block': 'none'} border={1} width='100%'>
+              <Box pl={1} mb={1} sx={{bgcolor: 'site.main'}} display="flex" justifyContent="space-between" alignItems="baseline" >
+                <Typography variant='h6'>
+                  Defaults
+                </Typography>
                   <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+              </Box>
+              <Grid item xs={12}>
+                <Box px='0.5rem' display='flex'>
+                  <TextField label='Clock' size='small'
+                    {...register('clock', {
+                      pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special chars'},
+                      maxLength: {value: 10, message: 'too long - limited to 10 characters'},
+                    })}
+                    aria-invalid={errors.clock ? "true" : "false"}
+                    color={errors.clock ? 'error' : 'primary'}
+                    inputProps={{'data-testid': 'clockInput'}}
+                    InputLabelProps={{shrink: true}}
+                  />
                 </Box>
-              </Box>
-              <Box px={1.5}>
-                <ErrorMessage errors={errors} name="clock" render={({ message }) =>
-                  <CaptionBox caption={message} color='error'/>
-                } />
-              </Box>
-            </Grid>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="clock" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
+                </Box>
+              </Grid>
+
+
+              <Grid item xs={12} display='flex' my={2}>
+                {/* -------------- sound ------ */}
+                <Grid item xs={6} >
+                  <Box px='0.5rem' >
+                    <TextField label='Sound' size='small' fullWidth
+                      {...register('sound', {
+                        pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
+                        maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                      })}
+                      aria-invalid={errors.sound ? "true" : "false"}
+                      color={errors.sound ? 'error' : 'primary'}
+                      inputProps={{'data-testid': 'soundInput'}}
+                    />
+                  </Box>
+                  <Box px={1.5}>
+                    <ErrorMessage errors={errors} name="sound" render={({ message }) =>
+                      <CaptionBox caption={message} color='error'/>
+                    } />
+                  </Box>
+                </Grid>
+
+                {/* -------------- sound repeat ------ */}
+                <Grid item xs={3} >
+                  <Box px='0.5rem' >
+                    <TextField label='Repeat' size='small' fullWidth
+                      {...register('soundrepeat', {
+                        pattern: {value: /^[0-9]+$/, message: 'numeric only'},
+                        maxLength: {value: 2, message: 'less than 100'},
+                      })}
+                      aria-invalid={errors.soundrepeat ? "true" : "false"}
+                      inputProps={{'data-testid': 'soundRepeatInput'}}
+                    />
+                  </Box>
+                  <Box px={1.5}>
+                    <ErrorMessage errors={errors} name="soundrepeat" render={({ message }) =>
+                      <CaptionBox caption={message} color='error'/>
+                    } />
+                  </Box>
+                </Grid>
+              </Grid>
+
+              {/* -------------- warn ------ */}
+              <Grid item xs={12} display='flex' my={2}>
+                <Grid item xs={8} >
+                  <Box px='0.5rem' >
+                    <TextField label='Warning' size='small'
+                      {...register('warn', {
+                        pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
+                        maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                      })}
+                      aria-invalid={errors.warn ? "true" : "false"}
+                      color={errors.warn ? 'error' : 'primary'}
+                      inputProps={{'data-testid': 'warnInput'}}
+                    />
+                  </Box>
+                  <Box px={1.5}>
+                    <ErrorMessage errors={errors} name="warn" render={({ message }) =>
+                      <CaptionBox caption={message} color='error'/>
+                    } />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
 
             {/* -------------- finish - chain input ------ */}
             <Grid item xs={12} display={(showCfg === 'end')? 'flex': 'none'}>
@@ -582,51 +652,7 @@ export const ManSched = (props: ManSchedProps) => {
               </Box>
             </Grid>
 
-            {/* -------------- default title ------ */}
-            <Grid item xs={12}>
-              <Box px='0.5em' width='100%' sx={{textAlign: 'center', bgcolor:'site.main'}}>
-                Event Defaults
-              </Box>
-            </Grid>
-
-            {/* -------------- sound ------ */}
-            <Grid item xs={8} >
-              <Box px='0.5rem' >
-                <TextField label='Sound' variant="outlined"
-                  size='small' fullWidth
-                  {...register('sound', { pattern: /\S+/, maxLength:20 })}
-                  aria-invalid={errors.sound ? "true" : "false"}
-                  inputProps={{'data-testid': 'soundInput'}}
-                />
-              </Box>
-            </Grid>
-
-            {/* -------------- sound repeat ------ */}
-            <Grid item xs={4} >
-              <Box px='0.5rem' >
-                <TextField label='Sound' variant="outlined"
-                  size='small' fullWidth
-                  {...register('soundrepeat', { pattern: /\S+/, maxLength:2 })}
-                  aria-invalid={errors.soundrepeat ? "true" : "false"}
-                  inputProps={{'data-testid': 'soundRepeatInput'}}
-                />
-              </Box>
-            </Grid>
-
-            {/* -------------- warn ------ */}
-            <Grid item xs={8} >
-              <Box px='0.5rem' >
-                <TextField label='Warning' variant="outlined"
-                  size='small'
-                  {...register('warn', { pattern: /\S+/, maxLength:20 })}
-                  aria-invalid={errors.warn ? "true" : "false"}
-                  inputProps={{'data-testid': 'warnInput'}}
-                />
-              </Box>
-            </Grid>
-
           </Grid></Box>
-
 
           {/* -------------- Form Save/Reset Buttons ----------------- */}
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
