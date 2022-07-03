@@ -58,15 +58,30 @@ const IndexPage = () => {
           </Box>
         </Box>
         <Box display="flex" alignItems="flex-start" justifyContent="center">
-        <ul>
-          <Typography variant='h6'>
-            Current Version: 1.3.0-beta
-          </Typography>
-          <Box ml={2}>
-            <li>06/12/22 - flexible dark mode, bug fixes</li>
-            <li>04/27/22 - patches, minor features logging, countdown</li>
+          <Box ml={2} sx={{maxHeight: 100, overflow: 'auto' }}>
+          <ul>
+            <li>
+              <Typography variant='h6'>
+                Current Version: 1.3.1-beta
+              </Typography>
+            </li>
+            <li>1.3.1 07/04/22 - ui redesign for config tools, bug fixes</li>
+            <li>1.3.0 06/12/22 - flexible dark mode, bug fixes</li>
+            <li>1.2.5 04/27/22 - patches, minor features logging, countdown</li>
+            <li>1.2.4 04/25/22 - beta 2 release</li>
+            <li>1.2.3 04/11/22 - maint patch</li>
+            <li>1.2.2 04/06/22 - schedule config (multi-tenant)</li>
+            <li>1.2.1 03/23/22 - unit testing</li>
+            <li>1.2.0 03/07/22 - new chain, setup for ui config tools</li>
+            <li>1.1.2 02/14/22 - silence patches, refactor and bug fixes</li>
+            <li>1.1.1 02/10/22 - maint patch</li>
+            <li>1.1.0 02/09/22 - bug fixes</li>
+            <li>1.0.0 01/27/22 - beta release (proto 2.1)</li>
+            <li>0.3.0 01/20/22 - proto 2 - long async tone handling</li>
+            <li>0.2.0 01/06/22 - proto 1 - timer flexibility</li>
+            <li>0.1.0 12/30/22 - prototype demonstration</li>
+          </ul>
           </Box>
-        </ul>
         </Box>
         <Box display="flex" justifyContent="center">
         <Typography variant='h6'>
