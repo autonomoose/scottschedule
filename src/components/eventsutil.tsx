@@ -184,13 +184,14 @@ export const CreateRule = (props: CreateRuleProps) => {
    modify events
 */
 interface ModifyEventProps {
-  evid: string,
-  tasks: iTask,
-  onComplete: (status: string) => void,
-  open: boolean,
+    evid: string,
+    tasks: iTask,
+    onComplete: (status: string) => void,
+    open: boolean,
 }
 interface FormModifyEventParms {
-  descr: string,
+    evName: string,
+    descr: string,
 }
 export const ModifyEvent = (props: ModifyEventProps) => {
     const allTasks = props.tasks;
@@ -200,6 +201,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
 
     // form states
     const formDefaultVal: FormModifyEventParms = {
+        evName: '',
         descr: '',
     };
     const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
@@ -208,24 +210,29 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     /* -------- reset form defaults to any current values ------ */
     useEffect(() => {
         let defaultValues: FormModifyEventParms = formDefaultVal;
-
-        if (allTasks[evid]?.descr) {
-            defaultValues['descr'] = allTasks[evid].descr;
+        if ( evid && evid !== '_new' ) {
+            // modify default vals for existing event
+            defaultValues['evName'] = evid;
+            if (allTasks[evid]?.descr) {
+                defaultValues['descr'] = allTasks[evid].descr;
+            }
         }
 
         reset(defaultValues);
     }, [allTasks, evid] );
 
+    // only makes it here on a successful form submit
+    // map the form data onto the graphql input
     const formModEvSubmit = async (data: FormModifyEventParms) => {
         try {
             const xdata = {'input': {
                 'etype': 'ev',
-                'evnames': evid+"!args",
+                'evnames': data.evName+"!args",
                 'descr': data.descr,
                 }
             };
             await API.graphql({query: mutAddEvents, variables: xdata});
-            props.onComplete(evid);
+            props.onComplete(data.evName);
         } catch (result) {
             console.warn('failed update', result);
         }
@@ -261,15 +268,20 @@ export const ModifyEvent = (props: ModifyEventProps) => {
           {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
-              Event {evid}
-              { (allTasks[evid] && allTasks[evid].schedRules.length === 0) ?
-                <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>
-                  <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                </IconButton>
+              { (evid && evid !== '_new') ?
+                <span>Event {evid}
+                  { (allTasks[evid] && allTasks[evid].schedRules.length === 0) ?
+                    <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>
+                      <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
+                    :
+                    <IconButton disabled data-testid={'del-'+evid} size='small'><DeleteForeverIcon sx={{height: '1.25rem'}} /></IconButton>
+                  }
+                </span>
                 :
-                <IconButton disabled data-testid={'del-'+evid} size='small'>
-                  <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                </IconButton>
+                <span>
+                  Add New Event
+                </span>
               }
             </Typography>
             <IconButton data-testid='cancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
@@ -278,7 +290,28 @@ export const ModifyEvent = (props: ModifyEventProps) => {
           {/* -------------- Main Form Grid ----------------- */}
           <Box sx={{ flexGrow: 1}}><Grid container spacing={2}>
             {/* -------------- Top Line ----------------- */}
-            <Grid item xs={8}>
+            {/* -------------- for Add this is a text box ----------------- */}
+            <Grid item xs={5}>
+              <Box px='0.5rem' mt={.5} display={(evid && evid !== '_new')?'none':'block'}>
+                <TextField label='Name' size='small'
+                  {...register('evName', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9]+$/, message: 'alphanumeric only'},
+                    maxLength: {value: 12, message: 'limited to 12 characters'},
+                  })}
+                  color={errors.evName ? 'error' : 'primary'}
+                  aria-invalid={errors.evName ? "true" : "false"}
+                  inputProps={{'data-testid': 'nameInput'}}
+                  InputLabelProps={{shrink: true}}
+                />
+                <ErrorMessage errors={errors} name="evName" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- summary ------ */}
+            <Grid item xs={7}>
               <Box mt={.5} mr={.5} px='0.5rem'>
                 <TextField label='Summary' size='small' fullWidth
                   {...register('descr', {
