@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 
 import {LinkD, GatsbyLink} from './linkd';
+import {CaptionBox} from './boxen';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -256,8 +257,10 @@ interface FormManSchedParms {
     clock: string,
 };
 
-// manage existing schedule - modify, addconnections
-// should change name to useManSched !!!!!
+/*
+   manage existing/add schedule
+   should change name to useManSched !!!!!
+*/
 
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
@@ -654,12 +657,11 @@ export const ManSched = (props: ManSchedProps) => {
 
           </Grid></Box>
 
-          {/* -------------- Form Save/Reset Buttons ----------------- */}
+          {/* -------------- End Grid Form Save/Reset Buttons ----------------- */}
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => {reset();resetTempFormButtons();}} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
-
           </form>
 
           {/* -------------- Events ----------------- */}
@@ -905,23 +907,4 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     }
 };
 
-
-interface iCaptionBox {
-    caption: string,
-    color?: string,
-    xpad?: string, // rem
-}
-// quick caption box
-const CaptionBox = (props: iCaptionBox) => {
-    const { caption, color, xpad } = props;
-    const wkColor = color || 'inherit';
-    const wkXpad = xpad || '0.5rem';
-    return (
-      <Box px={wkXpad} mt={-1.75}>
-        <Typography variant='caption' color={wkColor}
-          sx={{ bgcolor:'background.paper', position: 'relative', zIndex: '2'}} >
-          &nbsp;{caption}&nbsp;
-        </Typography>
-      </Box>
-)}
 export default DisplaySchedGroup

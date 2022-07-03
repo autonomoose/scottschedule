@@ -5,19 +5,28 @@
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
+
+import {CaptionBox} from './boxen';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { listEventsFull } from '../graphql/queries';
 import { mutAddEvents, mutAddRules, mutDelEvents } from '../graphql/mutations';
 
-// -------------------------------------------------
+/*
+   add events
+*/
 interface CreateEventProps {
   onComplete: (status: string) => void,
   open: boolean
@@ -57,6 +66,7 @@ export const CreateEvent = (props: CreateEventProps) => {
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box>
           <form key="newEv" onSubmit={handleSubmit(formNewEvSubmit)}>
+          {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
               Add New Event
@@ -170,12 +180,17 @@ export const CreateRule = (props: CreateRuleProps) => {
       </Card></Box>
 ) };
 
-// -------------------------------------------------
+/*
+   modify events
+*/
 interface ModifyEventProps {
   evid: string,
   tasks: iTask,
   onComplete: (status: string) => void,
   open: boolean,
+}
+interface FormModifyEventParms {
+  descr: string,
 }
 export const ModifyEvent = (props: ModifyEventProps) => {
     const allTasks = props.tasks;
@@ -184,24 +199,24 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     const [evRule, setEvRule] = useState('');
 
     // form states
-    const { register, handleSubmit, reset, formState } = useForm({
-        defaultValues: {
-            descr: '',
-        }
-    });
+    const formDefaultVal: FormModifyEventParms = {
+        descr: '',
+    };
+    const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
 
+    /* -------- reset form defaults to any current values ------ */
     useEffect(() => {
-        const defaultValues = {
-            descr: (allTasks[evid] && allTasks[evid].descr)? allTasks[evid].descr : '',
+        let defaultValues: FormModifyEventParms = formDefaultVal;
+
+        if (allTasks[evid]?.descr) {
+            defaultValues['descr'] = allTasks[evid].descr;
         }
+
         reset(defaultValues);
     }, [allTasks, evid] );
 
-    interface FormModEvParms {
-        descr: string,
-    };
-    const formModEvSubmit = async (data: FormModEvParms) => {
+    const formModEvSubmit = async (data: FormModifyEventParms) => {
         try {
             const xdata = {'input': {
                 'etype': 'ev',
@@ -243,28 +258,54 @@ export const ModifyEvent = (props: ModifyEventProps) => {
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box>
           <form key="newEv" onSubmit={handleSubmit(formModEvSubmit)}>
+          {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
-            <Typography variant='h6'>Modify Event</Typography>
-          </Box>
-          <Box px='0.5em' display='flex' alignItems='center'>
-            {evid}
-            { (allTasks[evid] && allTasks[evid].schedRules.length === 0) &&
-            <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
-            }
+            <Typography variant='h6'>
+              Event {evid}
+              { (allTasks[evid] && allTasks[evid].schedRules.length === 0) ?
+                <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>
+                  <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                </IconButton>
+                :
+                <IconButton disabled data-testid={'del-'+evid} size='small'>
+                  <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                </IconButton>
+              }
+            </Typography>
+            <IconButton data-testid='cancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
-          <Box px='0.5em'><label>
-            <input type="text" size={30} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-             aria-invalid={errors.descr ? "true" : "false"}
-            />
-          </label></Box>
+          {/* -------------- Main Form Grid ----------------- */}
+          <Box sx={{ flexGrow: 1}}><Grid container spacing={2}>
+            {/* -------------- Top Line ----------------- */}
+            <Grid item xs={8}>
+              <Box mt={.5} mr={.5} px='0.5rem'>
+                <TextField label='Summary' size='small' fullWidth
+                  {...register('descr', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9 \-]+$/, message: 'no special characters'},
+                    maxLength: {value: 20, message: 'limited to 20 characters'},
+                  })}
+                  aria-invalid={errors.descr ? "true" : "false"}
+                  color={errors.descr ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'descrInput'}}
+                  InputLabelProps={{shrink: true}}
+                />
+                <ErrorMessage errors={errors} name="descr" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+          </Grid></Box>
+          {/* ----------End Grid, Form Save/Reset Buttons ----------------- */}
 
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
           </form>
+
+          {/* -------------- Rules ----------------- */}
           <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
             <Button onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
