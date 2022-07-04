@@ -21,80 +21,8 @@ import Typography from '@mui/material/Typography';
 
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { listEventsFull } from '../graphql/queries';
+import { listEventsFull, iTaskDB } from '../graphql/queries';
 import { mutAddEvents, mutAddRules, mutDelEvents } from '../graphql/mutations';
-
-/*
-   add events
-*/
-interface CreateEventProps {
-  onComplete: (status: string) => void,
-  open: boolean
-}
-export const CreateEvent = (props: CreateEventProps) => {
-    // form states
-    const { register, handleSubmit, reset, formState } = useForm({
-        defaultValues: {
-            name: '',
-            descr: '',
-        }
-    });
-    const { isDirty, errors } = formState;
-
-    interface FormNewEvParms {
-        name: string,
-        descr: string,
-    };
-    const formNewEvSubmit = async (data: FormNewEvParms) => {
-        try {
-            const xdata = {'input': {
-                'etype': 'ev',
-                'evnames': data.name+"!args",
-                'descr': data.descr,
-                }
-            };
-            await API.graphql({query: mutAddEvents, variables: xdata});
-            props.onComplete(data.name);
-        } catch (result) {
-            console.warn('failed update', result);
-        }
-    };
-
-    return(
-      <Box ml={4} display={(props.open)?'block': 'none'}>
-      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
-       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box>
-          <form key="newEv" onSubmit={handleSubmit(formNewEvSubmit)}>
-          {/* -------------- Title block ----------------- */}
-          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
-            <Typography variant='h6'>
-              Add New Event
-            </Typography>
-          </Box>
-
-          <Box px='0.5em'><label>
-            Name <input type="text" size={12} data-testid="nameInput"
-             {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
-             aria-invalid={errors.name ? "true" : "false"}
-            />
-          </label></Box>
-          <Box px='0.5em'><label> Description
-            <input type="text" size={30} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-             aria-invalid={errors.descr ? "true" : "false"}
-            />
-          </label></Box>
-
-          <Box  px='0.5em' mt={2} mb={1} display='flex' justifyContent='flex-end'>
-            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
-            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
-          </Box>
-
-          </form>
-        </Box>
-      </Card></Box>
-) };
 
 // -------------------------------------------------
 interface CreateRuleProps {
@@ -192,6 +120,8 @@ interface ModifyEventProps {
 interface FormModifyEventParms {
     evName: string,
     descr: string,
+    sound: string,
+    soundrepeat: string,
 }
 export const ModifyEvent = (props: ModifyEventProps) => {
     const allTasks = props.tasks;
@@ -203,6 +133,8 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     const formDefaultVal: FormModifyEventParms = {
         evName: '',
         descr: '',
+        sound: '_default_',
+        soundrepeat: '0',
     };
     const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
@@ -211,24 +143,34 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     useEffect(() => {
         let defaultValues: FormModifyEventParms = formDefaultVal;
         if ( evid && evid !== '_new' ) {
+            const wkev = allTasks[evid];
             // modify default vals for existing event
             defaultValues['evName'] = evid;
-            if (allTasks[evid]?.descr) {
-                defaultValues['descr'] = allTasks[evid].descr;
+            if (wkev?.descr) {
+                defaultValues['descr'] = wkev.descr;
+            }
+            if (wkev?.sound) {
+                if (wkev.sound['name'] || wkev.sound['name'] === '') {
+                    defaultValues['sound'] = wkev.sound.name;
+                }
+                if (wkev.sound['repeat']) {
+                    defaultValues['soundrepeat'] = wkev.sound.repeat.toString();
+                }
             }
         }
 
         reset(defaultValues);
     }, [allTasks, evid] );
 
-    // only makes it here on a successful form submit
-    // map the form data onto the graphql input
+    // success form submit, map the form data onto the graphql input
     const formModEvSubmit = async (data: FormModifyEventParms) => {
         try {
             const xdata = {'input': {
                 'etype': 'ev',
                 'evnames': data.evName+"!args",
                 'descr': data.descr,
+                'sound': data.sound,
+                'soundrepeat': data.soundrepeat,
                 }
             };
             await API.graphql({query: mutAddEvents, variables: xdata});
@@ -329,9 +271,54 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                 } />
               </Box>
             </Grid>
-          </Grid></Box>
-          {/* ----------End Grid, Form Save/Reset Buttons ----------------- */}
 
+            {/* -------------- sound ------ */}
+            <Grid item xs={12} display='flex' my={2}>
+              {/* -------------- name ------ */}
+              <Grid item xs={6} >
+                <Box px='0.5rem' >
+                  <TextField label='Sound' size='small' fullWidth
+                    {...register('sound', {
+                      pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
+                      maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                    })}
+                    aria-invalid={errors.sound ? "true" : "false"}
+                    color={errors.sound ? 'error' : 'primary'}
+                    inputProps={{'data-testid': 'soundInput'}}
+                  />
+                </Box>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="sound" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
+                </Box>
+              </Grid> {/* end sound name */}
+
+              {/* -------------- sound repeat ------ */}
+              <Grid item xs={3} >
+                <Box px='0.5rem' >
+                  <TextField label='Repeat' size='small' fullWidth
+                    {...register('soundrepeat', {
+                      pattern: {value: /^[0-9]+$/, message: 'numeric only'},
+                      maxLength: {value: 2, message: 'less than 100'},
+                    })}
+                    aria-invalid={errors.soundrepeat ? "true" : "false"}
+                    inputProps={{'data-testid': 'soundRepeatInput'}}
+                  />
+                </Box>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="soundrepeat" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
+                </Box>
+              </Grid> {/* end soundrepeat */}
+            </Grid> {/* end sound */}
+
+            {/* ---------- Future fields! ----------------- */}
+
+          </Grid></Box> {/* ----------End Grid ----------------- */}
+
+          {/* ---------- Form Save/Reset Buttons ----------------- */}
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
@@ -402,13 +389,25 @@ export const fetchEventsDB = async (): Promise<iTask> => {
     try {
         const result: any = await API.graphql({query: listEventsFull})
 
-        const compactTasks = result.data.listEvents.items.reduce((resdict: iTask, item: iTaskDb) => {
+        const compactTasks = result.data.listEvents.items.reduce((resdict: iTask, item: iTaskDB) => {
             const evkeys = item.evnames.split('!');
             if (!resdict[evkeys[0]]) {
                 resdict[evkeys[0]] = {descr: '', schedRules: []};
             }
             if (evkeys[1] === 'args') {
+                let wkSound: iEvsSound = {};
                 resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
+                if (item.sound || item.sound === '') {
+                    if (item.sound !== '_default_') {
+                        wkSound['name'] = item.sound;
+                    }
+                }
+                if (item.soundrepeat && parseInt(item.soundrepeat, 10) !== 0) {
+                    wkSound['repeat'] = parseInt(item.soundrepeat, 10);
+                }
+                if (wkSound && Object.keys(wkSound).length > 0) {
+                    resdict[evkeys[0]].sound = wkSound;
+                }
             } else {
                 resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
             }

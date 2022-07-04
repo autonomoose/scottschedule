@@ -391,20 +391,20 @@ export const ManSched = (props: ManSchedProps) => {
           {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
-              { (schedName && schedName !== '_NEW_')
-                ? <span>Schedule {schedName}
-                    { (currSchedule && currSchedule.schedTasks.length === 0) ?
-                      <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
-                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                      </IconButton>
-                      :
-                      <IconButton disabled >
-                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                      </IconButton>
-                    }
-
-                  </span>
-                : <span>New Schedule (group {groupName})</span>
+              { (schedName && schedName !== '_NEW_') ?
+                <span>Schedule {schedName}
+                  { (currSchedule && currSchedule.schedTasks.length === 0) ?
+                    <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+                      <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
+                    :
+                    <IconButton disabled ><DeleteForeverIcon sx={{height: '1.25rem'}} /></IconButton>
+                  }
+                </span>
+                :
+                <span>
+                  New Schedule (group {groupName})
+                </span>
               }
             </Typography>
             <IconButton data-testid='cancel' size='small' onClick={() => funComplete('')}>X</IconButton>
@@ -454,8 +454,9 @@ export const ManSched = (props: ManSchedProps) => {
                   }
                 </Box>
               </Box>
-
             </Grid>
+
+            {/* -------------- summary ------ */}
             <Grid item xs={7}>
               <Box mt={.5} mr={.5}>
                 <TextField label='Summary' size='small' fullWidth

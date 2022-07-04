@@ -3,12 +3,13 @@ import { render, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 
 import { API } from 'aws-amplify';
-import { CreateEvent } from '../../components/eventsutil';
+import { ModifyEvent } from '../../components/eventsutil';
 jest.mock('aws-amplify');
 
 const mockCallback = jest.fn();
+const mockEvents = {testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"]}};
 
-const mytest = <CreateEvent onComplete={mockCallback} open={true} />;
+const mytest = <ModifyEvent evid='_new' tasks={mockEvents} onComplete={mockCallback} open={true} />;
 const mySetup = () => {
     const utils = render(mytest);
     const resetButton = utils.getByRole('button', {name: /reset/i});

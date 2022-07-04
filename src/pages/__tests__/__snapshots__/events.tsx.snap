@@ -548,31 +548,6 @@ exports[`EventsPage renders snapshot correctly 1`] = `
             >
               <div
                 class="MuiBox-root css-1hyfx7x"
-                data-testid="newEvent"
-              >
-                <button
-                  class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
-                  tabindex="0"
-                  type="button"
-                >
-                  Save New
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
-                </button>
-                <button
-                  class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
-                  tabindex="0"
-                  type="button"
-                >
-                  Cancel
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
-                </button>
-              </div>
-              <div
-                class="MuiBox-root css-1hyfx7x"
                 data-testid="modifyEvent"
               >
                 <button

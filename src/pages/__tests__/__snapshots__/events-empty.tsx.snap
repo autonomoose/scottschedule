@@ -550,99 +550,9 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         <h6
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
                         >
-                          Add New Event
-                        </h6>
-                      </div>
-                      <div
-                        class="MuiBox-root css-o3707h"
-                      >
-                        <label>
-                          Name 
-                          <input
-                            aria-invalid="false"
-                            data-testid="nameInput"
-                            name="name"
-                            size="12"
-                            type="text"
-                          />
-                        </label>
-                      </div>
-                      <div
-                        class="MuiBox-root css-o3707h"
-                      >
-                        <label>
-                           Description
-                          <input
-                            aria-invalid="false"
-                            data-testid="descrInput"
-                            name="descr"
-                            size="30"
-                            type="text"
-                          />
-                        </label>
-                      </div>
-                      <div
-                        class="MuiBox-root css-1ol4ztf"
-                      >
-                        <button
-                          class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1is3qj5-MuiButtonBase-root-MuiButton-root"
-                          disabled=""
-                          tabindex="-1"
-                          type="button"
-                        >
-                          Reset
-                        </button>
-                        <button
-                          class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-106f7v8-MuiButtonBase-root-MuiButton-root"
-                          disabled=""
-                          tabindex="-1"
-                          type="submit"
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="MuiBox-root css-c98n24"
-              >
-                <div
-                  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1gyd2pn-MuiPaper-root-MuiCard-root"
-                  style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
-                >
-                  <div
-                    class="MuiBox-root css-0"
-                  >
-                    <form>
-                      <div
-                        class="MuiBox-root css-2cmwy2"
-                      >
-                        <h6
-                          class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
-                        >
-                          Event 
-                          
-                          <button
-                            class="MuiButtonBase-root Mui-disabled MuiIconButton-root Mui-disabled MuiIconButton-sizeSmall css-8prnfn-MuiButtonBase-root-MuiIconButton-root"
-                            data-testid="del-"
-                            disabled=""
-                            tabindex="-1"
-                            type="button"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
-                              data-testid="DeleteForeverIcon"
-                              focusable="false"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
-                              />
-                            </svg>
-                          </button>
+                          <span>
+                            Add New Event
+                          </span>
                         </h6>
                         <button
                           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-8prnfn-MuiButtonBase-root-MuiIconButton-root"
@@ -663,7 +573,53 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                           class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-mhc70k-MuiGrid-root"
                         >
                           <div
-                            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-8 css-vok43g-MuiGrid-root"
+                            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-5 css-k3f0g4-MuiGrid-root"
+                          >
+                            <div
+                              class="MuiBox-root css-hzaddc"
+                            >
+                              <div
+                                aria-invalid="false"
+                                class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+                              >
+                                <label
+                                  class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
+                                  data-shrink="true"
+                                  for="mui-1"
+                                  id="mui-1-label"
+                                >
+                                  Name
+                                </label>
+                                <div
+                                  class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-px39cz-MuiInputBase-root-MuiOutlinedInput-root"
+                                >
+                                  <input
+                                    aria-invalid="false"
+                                    class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
+                                    data-testid="nameInput"
+                                    id="mui-1"
+                                    name="evName"
+                                    type="text"
+                                    value=""
+                                  />
+                                  <fieldset
+                                    aria-hidden="true"
+                                    class="MuiOutlinedInput-notchedOutline css-9425fu-MuiOutlinedInput-notchedOutline"
+                                  >
+                                    <legend
+                                      class="css-1in441m"
+                                    >
+                                      <span>
+                                        Name
+                                      </span>
+                                    </legend>
+                                  </fieldset>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-7 css-uqwprf-MuiGrid-root"
                           >
                             <div
                               class="MuiBox-root css-150uz6c"
@@ -675,8 +631,8 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                 <label
                                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
                                   data-shrink="true"
-                                  for="mui-1"
-                                  id="mui-1-label"
+                                  for="mui-2"
+                                  id="mui-2-label"
                                 >
                                   Summary
                                 </label>
@@ -687,7 +643,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                     aria-invalid="false"
                                     class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
                                     data-testid="descrInput"
-                                    id="mui-1"
+                                    id="mui-2"
                                     name="descr"
                                     type="text"
                                     value=""
@@ -708,8 +664,114 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                               </div>
                             </div>
                           </div>
+                          <div
+                            class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-41ti7o-MuiGrid-root"
+                          >
+                            <div
+                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-6 css-1osj8n2-MuiGrid-root"
+                            >
+                              <div
+                                class="MuiBox-root css-1ozu5o9"
+                              >
+                                <div
+                                  aria-invalid="false"
+                                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                                >
+                                  <label
+                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
+                                    data-shrink="true"
+                                    for="mui-3"
+                                    id="mui-3-label"
+                                  >
+                                    Sound
+                                  </label>
+                                  <div
+                                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-14t01uy-MuiInputBase-root-MuiOutlinedInput-root"
+                                  >
+                                    <input
+                                      aria-invalid="false"
+                                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
+                                      data-testid="soundInput"
+                                      id="mui-3"
+                                      name="sound"
+                                      type="text"
+                                      value=""
+                                    />
+                                    <fieldset
+                                      aria-hidden="true"
+                                      class="MuiOutlinedInput-notchedOutline css-9425fu-MuiOutlinedInput-notchedOutline"
+                                    >
+                                      <legend
+                                        class="css-1in441m"
+                                      >
+                                        <span>
+                                          Sound
+                                        </span>
+                                      </legend>
+                                    </fieldset>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="MuiBox-root css-hhy13k"
+                              />
+                            </div>
+                             
+                            <div
+                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-3 css-1equabv-MuiGrid-root"
+                            >
+                              <div
+                                class="MuiBox-root css-1ozu5o9"
+                              >
+                                <div
+                                  aria-invalid="false"
+                                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+                                >
+                                  <label
+                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
+                                    data-shrink="true"
+                                    for="mui-4"
+                                    id="mui-4-label"
+                                  >
+                                    Repeat
+                                  </label>
+                                  <div
+                                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall css-14t01uy-MuiInputBase-root-MuiOutlinedInput-root"
+                                  >
+                                    <input
+                                      aria-invalid="false"
+                                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
+                                      data-testid="soundRepeatInput"
+                                      id="mui-4"
+                                      name="soundrepeat"
+                                      type="text"
+                                      value=""
+                                    />
+                                    <fieldset
+                                      aria-hidden="true"
+                                      class="MuiOutlinedInput-notchedOutline css-9425fu-MuiOutlinedInput-notchedOutline"
+                                    >
+                                      <legend
+                                        class="css-1in441m"
+                                      >
+                                        <span>
+                                          Repeat
+                                        </span>
+                                      </legend>
+                                    </fieldset>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="MuiBox-root css-hhy13k"
+                              />
+                            </div>
+                             
+                          </div>
+                           
                         </div>
                       </div>
+                       
                       <div
                         class="MuiBox-root css-1m55zth"
                       >

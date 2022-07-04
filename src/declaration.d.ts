@@ -1,14 +1,10 @@
 declare module 'gatsby-query-params';
 declare module '*.wav';
 
-interface iTaskDb {
-    evnames: string,
-    descr?: string,
-    rules?: string,
-};
 interface iTask {
     [evTaskId: string]: {
         descr: string,
+        sound?: iEvsSound,
         schedRules: string[],
     };
 };
