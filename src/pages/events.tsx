@@ -5,7 +5,7 @@ import { useQueryParam } from 'gatsby-query-params';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import Seo from '../components/seo';
-import DisplayEvents, { CreateEvent, ModifyEvent, fetchEventsDB } from '../components/eventsutil';
+import DisplayEvents, { ModifyEvent, fetchEventsDB } from '../components/eventsutil';
 
 import { useSnackbar } from 'notistack';
 import Accordion from '@mui/material/Accordion';
@@ -42,6 +42,9 @@ const EventsPage = () => {
         setEvName(status);
         if (status !== '') {
             setPgserial(pgserial+1);
+            console.log(status);
+        } else {
+            setShowList(true);
         }
     }
 
@@ -61,6 +64,7 @@ const EventsPage = () => {
                 // console.log('try ev name', wkEvName);
                 if (wkEvName === '' || wkEvName in newTasks === false) {
                     setEvName('');
+                    setShowList(true);
                 } else {
                     setEvName(wkEvName);
                     setShowList(false);
@@ -106,8 +110,7 @@ const EventsPage = () => {
 
      </Card></Box>
      <Box>
-       <CreateEvent onComplete={formCallback} open={(evName === '_new')}/>
-       <ModifyEvent evid={evName} tasks={allTasks} onComplete={formCallback} open={(evName !== '') && (evName !== '_new')}  />
+       <ModifyEvent evid={evName} tasks={allTasks} onComplete={formCallback} open={(evName !== '')} />
      </Box>
 
    </Box>

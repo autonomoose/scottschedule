@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from '@hookform/error-message';
 
 import {LinkD, GatsbyLink} from './linkd';
+import {CaptionBox} from './boxen';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
@@ -256,8 +257,10 @@ interface FormManSchedParms {
     clock: string,
 };
 
-// manage existing schedule - modify, addconnections
-// should change name to useManSched !!!!!
+/*
+   manage existing/add schedule
+   should change name to useManSched !!!!!
+*/
 
 export const ManSched = (props: ManSchedProps) => {
     const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
@@ -388,20 +391,20 @@ export const ManSched = (props: ManSchedProps) => {
           {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>
-              { (schedName && schedName !== '_NEW_')
-                ? <span>Schedule {schedName}
-                    { (currSchedule && currSchedule.schedTasks.length === 0) ?
-                      <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
-                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                      </IconButton>
-                      :
-                      <IconButton disabled >
-                        <DeleteForeverIcon sx={{height: '1.25rem'}} />
-                      </IconButton>
-                    }
-
-                  </span>
-                : <span>New Schedule (group {groupName})</span>
+              { (schedName && schedName !== '_NEW_') ?
+                <span>Schedule {schedName}
+                  { (currSchedule && currSchedule.schedTasks.length === 0) ?
+                    <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+                      <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
+                    :
+                    <IconButton disabled ><DeleteForeverIcon sx={{height: '1.25rem'}} /></IconButton>
+                  }
+                </span>
+                :
+                <span>
+                  New Schedule (group {groupName})
+                </span>
               }
             </Typography>
             <IconButton data-testid='cancel' size='small' onClick={() => funComplete('')}>X</IconButton>
@@ -421,22 +424,34 @@ export const ManSched = (props: ManSchedProps) => {
               </Box>
 
               {/* -------------- for Modify this is a button name textbox OR button ------ */}
-              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_' && buttonNameEdit)? 'flex': 'none'}>
-                <TextField label='Button Label' variant="outlined"
-                  size='small'
-                  {...register('buttonName', { maxLength:8 })}
-                  inputProps={{'data-testid': 'buttonInput'}}
-                  aria-invalid={errors.buttonName ? "true" : "false"}
-                />
-                <Box mt={-2} ml={-2.5}>
-                  <IconButton  size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
+              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_' && buttonNameEdit)? 'block': 'none'}>
+                {/* -------------- button name ------ */}
+                <Box display='flex'>
+                  <TextField label='Button' size='small'
+                    {...register('buttonName', {
+                      pattern: {value: /^[a-zA-Z0-9\ ]+$/, message: 'no special chars'},
+                      maxLength: {value: 8, message: '8 char max'},
+                    })}
+                    inputProps={{'data-testid': 'buttonInput'}}
+                    aria-invalid={errors.buttonName ? "true" : "false"}
+                    color={errors.buttonName ? 'error' : 'primary'}
+                    InputLabelProps={{shrink: true}}
+                  />
+                  <Box mt={-2} ml={-2.5}>
+                    <IconButton data-testid='closeBname' size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
+                  </Box>
+                </Box>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="buttonName" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
                 </Box>
               </Box>
 
-              <Box border={1} mt={.5} ml={.5}>
-                <CaptionBox caption='Button' />
-
-                <Box px='0.5rem' pb={1} alignItems='center' display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)?'flex':'none'}>
+              {/* -------------- button  ------ */}
+              <Box border={1} mt={.5} ml={.5} display={(schedName && schedName !== '_NEW_' && !buttonNameEdit)? 'block':'none'}>
+                <CaptionBox caption='Label' />
+                <Box px='0.5rem' pb={1} alignItems='center'>
                   {(currSchedule.begins === 'now')
                   ? <Box display='flex'>
                       <Button size="small" variant="outlined" component={GatsbyLink}
@@ -446,13 +461,14 @@ export const ManSched = (props: ManSchedProps) => {
                       <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
                     </Box>
                   : <span>
-                      Complex
+                      multi
                     </span>
                   }
                 </Box>
               </Box>
-
             </Grid>
+
+            {/* -------------- summary ------ */}
             <Grid item xs={7}>
               <Box mt={.5} mr={.5}>
                 <TextField label='Summary' size='small' fullWidth
@@ -479,7 +495,7 @@ export const ManSched = (props: ManSchedProps) => {
                 <CaptionBox caption='Start&nbsp;Settings' xpad='0' />
                 <Box display='flex' alignItems='center'>
                   <Typography variant='body2'>
-                    {(currSchedule.begins === 'now')? <span> (normal) </span>: <span> (complex) </span> }
+                    {(currSchedule.begins === 'now' || schedName === '_NEW_')? <span> (normal) </span>: <span> (complex) </span> }
                   </Typography>
                   <IconButton  size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
                 </Box>
@@ -654,12 +670,11 @@ export const ManSched = (props: ManSchedProps) => {
 
           </Grid></Box>
 
-          {/* -------------- Form Save/Reset Buttons ----------------- */}
+          {/* -------------- End Grid Form Save/Reset Buttons ----------------- */}
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => {reset();resetTempFormButtons();}} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
-
           </form>
 
           {/* -------------- Events ----------------- */}
@@ -667,7 +682,7 @@ export const ManSched = (props: ManSchedProps) => {
           <>
             <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
               <span>Events ({currSchedule.schedTasks.length}) </span>
-              <Button onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">
+              <Button disabled={(schedName === '_NEW_')} onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">
                 Add Event
               </Button>
             </Box>
@@ -905,23 +920,4 @@ export const fetchSchedGroupsDB = async (): Promise<iSchedGroupList> => {
     }
 };
 
-
-interface iCaptionBox {
-    caption: string,
-    color?: string,
-    xpad?: string, // rem
-}
-// quick caption box
-const CaptionBox = (props: iCaptionBox) => {
-    const { caption, color, xpad } = props;
-    const wkColor = color || 'inherit';
-    const wkXpad = xpad || '0.5rem';
-    return (
-      <Box px={wkXpad} mt={-1.75}>
-        <Typography variant='caption' color={wkColor}
-          sx={{ bgcolor:'background.paper', position: 'relative', zIndex: '2'}} >
-          &nbsp;{caption}&nbsp;
-        </Typography>
-      </Box>
-)}
 export default DisplaySchedGroup

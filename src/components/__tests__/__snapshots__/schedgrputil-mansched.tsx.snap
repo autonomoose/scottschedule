@@ -107,60 +107,68 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                 class="MuiBox-root css-cfrdb"
               >
                 <div
-                  aria-invalid="false"
-                  class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+                  class="MuiBox-root css-k008qs"
                 >
-                  <label
-                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
-                    data-shrink="true"
-                    for="mui-2"
-                    id="mui-2-label"
-                  >
-                    Button Label
-                  </label>
                   <div
-                    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+                    aria-invalid="false"
+                    class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
                   >
-                    <input
-                      aria-invalid="false"
-                      class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
-                      data-testid="buttonInput"
-                      id="mui-2"
-                      name="buttonName"
-                      type="text"
-                      value=""
-                    />
-                    <fieldset
-                      aria-hidden="true"
-                      class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                    <label
+                      class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="true"
+                      for="mui-2"
+                      id="mui-2-label"
                     >
-                      <legend
-                        class="css-1in441m"
+                      Button
+                    </label>
+                    <div
+                      class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+                    >
+                      <input
+                        aria-invalid="false"
+                        class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                        data-testid="buttonInput"
+                        id="mui-2"
+                        name="buttonName"
+                        type="text"
+                        value=""
+                      />
+                      <fieldset
+                        aria-hidden="true"
+                        class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                       >
-                        <span>
-                          Button Label
-                        </span>
-                      </legend>
-                    </fieldset>
+                        <legend
+                          class="css-1in441m"
+                        >
+                          <span>
+                            Button
+                          </span>
+                        </legend>
+                      </fieldset>
+                    </div>
+                  </div>
+                  <div
+                    class="MuiBox-root css-11jpsyv"
+                  >
+                    <button
+                      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+                      data-testid="closeBname"
+                      tabindex="0"
+                      type="button"
+                    >
+                      X
+                      <span
+                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                      />
+                    </button>
                   </div>
                 </div>
                 <div
-                  class="MuiBox-root css-11jpsyv"
-                >
-                  <button
-                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-                    tabindex="0"
-                    type="button"
-                  >
-                    X
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
-                  </button>
-                </div>
+                  class="MuiBox-root css-hhy13k"
+                />
               </div>
               <div
-                class="MuiBox-root css-eh46gm"
+                class="MuiBox-root css-1dm7gcz"
               >
                 <div
                   class="MuiBox-root css-oj9im3"
@@ -169,12 +177,12 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     class="MuiTypography-root MuiTypography-caption css-bj128m-MuiTypography-root"
                   >
                      
-                    Button
+                    Label
                      
                   </span>
                 </div>
                 <div
-                  class="MuiBox-root css-1ljiilp"
+                  class="MuiBox-root css-ugh9nu"
                 >
                   <div
                     class="MuiBox-root css-k008qs"

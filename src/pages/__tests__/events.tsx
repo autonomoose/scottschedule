@@ -5,20 +5,8 @@ import userEvent from '@testing-library/user-event'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-import { CreateEvent, ModifyEvent } from '../../components/eventsutil';
+import { ModifyEvent } from '../../components/eventsutil';
 import EventsPage from "../events";
-
-interface mockCreateEventProps {
-  onComplete: (status: string) => void,
-  open: boolean
-}
-export const mockCreateEvent = (props: mockCreateEventProps) => {
-    return(
-      <Box data-testid='newEvent' display={(props.open)?'block': 'none'}>
-      <Button onClick={() => props.onComplete('newEvName')}>Save New</Button>
-      <Button onClick={() => props.onComplete('')}>Cancel</Button>
-      </Box>
-)};
 
 interface mockModifyEventProps {
   evid: string,
@@ -36,12 +24,10 @@ export const mockModifyEvent = (props: mockModifyEventProps) => {
 jest.mock('../../components/eventsutil', () => ({
     ...jest.requireActual('../../components/eventsutil'),
     fetchEventsDB: jest.fn(() => Promise.resolve({testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"]}})),
-    CreateEvent: jest.fn(),
     ModifyEvent: jest.fn(),
 }));
 
 beforeAll(() => {
-  (CreateEvent as jest.Mock).mockImplementation(mockCreateEvent);
   (ModifyEvent as jest.Mock).mockImplementation(mockModifyEvent);
 });
 
@@ -83,23 +69,10 @@ describe("EventsPage", () => {
     const utils = await mySetup();
 
     expect(utils.newEventButton).toBeEnabled();
-    expect(utils.getByTestId('newEvent')).not.toBeVisible();
     expect(utils.getByTestId('modifyEvent')).not.toBeVisible();
 
     expect(utils.testButton).toBeVisible();
 
-  });
-
-  it("handles cancel with callback blank", async () => {
-    const utils = await mySetup();
-
-    userEvent.click(utils.newEventButton);
-
-    const cancelButton = utils.getByRole('button', {name: /cancel/i});
-    userEvent.click(cancelButton);
-    await waitFor(() => {
-        expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
-    });
   });
 
   it("handles clicking on event to show modify card", async () => {
@@ -111,7 +84,6 @@ describe("EventsPage", () => {
     await waitFor(() => {
         expect(utils.getByTestId('modifyEvent')).toBeVisible();
     });
-    expect(utils.getByTestId('newEvent')).not.toBeVisible();
 
   });
 
@@ -127,10 +99,9 @@ describe("EventsPage", () => {
     expect(utils.newEventButton).toBeEnabled();
     userEvent.click(utils.newEventButton);
     await waitFor(() => {
-        expect(utils.getByTestId('newEvent')).toBeVisible();
+        expect(utils.getByTestId('modifyEvent')).toBeVisible();
     });
     expect(utils.newEventButton).toBeDisabled();
-    expect(utils.getByTestId('modifyEvent')).not.toBeVisible();
 
   });
 

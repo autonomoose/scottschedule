@@ -18,10 +18,20 @@ export const currUsersInfo = `query queryUsers {
       agroups
  } }`;
 
+export interface iTaskDB {
+    evnames: string,
+    descr?: string,
+    sound?: string,
+    soundrepeat?: string,
+    rules?: string,
+};
+
 export const listEventsFull = `query queryEvents {
   listEvents {
     items {
       descr
+      sound
+      soundrepeat
       evnames
       rules
     }

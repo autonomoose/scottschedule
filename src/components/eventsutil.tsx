@@ -5,86 +5,24 @@
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from '@hookform/error-message';
+
+import {CaptionBox} from './boxen';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { listEventsFull } from '../graphql/queries';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+import { listEventsFull, iTaskDB } from '../graphql/queries';
 import { mutAddEvents, mutAddRules, mutDelEvents } from '../graphql/mutations';
-
-// -------------------------------------------------
-interface CreateEventProps {
-  onComplete: (status: string) => void,
-  open: boolean
-}
-export const CreateEvent = (props: CreateEventProps) => {
-    // form states
-    const { register, handleSubmit, reset, formState } = useForm({
-        defaultValues: {
-            name: '',
-            descr: '',
-        }
-    });
-    const { isDirty, errors } = formState;
-
-    interface FormNewEvParms {
-        name: string,
-        descr: string,
-    };
-    const formNewEvSubmit = async (data: FormNewEvParms) => {
-        try {
-            const xdata = {'input': {
-                'etype': 'ev',
-                'evnames': data.name+"!args",
-                'descr': data.descr,
-                }
-            };
-            await API.graphql({query: mutAddEvents, variables: xdata});
-            props.onComplete(data.name);
-        } catch (result) {
-            console.warn('failed update', result);
-        }
-    };
-
-    return(
-      <Box ml={4} display={(props.open)?'block': 'none'}>
-      <Card style={{margin: '3px 0 0 0', maxWidth: 350, minWidth: 350, flex: '1 1',
-       boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
-        <Box>
-          <form key="newEv" onSubmit={handleSubmit(formNewEvSubmit)}>
-          <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
-            <Typography variant='h6'>
-              Add New Event
-            </Typography>
-          </Box>
-
-          <Box px='0.5em'><label>
-            Name <input type="text" size={12} data-testid="nameInput"
-             {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
-             aria-invalid={errors.name ? "true" : "false"}
-            />
-          </label></Box>
-          <Box px='0.5em'><label> Description
-            <input type="text" size={30} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-             aria-invalid={errors.descr ? "true" : "false"}
-            />
-          </label></Box>
-
-          <Box  px='0.5em' mt={2} mb={1} display='flex' justifyContent='flex-end'>
-            <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
-            <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
-          </Box>
-
-          </form>
-        </Box>
-      </Card></Box>
-) };
 
 // -------------------------------------------------
 interface CreateRuleProps {
@@ -170,12 +108,20 @@ export const CreateRule = (props: CreateRuleProps) => {
       </Card></Box>
 ) };
 
-// -------------------------------------------------
+/*
+   modify events
+*/
 interface ModifyEventProps {
-  evid: string,
-  tasks: iTask,
-  onComplete: (status: string) => void,
-  open: boolean,
+    evid: string,
+    tasks: iTask,
+    onComplete: (status: string) => void,
+    open: boolean,
+}
+interface FormModifyEventParms {
+    evName: string,
+    descr: string,
+    sound: string,
+    soundrepeat: string,
 }
 export const ModifyEvent = (props: ModifyEventProps) => {
     const allTasks = props.tasks;
@@ -184,33 +130,51 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     const [evRule, setEvRule] = useState('');
 
     // form states
-    const { register, handleSubmit, reset, formState } = useForm({
-        defaultValues: {
-            descr: '',
-        }
-    });
+    const formDefaultVal: FormModifyEventParms = {
+        evName: '',
+        descr: '',
+        sound: '_default_',
+        soundrepeat: '0',
+    };
+    const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
 
+    /* -------- reset form defaults to any current values ------ */
     useEffect(() => {
-        const defaultValues = {
-            descr: (allTasks[evid] && allTasks[evid].descr)? allTasks[evid].descr : '',
+        let defaultValues: FormModifyEventParms = formDefaultVal;
+        if ( evid && evid !== '_new' ) {
+            const wkev = allTasks[evid];
+            // modify default vals for existing event
+            defaultValues['evName'] = evid;
+            if (wkev?.descr) {
+                defaultValues['descr'] = wkev.descr;
+            }
+            if (wkev?.sound) {
+                if (wkev.sound['name'] || wkev.sound['name'] === '') {
+                    defaultValues['sound'] = wkev.sound.name;
+                }
+                if (wkev.sound['repeat']) {
+                    defaultValues['soundrepeat'] = wkev.sound.repeat.toString();
+                }
+            }
         }
+
         reset(defaultValues);
     }, [allTasks, evid] );
 
-    interface FormModEvParms {
-        descr: string,
-    };
-    const formModEvSubmit = async (data: FormModEvParms) => {
+    // success form submit, map the form data onto the graphql input
+    const formModEvSubmit = async (data: FormModifyEventParms) => {
         try {
             const xdata = {'input': {
                 'etype': 'ev',
-                'evnames': evid+"!args",
+                'evnames': data.evName+"!args",
                 'descr': data.descr,
+                'sound': data.sound,
+                'soundrepeat': data.soundrepeat,
                 }
             };
             await API.graphql({query: mutAddEvents, variables: xdata});
-            props.onComplete(evid);
+            props.onComplete(data.evName);
         } catch (result) {
             console.warn('failed update', result);
         }
@@ -243,31 +207,129 @@ export const ModifyEvent = (props: ModifyEventProps) => {
        boxShadow: '-5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box>
           <form key="newEv" onSubmit={handleSubmit(formModEvSubmit)}>
+          {/* -------------- Title block ----------------- */}
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
-            <Typography variant='h6'>Modify Event</Typography>
-          </Box>
-          <Box px='0.5em' display='flex' alignItems='center'>
-            {evid}
-            { (allTasks[evid] && allTasks[evid].schedRules.length === 0) &&
-            <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>X</IconButton>
-            }
+            <Typography variant='h6'>
+              { (evid && evid !== '_new') ?
+                <span>Event {evid}
+                  { (allTasks[evid] && allTasks[evid].schedRules.length === 0) ?
+                    <IconButton data-testid={'del-'+evid} size='small' color='error' onClick={() => formDelEvent({'cmd': 'args'})}>
+                      <DeleteForeverIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
+                    :
+                    <IconButton disabled data-testid={'del-'+evid} size='small'><DeleteForeverIcon sx={{height: '1.25rem'}} /></IconButton>
+                  }
+                </span>
+                :
+                <span>
+                  Add New Event
+                </span>
+              }
+            </Typography>
+            <IconButton data-testid='cancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
-          <Box px='0.5em'><label>
-            <input type="text" size={30} data-testid="descrInput"
-             {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
-             aria-invalid={errors.descr ? "true" : "false"}
-            />
-          </label></Box>
+          {/* -------------- Main Form Grid ----------------- */}
+          <Box sx={{ flexGrow: 1}}><Grid container spacing={2}>
+            {/* -------------- Top Line ----------------- */}
+            {/* -------------- for Add this is a text box ----------------- */}
+            <Grid item xs={5}>
+              <Box px='0.5rem' mt={.5} display={(evid && evid !== '_new')?'none':'block'}>
+                <TextField label='Name' size='small'
+                  {...register('evName', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9]+$/, message: 'alphanumeric only'},
+                    maxLength: {value: 12, message: 'limited to 12 characters'},
+                  })}
+                  color={errors.evName ? 'error' : 'primary'}
+                  aria-invalid={errors.evName ? "true" : "false"}
+                  inputProps={{'data-testid': 'nameInput'}}
+                  InputLabelProps={{shrink: true}}
+                />
+                <ErrorMessage errors={errors} name="evName" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
 
+            {/* -------------- summary ------ */}
+            <Grid item xs={7}>
+              <Box mt={.5} mr={.5} px='0.5rem'>
+                <TextField label='Summary' size='small' fullWidth
+                  {...register('descr', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9 \-]+$/, message: 'no special characters'},
+                    maxLength: {value: 20, message: 'limited to 20 characters'},
+                  })}
+                  aria-invalid={errors.descr ? "true" : "false"}
+                  color={errors.descr ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'descrInput'}}
+                  InputLabelProps={{shrink: true}}
+                />
+                <ErrorMessage errors={errors} name="descr" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
+              </Box>
+            </Grid>
+
+            {/* -------------- sound ------ */}
+            <Grid item xs={12} display='flex' my={2}>
+              {/* -------------- name ------ */}
+              <Grid item xs={6} >
+                <Box px='0.5rem' >
+                  <TextField label='Sound' size='small' fullWidth
+                    {...register('sound', {
+                      pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
+                      maxLength: {value: 20, message: '10 char max'},
+                    })}
+                    aria-invalid={errors.sound ? "true" : "false"}
+                    color={errors.sound ? 'error' : 'primary'}
+                    inputProps={{'data-testid': 'soundInput'}}
+                  />
+                </Box>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="sound" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
+                </Box>
+              </Grid> {/* end sound name */}
+
+              {/* -------------- sound repeat ------ */}
+              <Grid item xs={3} >
+                <Box px='0.5rem' >
+                  <TextField label='Repeat' size='small' fullWidth
+                    {...register('soundrepeat', {
+                      pattern: {value: /^[0-9]+$/, message: 'numeric only'},
+                      maxLength: {value: 2, message: 'less than 100'},
+                    })}
+                    aria-invalid={errors.soundrepeat ? "true" : "false"}
+                    color={errors.descr ? 'error' : 'primary'}
+                    inputProps={{'data-testid': 'soundRepeatInput'}}
+                  />
+                </Box>
+                <Box px={1.5}>
+                  <ErrorMessage errors={errors} name="soundrepeat" render={({ message }) =>
+                    <CaptionBox caption={message} color='error'/>
+                  } />
+                </Box>
+              </Grid> {/* end soundrepeat */}
+            </Grid> {/* end sound */}
+
+            {/* ---------- Future fields! ----------------- */}
+
+          </Grid></Box> {/* ----------End Grid ----------------- */}
+
+          {/* ---------- Form Save/Reset Buttons ----------------- */}
           <Box px='0.5em' mt={2} display='flex' justifyContent='flex-end'>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" color="primary" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
           </form>
+
+          {/* -------------- Rules ----------------- */}
           <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
-            <Button onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
+            <Button disabled={(evid === '_new')} onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
           </Box>
           {(allTasks && allTasks[evid]) &&
           <Box>
@@ -328,13 +390,25 @@ export const fetchEventsDB = async (): Promise<iTask> => {
     try {
         const result: any = await API.graphql({query: listEventsFull})
 
-        const compactTasks = result.data.listEvents.items.reduce((resdict: iTask, item: iTaskDb) => {
+        const compactTasks = result.data.listEvents.items.reduce((resdict: iTask, item: iTaskDB) => {
             const evkeys = item.evnames.split('!');
             if (!resdict[evkeys[0]]) {
                 resdict[evkeys[0]] = {descr: '', schedRules: []};
             }
             if (evkeys[1] === 'args') {
+                let wkSound: iEvsSound = {};
                 resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
+                if (item.sound || item.sound === '') {
+                    if (item.sound !== '_default_') {
+                        wkSound['name'] = item.sound;
+                    }
+                }
+                if (item.soundrepeat && parseInt(item.soundrepeat, 10) !== 0) {
+                    wkSound['repeat'] = parseInt(item.soundrepeat, 10);
+                }
+                if (wkSound && Object.keys(wkSound).length > 0) {
+                    resdict[evkeys[0]].sound = wkSound;
+                }
             } else {
                 resdict[evkeys[0]].schedRules.push(evkeys[1] + " " + item.rules);
             }
