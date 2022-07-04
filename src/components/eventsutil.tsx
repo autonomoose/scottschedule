@@ -280,7 +280,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                   <TextField label='Sound' size='small' fullWidth
                     {...register('sound', {
                       pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
-                      maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                      maxLength: {value: 20, message: '10 char max'},
                     })}
                     aria-invalid={errors.sound ? "true" : "false"}
                     color={errors.sound ? 'error' : 'primary'}
@@ -303,6 +303,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                       maxLength: {value: 2, message: 'less than 100'},
                     })}
                     aria-invalid={errors.soundrepeat ? "true" : "false"}
+                    color={errors.descr ? 'error' : 'primary'}
                     inputProps={{'data-testid': 'soundRepeatInput'}}
                   />
                 </Box>
@@ -328,7 +329,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
           {/* -------------- Rules ----------------- */}
           <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
-            <Button onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
+            <Button disabled={(evid === '_new')} onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
           </Box>
           {(allTasks && allTasks[evid]) &&
           <Box>

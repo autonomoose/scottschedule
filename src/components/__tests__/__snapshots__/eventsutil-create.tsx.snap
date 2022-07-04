@@ -270,14 +270,12 @@ exports[`eventsutil - create renders snapshot correctly 1`] = `
           )
         </span>
         <button
-          class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-          tabindex="0"
+          class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+          disabled=""
+          tabindex="-1"
           type="button"
         >
           New Rule
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-          />
         </button>
       </div>
     </div>
