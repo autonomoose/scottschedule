@@ -303,11 +303,6 @@ export const buildFutureEvents = (parmDate: Date, wkgroup: iSchedGroup, wksched:
     if ('sound' in currSchedule) {
         schedArgs['sound'] = currSchedule['sound'];
     }
-    if (wkEvents[0] && wkEvents[0].evTaskId
-      && taskInfo[wkEvents[0].evTaskId] && taskInfo[wkEvents[0].evTaskId]?.sound?.name ) {
-        console.log(taskInfo[wkEvents[0].evTaskId] );
-    }
-
     if ('warn' in currSchedule) {
         schedArgs['warn'] = currSchedule['warn'];
     }
