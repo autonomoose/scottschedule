@@ -105,6 +105,7 @@ const HomePage = () => {
                     // console.log("finished", currSched, schedList[0]);
                     setStarted(new Date(Date.now()));
 
+                    // this version doesn't handle currsched with begin times!
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
@@ -264,6 +265,7 @@ const HomePage = () => {
                 evId = 'bigbell-audio';
             }
         }
+
         if (evSrc !== '') wkAudioComp.push({src: evSrc, id: evId});
 
         let warnSrc = '';
@@ -452,6 +454,21 @@ const HomePage = () => {
         Object.keys(schedOptions).forEach(item => {newOptions[item] = false});
         setSchedOptions(newOptions);
     };
+
+    /* getCurrSchedule
+       find the schedule from the list in groups
+
+    */
+    // returns iSchedule
+    const getCurrSchedule = (wkgroup: iSchedGroup, wksched: string): iSchedule => {
+        const schedParts = wksched.split('.');
+        let schedList: iSchedule[] = [];
+        if (wkgroup) {
+            schedList = wkgroup.schedNames.filter(item => item.schedName === schedParts[0]);
+        }
+        return(schedList[0]);
+    }
+
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string, pdgroup?: string) => {
@@ -473,6 +490,11 @@ const HomePage = () => {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
+                const schedParms = getCurrSchedule(schedGroups[wkgroup], wksched);
+                if (schedParms?.clock) {
+                    setShowClock(schedParms.clock);
+                }
+
                 setRunNumber(() => runNumber + 1);
             }
         }
@@ -561,10 +583,6 @@ const HomePage = () => {
 
     // init page when data is finished loading
     useEffect(() => {
-        // killEventTask();
-        // setNextEvs({evs: [], status: 'none'});
-        // setFutureEvs({evs: []});
-
         if (statusEv !== 'Loading' && statusGs !== 'Loading') {
             if (statusEv === 'Error' || statusGs === 'Error') {
                 enqueueSnackbar(`error retrieving data`, {variant: 'error'});
@@ -809,7 +827,6 @@ const HomePage = () => {
         }
 
      </Card></Box>
-
 
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box ml={4}>

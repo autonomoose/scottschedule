@@ -42,7 +42,6 @@ const EventsPage = () => {
         setEvName(status);
         if (status !== '') {
             setPgserial(pgserial+1);
-            console.log(status);
         } else {
             setShowList(true);
         }
