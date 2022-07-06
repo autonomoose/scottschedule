@@ -39,7 +39,7 @@ const SchedsPage = () => {
 
     // group name changes
     const buttonSetGroupName = async (newGroupName: string) => {
-        if (newGroupName[0] === '_' && newGroupName != '_NEW_') {
+        if (newGroupName[0] === '_' && newGroupName !== '_NEW_') {
             setGroupName('');
             setSchedName(newGroupName.slice(1));
         } else {
@@ -51,10 +51,17 @@ const SchedsPage = () => {
 
     // handler for dialog report data changes
     const formSchedCallback = async (status: string) => {
-        setSchedName((status[0] === '_')? '': status);
         if (status !== '') {
+            if (status[0] !== '_') {
+                setSchedName(status);
+            } else {
+                setSchedName('');
+                const statusNames = status.slice(1).split('!');
+                setGroupName(statusNames[0]);
+            }
             setPgserial(pgserial+1);
         } else {
+            setSchedName('');
             setShowList(true);
         }
     };
@@ -62,16 +69,18 @@ const SchedsPage = () => {
     // handler for group dialog to control group and schedule dialogs
     const formGroupCallback = async (status: string) => {
         if (status[0] === '_') {
-          // call to open schedule from group form
-          setGroupName('');
-          setSchedName(status.slice(1));
+            // call to open schedule from group form
+            setGroupName('');
+            setSchedName(status.slice(1));
+            setShowList(false);
         } else {
-          setGroupName(status);
-          if (status !== '') {
-              setPgserial(pgserial+1);
-          } else {
-            setShowList(true);
-          }
+            if (status !== '') {
+                setPgserial(pgserial+1);
+                setGroupName(status);
+            } else {
+                setShowList(true);
+                setGroupName('');
+            }
         }
     }
 
@@ -99,11 +108,12 @@ const SchedsPage = () => {
             setHstatus('Loading');
             const newSchedgrps = await fetchSchedGroupsDB();
             if (newSchedgrps) {
-                enqueueSnackbar(`loaded schedules`,
-                  {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
+                // enqueueSnackbar(`loaded schedules`,
+                //  {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
                 setSchedGroups(newSchedgrps);
-                if (groupName in newSchedgrps === false) {
+                if (groupName !== '' && groupName in newSchedgrps === false) {
                   setGroupName('');
+                  setShowList(true);
                 }
             } else {
                 enqueueSnackbar(`no schedules found`, {variant: 'error'});
@@ -151,7 +161,6 @@ const SchedsPage = () => {
                 <Button variant='outlined' disabled={(groupName === '_NEW_')}
                   onClick={(event) => {buttonSetGroupName('_NEW_');event.stopPropagation();}}
                   data-testid='create-group'>
-
                   New Group
                 </Button>
               </Box>

@@ -3,16 +3,18 @@ import { render, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 
 import { API } from 'aws-amplify';
-import { CreateEvent } from '../../components/eventsutil';
+import { ModifyEvent } from '../../components/eventsutil';
 jest.mock('aws-amplify');
 
 const mockCallback = jest.fn();
+const mockEvents = {testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"]}};
 
-const mytest = <CreateEvent onComplete={mockCallback} open={true} />;
+const mytest = <ModifyEvent evid='_new' tasks={mockEvents} onComplete={mockCallback} open={true} />;
 const mySetup = () => {
     const utils = render(mytest);
     const resetButton = utils.getByRole('button', {name: /reset/i});
     const saveButton = utils.getByRole('button', {name: /save/i});
+    const newRuleButton = utils.getByRole('button', {name: /new rule/i});
     const nameFld = utils.getByTestId('nameInput');
     const descrFld = utils.getByTestId('descrInput');
 
@@ -20,6 +22,7 @@ const mySetup = () => {
         ...utils,
         resetButton,
         saveButton,
+        newRuleButton,
         nameFld,
         descrFld,
     }
@@ -37,6 +40,7 @@ describe("eventsutil - create", () => {
 
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
+    expect(utils.newRuleButton).toBeDisabled();
   });
   it("enables reset and save after name modification", async () => {
     const utils = mySetup();
@@ -97,6 +101,25 @@ describe("eventsutil - create", () => {
     });
     API.graphql = prevAPIgraphql;
   });
+
+  it("throws error after invalid name modifications", async () => {
+    const prevAPIgraphql = API.graphql;
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
+    const utils = mySetup();
+
+    userEvent.type(utils.nameFld, 'newnamebutwaywaytoolong');
+    userEvent.type(utils.descrFld, 'new desc');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/12 char max/i)).toBeVisible();
+    });
+
+    API.graphql = prevAPIgraphql;
+  });
+
 
 });
 

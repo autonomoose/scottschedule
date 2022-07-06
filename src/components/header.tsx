@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { StaticImage } from 'gatsby-plugin-image'
-import { Link, navigate } from "gatsby";
+import { navigate } from "gatsby";
 import { Auth } from 'aws-amplify';
+
+import LinkD from './linkd';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -23,6 +25,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import StarIcon from '@mui/icons-material/Star';
+
 
 interface ListItemMenuBasics {
     icon: React.ReactNode,
@@ -50,11 +53,11 @@ const ListItemMenu = (props: ListItemMenuProps) => {
     return(
       <>
         { (link) ?
-          <Link to={link}>
+          <LinkD to={link}>
             <ListItem button><ListItemIcon>{icon}</ListItemIcon>
             <ListItemText>{text}</ListItemText>
             </ListItem>
-          </Link>
+          </LinkD>
           :
           <>
             { (exlink) ?
@@ -115,7 +118,7 @@ const Header = (props: HeaderProps) => {
             <MenuIcon />
           </IconButton>
 
-          <Link to={homePage}>
+          <LinkD to={homePage}>
             <Box display='flex' >
             <StaticImage width={26} alt="Werner Digital" src="../images/wernerdigital-hosted.png"/>
             <Typography variant='body1' sx={{
@@ -124,25 +127,26 @@ const Header = (props: HeaderProps) => {
               Scottschedule
             </Typography>
             </Box>
-          </Link>
+          </LinkD>
 
           { (props.uname && props.uname !== '') ?
-              <Box display='flex' alignItems='center' sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
-                  <Link to="/usermaint" style={{ marginRight: `1em`}} >
-                    <Typography variant='body1'>{props.uname}</Typography>
-
-                  </Link>
+              <Box mr={1} display='flex' alignItems='center' sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
+                  <LinkD to="/usermaint" style={{ marginRight: `1rem`}} >
+                    <Typography variant='body1'>
+                      {props.uname}
+                    </Typography>
+                  </LinkD>
                   <Button variant="outlined" onClick={signOut}>
                     Sign Out
                   </Button>
                </Box>
                :
                <Box sx={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
-                 <Link to="/home" style={{ marginRight: `1em`}} >
+                 <LinkD to="/home" style={{ marginRight: `1em`}} >
                      <Button variant="outlined">
                        Sign In
                      </Button>
-                 </Link>
+                 </LinkD>
                </Box>
           }
           <IconButton aria-label="Dark/light mode" onClick={() => handleDarkClick(props.mode)} edge="start"  >

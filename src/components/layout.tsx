@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo, Component } from 'react';
-import { Link } from 'gatsby';
 import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
@@ -14,11 +13,12 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
 import Header from './header';
+import LinkD from './linkd';
 import { darkTheme } from "../themes/dark";
 import { lightTheme } from "../themes/light";
 
 import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
-// import './layout.scss';
+
 
 interface EboundaryState {
         errorMsg : string | null,
@@ -263,7 +263,7 @@ const Layout = (props: LayoutProps) => {
                         <div style={{textAlign: 'center'}}>
                         <h3 style={{marginTop: '30px'}} data-testid="authentNewUser"> Welcome, new user! </h3>
                           <p>Your userkey is {uid}.  <br /><small>Give this userkey to your administrator to join an existing account.</small></p>
-                          <p>To setup as a new account please <br /><Button variant='outlined' size='small' ><Link to='/setup2'>Accept Terms of Service</Link></Button> to continue
+                          <p>To setup as a new account please <br /><Button variant='outlined' size='small' ><LinkD to='/setup2'>Accept Terms of Service</LinkD></Button> to continue
                           </p>
                         </div>
                       }
@@ -277,11 +277,11 @@ const Layout = (props: LayoutProps) => {
             <footer style={{ paddingTop: 40 }}>
               <Divider />
               <Box display='flex' justifyContent='space-around'>
-                <Link to='/home'>Home</Link>
-                <Link to='/usermaint'>Account</Link>
-                <Link to='/scheds'>Schedules</Link>
-                <Link to='/events'>Events</Link>
-                <Link to='/help'>Help</Link>
+                <LinkD color='secondary' to='/home'>Home</LinkD>
+                <LinkD color='secondary' to='/usermaint'>Account</LinkD>
+                <LinkD color='secondary' to='/scheds'>Schedules</LinkD>
+                <LinkD color='secondary' to='/events'>Events</LinkD>
+                <LinkD color='secondary' to='/help'>Help</LinkD>
               </Box>
               <Divider />
               <Typography variant='caption' mx={2}>

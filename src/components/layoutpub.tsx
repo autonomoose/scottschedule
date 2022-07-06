@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'gatsby';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -12,6 +11,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 
 import Header from './header';
+import LinkD from './linkd';
 import { darkTheme } from "../themes/dark";
 import { lightTheme } from "../themes/light";
 
@@ -57,8 +57,8 @@ const LayoutPub = ({ children }: LayoutPubProps) => {
             <footer style={{ paddingTop: 40 }}>
               <Divider />
               <Box display='flex' justifyContent='space-around'>
-                <Link to='/home'><HomeIcon /> Home</Link>
-                <a href="https://www.wernerdigital.com/about"><GroupIcon />About</a>
+                <LinkD color='secondary' to='/'><HomeIcon /> Home</LinkD>
+                <a color='secondary' href="https://www.wernerdigital.com/about"><GroupIcon />About</a>
               </Box>
               <Divider />
               <Typography variant='caption' mx={2}>

@@ -37,6 +37,7 @@ import DefaultSound from '../sounds/default.wav';
 interface iAudioComp {
     id: string,
     src: string,
+    descr: string,
 };
 
 const HomePage = () => {
@@ -105,6 +106,7 @@ const HomePage = () => {
                     // console.log("finished", currSched, schedList[0]);
                     setStarted(new Date(Date.now()));
 
+                    // this version doesn't handle currsched with begin times!
                     const schedList = schedGroups[currGroup].schedNames.filter(item => item.schedName === currSched);
                     if (schedList[0].chain) {
                         const chains = schedList[0].chain.split('+');
@@ -254,37 +256,44 @@ const HomePage = () => {
         let wkAudioComp = [];
         let evSrc = DefaultSound;
         let evId = 'default-audio';
+        let evDescr = 'std';
 
         if (nextEvs.sound && 'name' in nextEvs.sound) {
-            if (nextEvs.sound.name === '') {
+            if (nextEvs.sound.name === 'silent') {
                 evSrc = ''; // silence
                 evId = 'no-audio';
+                evDescr = 'silent';
             } else if (nextEvs.sound.name === 'bigbell') {
                 evSrc = BigBellSound;
                 evId = 'bigbell-audio';
+                evDescr = 'bigbell';
             }
         }
-        if (evSrc !== '') wkAudioComp.push({src: evSrc, id: evId});
+
+        if (evSrc !== '') wkAudioComp.push({src: evSrc, id: evId, descr: 'sound - ' + evDescr});
 
         let warnSrc = '';
         evId = '';
+        evDescr = 'std';
         if ('warn' in nextEvs) {
             warnSrc = DefaultSound;
             evId = 'default-audio';
 
             if (nextEvs.warn && nextEvs.warn.sound && 'name' in nextEvs.warn.sound) {
                 if (nextEvs.warn.sound.name === '') {
-                    warnSrc = ''; // silence
+                    warnSrc = 'silent'; // silence
                     evId = 'no-audio';
+                    evDescr = 'silent';
                 } else if (nextEvs.warn.sound.name === 'bigbell') {
                     warnSrc = BigBellSound;
                     evId = 'bigbell-audio';
+                    evDescr = 'bigbell';
                 }
             }
         }
 
         if (warnSrc !== '' && warnSrc !== evSrc) {
-            wkAudioComp.push({src: warnSrc, id: evId});
+            wkAudioComp.push({src: warnSrc, id: evId, descr: 'warning - '+evDescr});
         }
         setAudioComp(wkAudioComp);
 
@@ -411,7 +420,12 @@ const HomePage = () => {
             }
 
             let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
-            setFutureEvs({...wkEvents, evs: finalEvents});
+            // set the next sound
+            let nextSound = wkEvents.sound;
+            if (allTasks[finalEvents[0]?.evTaskId]?.sound?.name) {
+                nextSound = allTasks[finalEvents[0].evTaskId].sound;
+            }
+            setFutureEvs({...wkEvents, sound: nextSound, evs: finalEvents});
 
             if (finalEvents.length === 0) {
                 setHstatus("Ready");
@@ -452,6 +466,21 @@ const HomePage = () => {
         Object.keys(schedOptions).forEach(item => {newOptions[item] = false});
         setSchedOptions(newOptions);
     };
+
+    /* getCurrSchedule
+       find the schedule from the list in groups
+
+    */
+    // returns iSchedule
+    const getCurrSchedule = (wkgroup: iSchedGroup, wksched: string): iSchedule => {
+        const schedParts = wksched.split('.');
+        let schedList: iSchedule[] = [];
+        if (wkgroup) {
+            schedList = wkgroup.schedNames.filter(item => item.schedName === schedParts[0]);
+        }
+        return(schedList[0]);
+    }
+
     // change state currSched from schedule buttons, cleanRebuild, msg when turned off
     //   global schedGroups, currGroup, currSched, schedOptions
     const toggleScheds = (wksched: string, pdgroup?: string) => {
@@ -473,6 +502,11 @@ const HomePage = () => {
                 enqueueSnackbar(`scheduler off`,
                     {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             } else {
+                const schedParms = getCurrSchedule(schedGroups[wkgroup], wksched);
+                if (schedParms?.clock) {
+                    setShowClock(schedParms.clock);
+                }
+
                 setRunNumber(() => runNumber + 1);
             }
         }
@@ -561,10 +595,6 @@ const HomePage = () => {
 
     // init page when data is finished loading
     useEffect(() => {
-        // killEventTask();
-        // setNextEvs({evs: [], status: 'none'});
-        // setFutureEvs({evs: []});
-
         if (statusEv !== 'Loading' && statusGs !== 'Loading') {
             if (statusEv === 'Error' || statusGs === 'Error') {
                 enqueueSnackbar(`error retrieving data`, {variant: 'error'});
@@ -810,7 +840,6 @@ const HomePage = () => {
 
      </Card></Box>
 
-
    { ((futureEvs && futureEvs.evs.length > 0) || expiredEvs.length > 0 || (nextEvs && nextEvs.evs.length > 0)) &&
      <Box ml={4}>
        { (nextEvs && nextEvs.evs.length > 0) &&
@@ -872,15 +901,28 @@ const HomePage = () => {
            }
          </Box>
          {(nextEvs.status !== 'ack') &&
-             <>
-             { audioComp.map(item => {
-             return (
-               <audio key={item.id} id={item.id} controls>
-                 <source src={item.src} type="audio/wav" />
-                 Your browser doesn't support audio
-               </audio>
-             )})}
-             </>
+             <Accordion disableGutters elevation={0}>
+               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
+                 minHeight: 32, maxHeight: 32,
+                 float: 'right'
+                 }}>
+                   Sound controls
+               </AccordionSummary>
+               <AccordionDetails>
+                 <Box sx={{float: 'right'}}>
+                 { audioComp.map(item => {
+                 return (
+                   <Box key={item.id} display='flex' alignItems='center' justifyContent='flex-end'>
+                     {item.descr}
+                     <audio id={item.id} controls>
+                       <source src={item.src} type="audio/wav" />
+                       Your browser doesn't support audio
+                     </audio>
+                   </Box>
+                 )})}
+                 </Box>
+               </AccordionDetails>
+             </Accordion>
          }
        </Card>
        }

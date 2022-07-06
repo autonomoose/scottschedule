@@ -39,6 +39,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
             />
           </button>
           <a
+            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
             href="/home"
           >
             <div
@@ -57,11 +58,12 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
             </div>
           </a>
           <div
-            class="MuiBox-root css-1r3535z"
+            class="MuiBox-root css-yukqif"
           >
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/usermaint"
-              style="margin-right: 1em;"
+              style="margin-right: 1rem;"
             >
               <p
                 class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
@@ -151,6 +153,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
             class="MuiList-root MuiList-padding css-h4y409-MuiList-root"
           >
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/home"
             >
               <div
@@ -188,6 +191,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
               </div>
             </a>
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/usermaint"
             >
               <div
@@ -225,6 +229,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
               </div>
             </a>
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/scheds"
             >
               <div
@@ -262,6 +267,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
               </div>
             </a>
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/events"
             >
               <div
@@ -299,6 +305,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
               </div>
             </a>
             <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-14b5yu0-MuiTypography-root-MuiLink-root"
               href="/help"
             >
               <div
@@ -397,6 +404,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                     class="MuiBreadcrumbs-li"
                   >
                     <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
                       href="/home"
                     >
                       Home
@@ -420,6 +428,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
             </div>
             <div>
               <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
                 href="/help/usermaint"
               >
                 Help
@@ -580,26 +589,31 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
         class="MuiBox-root css-1bnxa12"
       >
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
           href="/home"
         >
           Home
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
           href="/usermaint"
         >
           Account
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
           href="/scheds"
         >
           Schedules
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
           href="/events"
         >
           Events
         </a>
         <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-yddyga-MuiTypography-root-MuiLink-root"
           href="/help"
         >
           Help
