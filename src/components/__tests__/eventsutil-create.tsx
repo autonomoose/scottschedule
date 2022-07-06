@@ -14,6 +14,7 @@ const mySetup = () => {
     const utils = render(mytest);
     const resetButton = utils.getByRole('button', {name: /reset/i});
     const saveButton = utils.getByRole('button', {name: /save/i});
+    const newRuleButton = utils.getByRole('button', {name: /new rule/i});
     const nameFld = utils.getByTestId('nameInput');
     const descrFld = utils.getByTestId('descrInput');
 
@@ -21,6 +22,7 @@ const mySetup = () => {
         ...utils,
         resetButton,
         saveButton,
+        newRuleButton,
         nameFld,
         descrFld,
     }
@@ -38,6 +40,7 @@ describe("eventsutil - create", () => {
 
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
+    expect(utils.newRuleButton).toBeDisabled();
   });
   it("enables reset and save after name modification", async () => {
     const utils = mySetup();
@@ -98,6 +101,25 @@ describe("eventsutil - create", () => {
     });
     API.graphql = prevAPIgraphql;
   });
+
+  it("throws error after invalid name modifications", async () => {
+    const prevAPIgraphql = API.graphql;
+    API.graphql = jest.fn(() => Promise.resolve({})) as any;
+    const utils = mySetup();
+
+    userEvent.type(utils.nameFld, 'newnamebutwaywaytoolong');
+    userEvent.type(utils.descrFld, 'new desc');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/12 char max/i)).toBeVisible();
+    });
+
+    API.graphql = prevAPIgraphql;
+  });
+
 
 });
 

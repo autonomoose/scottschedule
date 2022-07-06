@@ -239,7 +239,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                   {...register('evName', {
                     required: 'this field is required',
                     pattern: {value: /^[a-zA-Z0-9]+$/, message: 'alphanumeric only'},
-                    maxLength: {value: 12, message: 'limited to 12 characters'},
+                    maxLength: {value: 12, message: '12 char max'},
                   })}
                   color={errors.evName ? 'error' : 'primary'}
                   aria-invalid={errors.evName ? "true" : "false"}
@@ -259,7 +259,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                   {...register('descr', {
                     required: 'this field is required',
                     pattern: {value: /^[a-zA-Z0-9 \-]+$/, message: 'no special characters'},
-                    maxLength: {value: 20, message: 'limited to 20 characters'},
+                    maxLength: {value: 20, message: '20 char maximum'},
                   })}
                   aria-invalid={errors.descr ? "true" : "false"}
                   color={errors.descr ? 'error' : 'primary'}
@@ -280,7 +280,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                   <TextField label='Sound' size='small' fullWidth
                     {...register('sound', {
                       pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
-                      maxLength: {value: 20, message: '10 char max'},
+                      maxLength: {value: 10, message: '10 char max'},
                     })}
                     aria-invalid={errors.sound ? "true" : "false"}
                     color={errors.sound ? 'error' : 'primary'}
@@ -300,7 +300,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                   <TextField label='Repeat' size='small' fullWidth
                     {...register('soundrepeat', {
                       pattern: {value: /^[0-9]+$/, message: 'numeric only'},
-                      maxLength: {value: 2, message: 'less than 100'},
+                      maxLength: {value: 2, message: '99 max'},
                     })}
                     aria-invalid={errors.soundrepeat ? "true" : "false"}
                     color={errors.descr ? 'error' : 'primary'}
