@@ -226,7 +226,26 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       });
       API.graphql = prevAPIgraphql;
   });
+  it("translates graphQL schedgroups w clock", async () => {
+      const prevAPIgraphql = API.graphql;
+      API.graphql = jest.fn(() => Promise.resolve({'data':
+        {'listSchedGroups': {items: [
+          testDBgroupArgs,
+          {...testDBschedArgs, clock: 'digital1',},
+          testDBevent,
+        ]}}
+      })) as any;
+      const schedGroups = await fetchSchedGroupsDB();
 
+      expect(schedGroups).toStrictEqual({
+        'default': {
+          descr: 'test schedules',
+          "notomorrow": false,
+          schedNames: [{...baseSchedNames, clock: 'digital1', }],
+        }
+      });
+      API.graphql = prevAPIgraphql;
+  });
 });
 
 
@@ -360,7 +379,7 @@ describe("schedgrputil - connev (connect event)", () => {
 
 });
 
-describe("schedgrputil - create", () => {
+describe("schedgrputil - create group", () => {
   const mockCallback = jest.fn();
   const mytest = <CreateGroup onComplete={mockCallback} open={true} />;
   const mySetup = () => {

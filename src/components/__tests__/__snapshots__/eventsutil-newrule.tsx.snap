@@ -60,6 +60,7 @@ exports[`eventsutil - newrule renders snapshot correctly 1`] = `
         >
           <button
             class="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1ir7th6-MuiButtonBase-root-MuiButton-root"
+            data-testid="newEvCancel"
             tabindex="0"
             type="button"
           >

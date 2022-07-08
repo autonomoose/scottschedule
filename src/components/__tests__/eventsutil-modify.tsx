@@ -8,8 +8,10 @@ jest.mock('aws-amplify');
 
 const mockCallback = jest.fn();
 const mockEvents = {testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"], sound: {name: '_default_', repeat: 3},}};
+const mockEventsAlt = {testevt: {descr: '', schedRules: ["option test6 +2,++2,++2"], sound: {name: '_default_', repeat: 3},}};
 
 const mytest = <ModifyEvent evid='testevt' tasks={mockEvents} onComplete={mockCallback} open={true} />;
+const mytestAlt = <ModifyEvent evid='testevt' tasks={mockEventsAlt} onComplete={mockCallback} open={true} />;
 const mySetup = () => {
     const utils = render(mytest);
     const resetButton = utils.getByRole('button', {name: /reset/i});
@@ -36,14 +38,40 @@ describe("eventsutil - modify", () => {
 
     expect(container.firstChild).toMatchSnapshot();
   });
+  it("renders alternate data snapshot correctly", () => {
+    const {container} = render(mytestAlt);
+
+    expect(container.firstChild).toMatchSnapshot();
+  });
   it("starts with buttons in correct status", () => {
     const utils = mySetup();
 
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
     expect(utils.newRuleButton).toBeEnabled();
+
   });
-  it("enables reset and save after descr modification", async () => {
+  it("handles new rule and cancel", async () => {
+    const utils = mySetup();
+
+    expect(utils.newRuleButton).toBeEnabled();
+    userEvent.click(utils.newRuleButton);
+    await waitFor(() => {
+      expect(utils.getByTestId('newEvCancel')).toBeVisible();
+    });
+
+    userEvent.click(utils.getByTestId('newEvCancel'));
+    await waitFor(() => {
+      expect(utils.getByTestId('newEvCancel')).not.toBeVisible();
+    });
+
+  });
+  it("handles delete rule", async () => {
+    const utils = mySetup();
+    const ruleDelButton = utils.getByTestId('testevtbeginDel');
+    userEvent.click(ruleDelButton);
+  });
+  it("enables reset and save after descr modification, handles cancel", async () => {
     const utils = mySetup();
 
     userEvent.type(utils.descrFld, 'new desc');
@@ -51,6 +79,13 @@ describe("eventsutil - modify", () => {
       expect(utils.resetButton).toBeEnabled();
     });
     expect(utils.saveButton).toBeEnabled();
+
+    const cancelButton = utils.getByTestId('modEvCancel');
+    userEvent.click(cancelButton);
+    await waitFor(() => {
+      expect(mockCallback).toHaveBeenCalled();
+    });
+
   });
 
   it("handles reset after fld modification", async () => {

@@ -98,7 +98,7 @@ export const CreateRule = (props: CreateRuleProps) => {
           </Box>
 
           <Box mt={2} display='flex' justifyContent='flex-end'>
-            <Button size="small" variant="outlined" color='error' onClick={() => formNewRuleCancel()}>Cancel</Button>
+            <Button data-testid='newEvCancel' size="small" variant="outlined" color='error' onClick={() => formNewRuleCancel()}>Cancel</Button>
             <Button size="small" variant="outlined" onClick={() => reset()} disabled={!isDirty}>Reset</Button>
             <Button size="small" variant="contained" type="submit" disabled={!isDirty}>Save</Button>
           </Box>
@@ -133,7 +133,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     const formDefaultVal: FormModifyEventParms = {
         evName: '',
         descr: '',
-        sound: '_default_',
+        sound: '',
         soundrepeat: '0',
     };
     const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
@@ -145,18 +145,10 @@ export const ModifyEvent = (props: ModifyEventProps) => {
         if ( evid && evid !== '_new' ) {
             const wkev = allTasks[evid];
             // modify default vals for existing event
-            defaultValues['evName'] = evid;
-            if (wkev?.descr) {
-                defaultValues['descr'] = wkev.descr;
-            }
-            if (wkev?.sound) {
-                if (wkev.sound['name'] || wkev.sound['name'] === '') {
-                    defaultValues['sound'] = wkev.sound.name;
-                }
-                if (wkev.sound['repeat']) {
-                    defaultValues['soundrepeat'] = wkev.sound.repeat.toString();
-                }
-            }
+            defaultValues.evName = evid;
+            defaultValues.descr = wkev.descr || formDefaultVal.descr;
+            defaultValues.sound = wkev?.sound?.name || formDefaultVal.sound;
+            defaultValues.soundrepeat = (wkev?.sound?.repeat)? wkev.sound.repeat.toString(): formDefaultVal.soundrepeat;
         }
 
         reset(defaultValues);
@@ -196,7 +188,6 @@ export const ModifyEvent = (props: ModifyEventProps) => {
         }
     };
     const formCallback = (status: string) => {
-        console.log("mod callback status", status);
         setEvRule('');
         props.onComplete(status);
     };
@@ -226,7 +217,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                 </span>
               }
             </Typography>
-            <IconButton data-testid='cancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
+            <IconButton data-testid='modEvCancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
           {/* -------------- Main Form Grid ----------------- */}
@@ -285,6 +276,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
                     aria-invalid={errors.sound ? "true" : "false"}
                     color={errors.sound ? 'error' : 'primary'}
                     inputProps={{'data-testid': 'soundInput'}}
+                    InputLabelProps={{shrink: true}}
                   />
                 </Box>
                 <Box px={1.5}>
@@ -329,7 +321,9 @@ export const ModifyEvent = (props: ModifyEventProps) => {
           {/* -------------- Rules ----------------- */}
           <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
             <span>Rules ({(allTasks && allTasks[evid])? allTasks[evid].schedRules.length: 0})</span>
-            <Button disabled={(evid === '_new')} onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">New Rule</Button>
+            <Button disabled={(evid === '_new')} onClick={() => setEvRule(evid)}  size="small" variant="outlined" color="primary">
+              New Rule
+            </Button>
           </Box>
           {(allTasks && allTasks[evid]) &&
           <Box>
@@ -347,7 +341,7 @@ export const ModifyEvent = (props: ModifyEventProps) => {
               return(
                 <Box key={`${evid}${cmd}`}  display='flex'>
                   <Box display='flex'>
-                    <IconButton size='small' color='error' onClick={() => formDelEvent({cmd})}>X</IconButton>
+                    <IconButton data-testid={`${evid}${cmd}Del`} size='small' color='error' onClick={() => formDelEvent({cmd})}>X</IconButton>
                     {cmd}
                   </Box>
                   <Box mx={1} mb={1} px={1} sx={{ border: '1px solid grey' }} key={`${evid}${cmd}`}>
@@ -398,10 +392,8 @@ export const fetchEventsDB = async (): Promise<iTask> => {
             if (evkeys[1] === 'args') {
                 let wkSound: iEvsSound = {};
                 resdict[evkeys[0]].descr = (item.descr)? item.descr: '';
-                if (item.sound || item.sound === '') {
-                    if (item.sound !== '_default_') {
-                        wkSound['name'] = item.sound;
-                    }
+                if (item.sound) {
+                    wkSound['name'] = item.sound;
                 }
                 if (item.soundrepeat && parseInt(item.soundrepeat, 10) !== 0) {
                     wkSound['repeat'] = parseInt(item.soundrepeat, 10);

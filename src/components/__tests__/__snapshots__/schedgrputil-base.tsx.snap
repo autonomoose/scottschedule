@@ -204,6 +204,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
         >
           <button
             class="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1ir7th6-MuiButtonBase-root-MuiButton-root"
+            data-testid="evCancel"
             tabindex="0"
             type="button"
           >
@@ -214,6 +215,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
           </button>
           <button
             class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            data-testid="evRest"
             tabindex="0"
             type="button"
           >
@@ -224,6 +226,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
           </button>
           <button
             class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+            data-testid="evSave"
             tabindex="0"
             type="submit"
           >
@@ -239,7 +242,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
 </div>
 `;
 
-exports[`schedgrputil - create renders snapshot correctly 1`] = `
+exports[`schedgrputil - create group renders snapshot correctly 1`] = `
 <div
   class="MuiBox-root css-2t3rs8"
 >

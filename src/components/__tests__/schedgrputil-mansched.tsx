@@ -14,10 +14,33 @@ const testSched = {
     schedName: 'testsched',
     schedTasks: [{evTaskId: 'testev'}],
 };
+const testSchedEmpties = {
+    begins: '',
+    buttonName: '',
+    descr: '',
+    schedName: 'testsched',
+    schedTasks: [],
+    sound: {name: '', repeat: 2},
+    warn: {name: ''},
+};
+const testSchedFull = {
+    begins: '8:00,8:30,9:00',
+    buttonName: '_same_',
+    descr: 'full',
+    schedName: 'testsched',
+    schedTasks: [{evTaskId: 'testev'}],
+    sound: {name: 'bigbell', repeat: 2},
+    warn: {name: '_default_'},
+    chain: 'testsched',
+    clock: 'digital1',
+};
 
 const mockEvList = ['ev1','ev2'];
 
 const mytest = <ManSched evList={mockEvList} groupSchedName='testgrp!testsched' gSchedule={testSched} onComplete={mockCallback} open={true} />
+const myNewTest = <ManSched evList={mockEvList} groupSchedName='testgrp!_NEW_' gSchedule={testSched} onComplete={mockCallback} open={true} />
+const myEmptyTest = <ManSched evList={mockEvList} groupSchedName='testgrp!testsched' gSchedule={testSchedEmpties} onComplete={mockCallback} open={true} />
+const myFullTest = <ManSched evList={mockEvList} groupSchedName='testgrp!testsched' gSchedule={testSchedFull} onComplete={mockCallback} open={true} />
 const mySetup = () => {
     const utils = render(mytest);
     const canButton = utils.getByTestId('cancel');
@@ -41,6 +64,26 @@ describe("schedgrputil - mansched", () => {
     const {container} = render(mytest);
 
     expect(container.firstChild).toMatchSnapshot();
+  });
+  it("starts in _NEW_ mode - custom setup", () => {
+    const utils = render(myNewTest);
+
+    expect(utils.container.firstChild).toMatchSnapshot();
+  });
+  it("handles fields filled - custom setup", async () => {
+    const utils = render(myFullTest);
+    expect(utils.container.firstChild).toMatchSnapshot();
+  });
+
+  it("handles empties - custom setup", async () => {
+    const utils = render(myEmptyTest);
+
+    expect(utils.container.firstChild).toMatchSnapshot();
+    // click to delete should be enabled
+    const delButton = utils.getByTestId('delSched');
+
+    expect(delButton).toBeEnabled();
+    userEvent.click(delButton);
   });
   it("starts with buttons in correct status", () => {
     const utils = mySetup();
@@ -114,6 +157,172 @@ describe("schedgrputil - mansched", () => {
     });
     API.graphql = prevAPIgraphql;
   });
+
+  /* field edits */
+  it("handles error after invalid name mod on _NEW_ ", async () => {
+    const utils = render(myNewTest); // none of the presets defined!
+    const saveButton = utils.getByRole('button', {name: /save/i});
+
+    const nameFld = utils.getByTestId('schedNameInput');
+    userEvent.type(nameFld, 'newdescbutwaywaytoolong');
+
+    await waitFor(() => {
+      expect(saveButton).toBeEnabled();
+    });
+
+    userEvent.click(saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/20 char max/i)).toBeVisible();
+    });
+  });
+
+  it("handles error after invalid descr mod", async () => {
+    const utils = mySetup();
+
+    userEvent.type(utils.descrFld, 'new desc but way way too long');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/20 char max/i)).toBeVisible();
+    });
+  });
+  it("opens and handles invalid button name", async () => {
+    const utils = mySetup();
+    const editButton = utils.getByTestId('buttonEdit');
+
+    userEvent.click(editButton);
+    const inputFld = utils.getByTestId('buttonInput');
+
+    userEvent.type(inputFld, 'new text but way way too long');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/8 char max/i)).toBeVisible();
+    });
+    userEvent.clear(inputFld);
+
+    const propCancel = utils.getByTestId('closeBname');
+    userEvent.click(propCancel);
+
+    await waitFor(() => {
+      expect(inputFld).not.toBeVisible();
+    });
+
+
+  });
+  it("opens and handles start - begin name", async () => {
+    const utils = mySetup();
+    const editButton = utils.getByTestId('startEdit');
+    userEvent.click(editButton);
+    const inputFld = utils.getByTestId('beginsInput');
+    await waitFor(() => {
+      expect(inputFld).toBeVisible();
+    });
+
+
+    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/50 char max/i)).toBeVisible();
+    });
+    userEvent.clear(inputFld);
+
+    const propCancel = utils.getByTestId('startCancel');
+    userEvent.click(propCancel);
+
+    await waitFor(() => {
+      expect(inputFld).not.toBeVisible();
+    });
+
+  });
+  it("opens and handles finish - chain", async () => {
+    const utils = mySetup();
+    const editButton = utils.getByTestId('endEdit');
+    userEvent.click(editButton);
+    const inputFld = utils.getByTestId('chainInput');
+    await waitFor(() => {
+      expect(inputFld).toBeVisible();
+    });
+
+    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/40 char max/i)).toBeVisible();
+    });
+    userEvent.clear(inputFld);
+
+    const propCancel = utils.getByTestId('endCancel');
+    userEvent.click(propCancel);
+
+    await waitFor(() => {
+      expect(inputFld).not.toBeVisible();
+    });
+
+  });
+  it("opens and handles default-clock", async () => {
+    const utils = mySetup();
+    const editButton = utils.getByTestId('defaultEdit');
+    userEvent.click(editButton);
+    const inputFld = utils.getByTestId('clockInput');
+    await waitFor(() => {
+      expect(inputFld).toBeVisible();
+    });
+
+    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await waitFor(() => {
+      expect(utils.saveButton).toBeEnabled();
+    });
+
+    userEvent.click(utils.saveButton);
+    await waitFor(() => {
+      expect(utils.getByText(/10 char max/i)).toBeVisible();
+    });
+    userEvent.clear(inputFld);
+
+    const soundFld = utils.getByTestId('soundInput');
+    userEvent.type(soundFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await waitFor(() => {
+      expect(utils.getByText(/20 char max/i)).toBeVisible();
+    });
+    userEvent.clear(soundFld);
+
+    const sRepeatFld = utils.getByTestId('soundRepeatInput');
+    userEvent.type(sRepeatFld, 'newtextbuwaywaytoolong');
+    await waitFor(() => {
+      expect(utils.getByText(/less than 100/i)).toBeVisible();
+    });
+
+    userEvent.clear(sRepeatFld);
+    const warnFld = utils.getByTestId('warnInput');
+    userEvent.type(warnFld, 'newtextbuwaywaytoolong12345678901234567890');
+    await waitFor(() => {
+      expect(utils.getByText(/20 char max/i)).toBeVisible();
+    });
+    userEvent.clear(warnFld);
+
+    const propCancel = utils.getByTestId('defaultCancel');
+    userEvent.click(propCancel);
+
+    await waitFor(() => {
+      expect(inputFld).not.toBeVisible();
+    });
+  });
+
+  /* events */
   it("handles event disconnect", async () => {
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
@@ -124,9 +333,20 @@ describe("schedgrputil - mansched", () => {
     await waitFor(() => {
       expect(mockCallback).toHaveBeenLastCalledWith('testgrp!testsched');
     });
+
     API.graphql = prevAPIgraphql;
   });
-
+  it("handles add event", async () => {
+    const utils = mySetup();
+    userEvent.click(utils.newEvButton);
+    await waitFor(() => {
+      expect(utils.getByTestId('evCancel')).toBeEnabled();
+    });
+    userEvent.click(utils.getByTestId('evCancel'));
+    await waitFor(() => {
+      expect(utils.getByTestId('evCancel')).not.toBeVisible();
+    });
+  });
 
 });
 
