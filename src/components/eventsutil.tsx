@@ -142,11 +142,11 @@ export const ModifyEvent = (props: ModifyEventProps) => {
     /* -------- reset form defaults to any current values ------ */
     useEffect(() => {
         let defaultValues: FormModifyEventParms = formDefaultVal;
-        if ( evid && evid !== '_new' ) {
+        if ( evid && evid !== '_new' && allTasks[evid]) {
             const wkev = allTasks[evid];
             // modify default vals for existing event
             defaultValues.evName = evid;
-            defaultValues.descr = wkev.descr || formDefaultVal.descr;
+            defaultValues.descr = wkev?.descr || formDefaultVal.descr;
             defaultValues.sound = wkev?.sound?.name || formDefaultVal.sound;
             defaultValues.soundrepeat = (wkev?.sound?.repeat)? wkev.sound.repeat.toString(): formDefaultVal.soundrepeat;
         }
