@@ -112,7 +112,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
 interface ModifyGroupProps {
   group: string,
   groupSched: iSchedGroup,
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean,
 }
 export const ModifyGroup = (props: ModifyGroupProps) => {
@@ -239,7 +239,7 @@ interface ManSchedProps {
   groupSchedName: string, // group!sched or group!_NEW_
   gSchedule: iSchedule,
   evList: string[],
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean
 }
 interface FormManSchedParms {
