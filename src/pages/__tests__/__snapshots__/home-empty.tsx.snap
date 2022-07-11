@@ -456,7 +456,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
                           id="countUp"
                         >
-                           0s 
+                          0m 0s
                         </h6>
                         <p
                           class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
@@ -470,9 +470,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           type="button"
                         >
                           Clear
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </button>
                         <span
                           class="MuiTypography-root MuiTypography-caption css-1sn4lm3-MuiTypography-root"
@@ -536,11 +533,8 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         class="MuiTypography-root MuiTypography-h4 css-18ljsam-MuiTypography-root"
                         id="mainclock"
                       >
-                        06:36
+                        00:00
                       </h4>
-                      <span
-                        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                      />
                     </button>
                     <h6
                       class="MuiTypography-root MuiTypography-subtitle1 css-1wbgtwd-MuiTypography-root"
@@ -556,7 +550,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                       class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
                       id="maindate"
                     >
-                      Wed, Dec 21
+                      01/01/00
                     </h6>
                     <span
                       class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
@@ -675,9 +669,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                               minimal setup
                             </p>
                           </div>
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </div>
                       </li>
                       <li
@@ -703,9 +694,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                               Lots of small examples
                             </p>
                           </div>
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </div>
                       </li>
                       <li
@@ -731,9 +719,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                               Medication and care examples
                             </p>
                           </div>
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </div>
                       </li>
                     </div>
@@ -748,9 +733,6 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                     type="button"
                   >
                     Off
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
                   </button>
                 </div>
               </div>

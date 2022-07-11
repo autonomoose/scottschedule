@@ -77,9 +77,6 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
               type="button"
             >
               Sign Out
-              <span
-                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-              />
             </button>
           </div>
           <button
@@ -223,9 +220,6 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
                     Account
                   </span>
                 </div>
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </div>
             </a>
             <a
@@ -299,9 +293,6 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
                     Events
                   </span>
                 </div>
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </div>
             </a>
             <a
@@ -337,9 +328,6 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
                     Help
                   </span>
                 </div>
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </div>
             </a>
             <div
@@ -371,9 +359,6 @@ exports[`SetupStep2Page renders snapshot correctly 1`] = `
                   Logout
                 </span>
               </div>
-              <span
-                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-              />
             </div>
           </ul>
         </div>

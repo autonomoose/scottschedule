@@ -75,8 +75,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-28"
-                    id="mui-28-label"
+                    for=":r11:"
+                    id=":r11:-label"
                   >
                     Name
                   </label>
@@ -87,7 +87,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="schedNameInput"
-                      id="mui-28"
+                      id=":r11:"
                       name="schedName"
                       type="text"
                       value=""
@@ -120,8 +120,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-29"
-                      id="mui-29-label"
+                      for=":r12:"
+                      id=":r12:-label"
                     >
                       Button
                     </label>
@@ -132,7 +132,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="buttonInput"
-                        id="mui-29"
+                        id=":r12:"
                         name="buttonName"
                         type="text"
                         value=""
@@ -207,8 +207,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-30"
-                    id="mui-30-label"
+                    for=":r13:"
+                    id=":r13:-label"
                   >
                     Summary
                   </label>
@@ -219,7 +219,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="descrInput"
-                      id="mui-30"
+                      id=":r13:"
                       name="descr"
                       type="text"
                       value=""
@@ -406,8 +406,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-31"
-                    id="mui-31-label"
+                    for=":r14:"
+                    id=":r14:-label"
                   >
                     Schedule Start
                   </label>
@@ -418,7 +418,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="beginsInput"
-                      id="mui-31"
+                      id=":r14:"
                       name="begins"
                       type="text"
                       value=""
@@ -493,8 +493,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-32"
-                      id="mui-32-label"
+                      for=":r15:"
+                      id=":r15:-label"
                     >
                       Clock
                     </label>
@@ -505,7 +505,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="clockInput"
-                        id="mui-32"
+                        id=":r15:"
                         name="clock"
                         type="text"
                         value=""
@@ -545,8 +545,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-33"
-                        id="mui-33-label"
+                        for=":r16:"
+                        id=":r16:-label"
                       >
                         Sound
                       </label>
@@ -557,7 +557,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundInput"
-                          id="mui-33"
+                          id=":r16:"
                           name="sound"
                           type="text"
                           value=""
@@ -594,8 +594,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-34"
-                        id="mui-34-label"
+                        for=":r17:"
+                        id=":r17:-label"
                       >
                         Repeat
                       </label>
@@ -606,7 +606,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundRepeatInput"
-                          id="mui-34"
+                          id=":r17:"
                           name="soundrepeat"
                           type="text"
                           value=""
@@ -647,8 +647,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-35"
-                        id="mui-35-label"
+                        for=":r18:"
+                        id=":r18:-label"
                       >
                         Warning
                       </label>
@@ -659,7 +659,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="warnInput"
-                          id="mui-35"
+                          id=":r18:"
                           name="warn"
                           type="text"
                           value=""
@@ -698,8 +698,8 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="false"
-                    for="mui-36"
-                    id="mui-36-label"
+                    for=":r19:"
+                    id=":r19:-label"
                   >
                     Schedule Chain
                   </label>
@@ -710,7 +710,7 @@ exports[`schedgrputil - mansched handles empties - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="chainInput"
-                      id="mui-36"
+                      id=":r19:"
                       name="chain"
                       type="text"
                       value=""
@@ -1005,8 +1005,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-19"
-                    id="mui-19-label"
+                    for=":rm:"
+                    id=":rm:-label"
                   >
                     Name
                   </label>
@@ -1017,7 +1017,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="schedNameInput"
-                      id="mui-19"
+                      id=":rm:"
                       name="schedName"
                       type="text"
                       value=""
@@ -1050,8 +1050,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-20"
-                      id="mui-20-label"
+                      for=":rn:"
+                      id=":rn:-label"
                     >
                       Button
                     </label>
@@ -1062,7 +1062,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="buttonInput"
-                        id="mui-20"
+                        id=":rn:"
                         name="buttonName"
                         type="text"
                         value=""
@@ -1137,8 +1137,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-21"
-                    id="mui-21-label"
+                    for=":ro:"
+                    id=":ro:-label"
                   >
                     Summary
                   </label>
@@ -1149,7 +1149,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="descrInput"
-                      id="mui-21"
+                      id=":ro:"
                       name="descr"
                       type="text"
                       value=""
@@ -1336,8 +1336,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-22"
-                    id="mui-22-label"
+                    for=":rp:"
+                    id=":rp:-label"
                   >
                     Schedule Start
                   </label>
@@ -1348,7 +1348,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="beginsInput"
-                      id="mui-22"
+                      id=":rp:"
                       name="begins"
                       type="text"
                       value=""
@@ -1423,8 +1423,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-23"
-                      id="mui-23-label"
+                      for=":rq:"
+                      id=":rq:-label"
                     >
                       Clock
                     </label>
@@ -1435,7 +1435,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="clockInput"
-                        id="mui-23"
+                        id=":rq:"
                         name="clock"
                         type="text"
                         value=""
@@ -1475,8 +1475,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-24"
-                        id="mui-24-label"
+                        for=":rr:"
+                        id=":rr:-label"
                       >
                         Sound
                       </label>
@@ -1487,7 +1487,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundInput"
-                          id="mui-24"
+                          id=":rr:"
                           name="sound"
                           type="text"
                           value=""
@@ -1524,8 +1524,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-25"
-                        id="mui-25-label"
+                        for=":rs:"
+                        id=":rs:-label"
                       >
                         Repeat
                       </label>
@@ -1536,7 +1536,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundRepeatInput"
-                          id="mui-25"
+                          id=":rs:"
                           name="soundrepeat"
                           type="text"
                           value=""
@@ -1577,8 +1577,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-26"
-                        id="mui-26-label"
+                        for=":rt:"
+                        id=":rt:-label"
                       >
                         Warning
                       </label>
@@ -1589,7 +1589,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="warnInput"
-                          id="mui-26"
+                          id=":rt:"
                           name="warn"
                           type="text"
                           value=""
@@ -1628,8 +1628,8 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="false"
-                    for="mui-27"
-                    id="mui-27-label"
+                    for=":ru:"
+                    id=":ru:-label"
                   >
                     Schedule Chain
                   </label>
@@ -1640,7 +1640,7 @@ exports[`schedgrputil - mansched handles fields filled - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="chainInput"
-                      id="mui-27"
+                      id=":ru:"
                       name="chain"
                       type="text"
                       value=""
@@ -1978,8 +1978,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-1"
-                    id="mui-1-label"
+                    for=":r0:"
+                    id=":r0:-label"
                   >
                     Name
                   </label>
@@ -1990,7 +1990,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="schedNameInput"
-                      id="mui-1"
+                      id=":r0:"
                       name="schedName"
                       type="text"
                       value=""
@@ -2023,8 +2023,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-2"
-                      id="mui-2-label"
+                      for=":r1:"
+                      id=":r1:-label"
                     >
                       Button
                     </label>
@@ -2035,7 +2035,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="buttonInput"
-                        id="mui-2"
+                        id=":r1:"
                         name="buttonName"
                         type="text"
                         value=""
@@ -2142,8 +2142,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-3"
-                    id="mui-3-label"
+                    for=":r2:"
+                    id=":r2:-label"
                   >
                     Summary
                   </label>
@@ -2154,7 +2154,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="descrInput"
-                      id="mui-3"
+                      id=":r2:"
                       name="descr"
                       type="text"
                       value=""
@@ -2341,8 +2341,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-4"
-                    id="mui-4-label"
+                    for=":r3:"
+                    id=":r3:-label"
                   >
                     Schedule Start
                   </label>
@@ -2353,7 +2353,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="beginsInput"
-                      id="mui-4"
+                      id=":r3:"
                       name="begins"
                       type="text"
                       value=""
@@ -2428,8 +2428,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-5"
-                      id="mui-5-label"
+                      for=":r4:"
+                      id=":r4:-label"
                     >
                       Clock
                     </label>
@@ -2440,7 +2440,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="clockInput"
-                        id="mui-5"
+                        id=":r4:"
                         name="clock"
                         type="text"
                         value=""
@@ -2480,8 +2480,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-6"
-                        id="mui-6-label"
+                        for=":r5:"
+                        id=":r5:-label"
                       >
                         Sound
                       </label>
@@ -2492,7 +2492,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundInput"
-                          id="mui-6"
+                          id=":r5:"
                           name="sound"
                           type="text"
                           value=""
@@ -2529,8 +2529,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-7"
-                        id="mui-7-label"
+                        for=":r6:"
+                        id=":r6:-label"
                       >
                         Repeat
                       </label>
@@ -2541,7 +2541,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundRepeatInput"
-                          id="mui-7"
+                          id=":r6:"
                           name="soundrepeat"
                           type="text"
                           value=""
@@ -2582,8 +2582,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-8"
-                        id="mui-8-label"
+                        for=":r7:"
+                        id=":r7:-label"
                       >
                         Warning
                       </label>
@@ -2594,7 +2594,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="warnInput"
-                          id="mui-8"
+                          id=":r7:"
                           name="warn"
                           type="text"
                           value=""
@@ -2633,8 +2633,8 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="false"
-                    for="mui-9"
-                    id="mui-9-label"
+                    for=":r8:"
+                    id=":r8:-label"
                   >
                     Schedule Chain
                   </label>
@@ -2645,7 +2645,7 @@ exports[`schedgrputil - mansched renders snapshot correctly 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="chainInput"
-                      id="mui-9"
+                      id=":r8:"
                       name="chain"
                       type="text"
                       value=""
@@ -2966,8 +2966,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-10"
-                    id="mui-10-label"
+                    for=":rb:"
+                    id=":rb:-label"
                   >
                     Name
                   </label>
@@ -2978,7 +2978,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="schedNameInput"
-                      id="mui-10"
+                      id=":rb:"
                       name="schedName"
                       type="text"
                       value=""
@@ -3011,8 +3011,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-11"
-                      id="mui-11-label"
+                      for=":rc:"
+                      id=":rc:-label"
                     >
                       Button
                     </label>
@@ -3023,7 +3023,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="buttonInput"
-                        id="mui-11"
+                        id=":rc:"
                         name="buttonName"
                         type="text"
                         value=""
@@ -3130,8 +3130,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-12"
-                    id="mui-12-label"
+                    for=":rd:"
+                    id=":rd:-label"
                   >
                     Summary
                   </label>
@@ -3142,7 +3142,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="descrInput"
-                      id="mui-12"
+                      id=":rd:"
                       name="descr"
                       type="text"
                       value=""
@@ -3329,8 +3329,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="true"
-                    for="mui-13"
-                    id="mui-13-label"
+                    for=":re:"
+                    id=":re:-label"
                   >
                     Schedule Start
                   </label>
@@ -3341,7 +3341,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="beginsInput"
-                      id="mui-13"
+                      id=":re:"
                       name="begins"
                       type="text"
                       value=""
@@ -3416,8 +3416,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                     <label
                       class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                       data-shrink="true"
-                      for="mui-14"
-                      id="mui-14-label"
+                      for=":rf:"
+                      id=":rf:-label"
                     >
                       Clock
                     </label>
@@ -3428,7 +3428,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                         aria-invalid="false"
                         class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                         data-testid="clockInput"
-                        id="mui-14"
+                        id=":rf:"
                         name="clock"
                         type="text"
                         value=""
@@ -3468,8 +3468,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-15"
-                        id="mui-15-label"
+                        for=":rg:"
+                        id=":rg:-label"
                       >
                         Sound
                       </label>
@@ -3480,7 +3480,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundInput"
-                          id="mui-15"
+                          id=":rg:"
                           name="sound"
                           type="text"
                           value=""
@@ -3517,8 +3517,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-16"
-                        id="mui-16-label"
+                        for=":rh:"
+                        id=":rh:-label"
                       >
                         Repeat
                       </label>
@@ -3529,7 +3529,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="soundRepeatInput"
-                          id="mui-16"
+                          id=":rh:"
                           name="soundrepeat"
                           type="text"
                           value=""
@@ -3570,8 +3570,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       <label
                         class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
-                        for="mui-17"
-                        id="mui-17-label"
+                        for=":ri:"
+                        id=":ri:-label"
                       >
                         Warning
                       </label>
@@ -3582,7 +3582,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                           aria-invalid="false"
                           class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                           data-testid="warnInput"
-                          id="mui-17"
+                          id=":ri:"
                           name="warn"
                           type="text"
                           value=""
@@ -3621,8 +3621,8 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                   <label
                     class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1pysi21-MuiFormLabel-root-MuiInputLabel-root"
                     data-shrink="false"
-                    for="mui-18"
-                    id="mui-18-label"
+                    for=":rj:"
+                    id=":rj:-label"
                   >
                     Schedule Chain
                   </label>
@@ -3633,7 +3633,7 @@ exports[`schedgrputil - mansched starts in _NEW_ mode - custom setup 1`] = `
                       aria-invalid="false"
                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                       data-testid="chainInput"
-                      id="mui-18"
+                      id=":rj:"
                       name="chain"
                       type="text"
                       value=""

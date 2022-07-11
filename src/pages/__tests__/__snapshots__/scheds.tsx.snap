@@ -480,9 +480,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                           type="button"
                         >
                           New Group
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </button>
                       </div>
                     </div>
@@ -530,9 +527,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                                 testgrp
                                  - 
                                 test group
-                                <span
-                                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                                />
                               </div>
                             </ul>
                           </div>
@@ -553,9 +547,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Save New
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
               <button
                 class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
@@ -563,9 +554,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Cancel New
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
             </div>
             <div
@@ -578,9 +566,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Save Mod
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
               <button
                 class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
@@ -588,9 +573,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Cancel Mod
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
               <ul
                 class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
@@ -601,9 +583,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                   tabindex="0"
                 >
                   testsched - test sched
-                  <span
-                    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                  />
                 </div>
               </ul>
             </div>
@@ -617,9 +596,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Save Sched
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
               <button
                 class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
@@ -627,9 +603,6 @@ exports[`SchedsPage renders snapshot correctly 1`] = `
                 type="button"
               >
                 Cancel Sched
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
             </div>
           </div>
