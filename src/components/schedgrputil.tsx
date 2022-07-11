@@ -34,7 +34,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
-import { mutAddEvents, mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
+import { mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateGroupProps {
@@ -66,7 +66,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
                 'notomorrow': data.notomorrow,
                 }
             };
-            await API.graphql({query: mutAddEvents, variables: xdata});
+            await API.graphql({query: mutAddScheds, variables: xdata});
             props.onComplete(data.name);
         } catch (result) {
             console.warn('failed group update', result);
@@ -149,7 +149,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
                 'notomorrow': (data.notomorrow)? 'true': '',
                 }
             };
-            await API.graphql({query: mutAddEvents, variables: xdata});
+            await API.graphql({query: mutAddScheds, variables: xdata});
             props.onComplete(wkName);
         } catch (result) {
             console.warn('failed group update', result);
