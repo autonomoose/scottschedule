@@ -21,7 +21,7 @@ const testSchedEmpties = {
     schedName: 'testsched',
     schedTasks: [],
     sound: {name: '', repeat: 2},
-    warn: {name: ''},
+    warn: {sound: {name: ''}},
 };
 const testSchedFull = {
     begins: '8:00,8:30,9:00',
@@ -30,7 +30,7 @@ const testSchedFull = {
     schedName: 'testsched',
     schedTasks: [{evTaskId: 'testev'}],
     sound: {name: 'bigbell', repeat: 2},
-    warn: {name: '_default_'},
+    warn: {sound: {name: '_default_'}},
     chain: 'testsched',
     clock: 'digital1',
 };
@@ -189,136 +189,6 @@ describe("schedgrputil - mansched", () => {
     await userEvent.click(utils.saveButton);
     await waitFor(() => {
       expect(utils.getByText(/20 char max/i)).toBeVisible();
-    });
-  });
-  it("opens and handles invalid button name", async () => {
-    const utils = mySetup();
-    const editButton = utils.getByTestId('buttonEdit');
-
-    await userEvent.click(editButton);
-    const inputFld = utils.getByTestId('buttonInput');
-
-    await userEvent.type(inputFld, 'new text but way way too long');
-    await waitFor(() => {
-      expect(utils.saveButton).toBeEnabled();
-    });
-
-    await userEvent.click(utils.saveButton);
-    await waitFor(() => {
-      expect(utils.getByText(/8 char max/i)).toBeVisible();
-    });
-    await userEvent.clear(inputFld);
-
-    const propCancel = utils.getByTestId('closeBname');
-    await userEvent.click(propCancel);
-
-    await waitFor(() => {
-      expect(inputFld).not.toBeVisible();
-    });
-  });
-  it("opens and handles start - begin name", async () => {
-    const utils = mySetup();
-    const editButton = utils.getByTestId('startEdit');
-    await userEvent.click(editButton);
-    const inputFld = utils.getByTestId('beginsInput');
-    await waitFor(() => {
-      expect(inputFld).toBeVisible();
-    });
-
-
-    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
-    await waitFor(() => {
-      expect(utils.saveButton).toBeEnabled();
-    });
-
-    await userEvent.click(utils.saveButton);
-    await waitFor(() => {
-      expect(utils.getByText(/50 char max/i)).toBeVisible();
-    });
-    await userEvent.clear(inputFld);
-
-    const propCancel = utils.getByTestId('startCancel');
-    await userEvent.click(propCancel);
-
-    await waitFor(() => {
-      expect(inputFld).not.toBeVisible();
-    });
-
-  });
-  it("opens and handles finish - chain", async () => {
-    const utils = mySetup();
-    const editButton = utils.getByTestId('endEdit');
-    await userEvent.click(editButton);
-    const inputFld = utils.getByTestId('chainInput');
-    await waitFor(() => {
-      expect(inputFld).toBeVisible();
-    });
-
-    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
-    await waitFor(() => {
-      expect(utils.saveButton).toBeEnabled();
-    });
-
-    await userEvent.click(utils.saveButton);
-    await waitFor(() => {
-      expect(utils.getByText(/40 char max/i)).toBeVisible();
-    });
-    await userEvent.clear(inputFld);
-
-    const propCancel = utils.getByTestId('endCancel');
-    await userEvent.click(propCancel);
-
-    await waitFor(() => {
-      expect(inputFld).not.toBeVisible();
-    });
-
-  });
-  it("opens and handles default-clock", async () => {
-    const utils = mySetup();
-    const editButton = utils.getByTestId('defaultEdit');
-    await userEvent.click(editButton);
-    const inputFld = utils.getByTestId('clockInput');
-    await waitFor(() => {
-      expect(inputFld).toBeVisible();
-    });
-
-    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
-    await waitFor(() => {
-      expect(utils.saveButton).toBeEnabled();
-    });
-
-    await userEvent.click(utils.saveButton);
-    await waitFor(() => {
-      expect(utils.getByText(/10 char max/i)).toBeInTheDocument();
-    });
-    await userEvent.clear(inputFld);
-
-    const soundFld = utils.getByTestId('soundInput');
-    await userEvent.type(soundFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
-    await waitFor(() => {
-      expect(utils.getByText(/20 char max/i)).toBeVisible();
-    });
-    await userEvent.clear(soundFld);
-
-    const sRepeatFld = utils.getByTestId('soundRepeatInput');
-    await userEvent.type(sRepeatFld, 'newtextbuwaywaytoolong');
-    await waitFor(() => {
-      expect(utils.getByText(/less than 100/i)).toBeVisible();
-    });
-
-    await userEvent.clear(sRepeatFld);
-    const warnFld = utils.getByTestId('warnInput');
-    await userEvent.type(warnFld, 'newtextbuwaywaytoolong12345678901234567890');
-    await waitFor(() => {
-      expect(utils.getByText(/20 char max/i)).toBeVisible();
-    });
-    await userEvent.clear(warnFld);
-
-    const propCancel = utils.getByTestId('defaultCancel');
-    userEvent.click(propCancel);
-
-    await waitFor(() => {
-      expect(inputFld).not.toBeVisible();
     });
   });
 
