@@ -20,15 +20,18 @@ describe("Header", () => {
       expect(utils.getByText('Main Menu')).not.toBeVisible()
 
       userEvent.click(utils.getByLabelText(/open menu/i));
-      expect(utils.getByText('Main Menu')).toBeVisible()
-
+      await waitFor(() => {
+          expect(utils.getByText('Main Menu')).toBeVisible()
+      });
       userEvent.click(utils.getByLabelText(/close menu/i));
   });
 
-  it("responds to sign out", () => {
+  it("responds to sign out", async () => {
       const utils = render(mytest);
       userEvent.click(utils.getByRole('button', {name: /sign out/i}));
-      expect(Auth.signOut).toHaveBeenLastCalledWith({"global": true});
+      await waitFor(() => {
+          expect(Auth.signOut).toHaveBeenLastCalledWith({"global": true});
+      });
   });
 
   it("handles failure during sign out", async () => {

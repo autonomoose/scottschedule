@@ -437,6 +437,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
           </div>
           <div
             class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation5 css-g0zzsc-MuiPaper-root"
+            data-testid="mainuser"
             style="margin: 0px; padding: 1px; clear: both;"
           >
             <div
@@ -494,9 +495,6 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                     type="button"
                   >
                     Change Password 
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
                   </button>
                 </div>
                 <div
@@ -521,9 +519,6 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                     type="button"
                   >
                     Change Email 
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
                   </button>
                 </div>
                 <div
@@ -563,9 +558,6 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                     type="button"
                   >
                     Close Account 
-                    <span
-                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                    />
                   </button>
                 </div>
                 <div

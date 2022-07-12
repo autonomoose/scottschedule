@@ -131,7 +131,7 @@ describe("SchedsPage", () => {
     const utils = await mySetup();
 
     expect(utils.newGroupButton).toBeEnabled();
-    userEvent.click(utils.newGroupButton);
+    await userEvent.click(utils.newGroupButton);
     await waitFor(() => {
       expect(utils.newGroupPanel).toBeVisible();
     });
@@ -143,12 +143,12 @@ describe("SchedsPage", () => {
   it("handles new group cancel", async () => {
     const utils = await mySetup();
 
-    userEvent.click(utils.newGroupButton);
+    await userEvent.click(utils.newGroupButton);
     await waitFor(() => {
       expect(utils.newGroupPanel).toBeVisible();
     });
     const cancelButton = utils.getByRole('button', {name: /cancel new/i});
-    userEvent.click(cancelButton);
+    await userEvent.click(cancelButton);
     await waitFor(() => {
       expect(utils.newGroupPanel).not.toBeVisible();
     });
@@ -158,13 +158,13 @@ describe("SchedsPage", () => {
   it("handles new group save", async () => {
     const utils = await mySetup();
 
-    userEvent.click(utils.newGroupButton);
+    await userEvent.click(utils.newGroupButton);
     await waitFor(() => {
       expect(utils.newGroupPanel).toBeVisible();
     });
 
     const saveButton = utils.getByRole('button', {name: /save new/i});
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
     await waitFor(() => {
       expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
@@ -175,7 +175,7 @@ describe("SchedsPage", () => {
     const utils = await mySetup();
 
     const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
-    userEvent.click(modGroupButton);
+    await userEvent.click(modGroupButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).toBeVisible();
     });
@@ -188,13 +188,13 @@ describe("SchedsPage", () => {
     const utils = await mySetup();
 
     const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
-    userEvent.click(modGroupButton);
+    await userEvent.click(modGroupButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).toBeVisible();
     });
 
     const cancelButton = utils.getByRole('button', {name: /cancel mod/i});
-    userEvent.click(cancelButton);
+    await userEvent.click(cancelButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).not.toBeVisible();
     });
@@ -205,13 +205,13 @@ describe("SchedsPage", () => {
     const utils = await mySetup();
 
     const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
-    userEvent.click(modGroupButton);
+    await userEvent.click(modGroupButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).toBeVisible();
     });
 
     const saveButton = utils.getByRole('button', {name: /save mod/i});
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
     await waitFor(() => {
       expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
@@ -223,14 +223,14 @@ describe("SchedsPage", () => {
 
     // open group
     const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
-    userEvent.click(modGroupButton);
+    await userEvent.click(modGroupButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).toBeVisible();
     });
 
     // open sched
     const modSchedButton = utils.getByRole('button', {name: /testsched - test sched/i});
-    userEvent.click(modSchedButton);
+    await userEvent.click(modSchedButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).toBeVisible();
     });
@@ -239,7 +239,7 @@ describe("SchedsPage", () => {
 
     // cancel sched
     const cancelButton = utils.getByRole('button', {name: /cancel sched/i});
-    userEvent.click(cancelButton);
+    await userEvent.click(cancelButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).not.toBeVisible();
     });
@@ -253,20 +253,20 @@ describe("SchedsPage", () => {
 
     // open group
     const modGroupButton = utils.getByRole('button', {name: /testgrp - test group/i});
-    userEvent.click(modGroupButton);
+    await userEvent.click(modGroupButton);
     await waitFor(() => {
       expect(utils.modGroupPanel).toBeVisible();
     });
 
     // open sched
     const modSchedButton = utils.getByRole('button', {name: /testsched - test sched/i});
-    userEvent.click(modSchedButton);
+    await userEvent.click(modSchedButton);
     await waitFor(() => {
       expect(utils.manSchedPanel).toBeVisible();
     });
 
     const saveButton = utils.getByRole('button', {name: /save sched/i});
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
     await waitFor(() => {
       expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });

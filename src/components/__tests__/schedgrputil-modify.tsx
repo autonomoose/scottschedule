@@ -49,11 +49,13 @@ describe("schedgrputil - modify", () => {
     expect(utils.saveButton).toBeDisabled();
     expect(utils.newButton).toBeEnabled();
   });
-  it("cancels with upper right x button", () => {
+  it("cancels with upper right x button", async () => {
     const utils = mySetup();
 
     userEvent.click(utils.getByRole('button', {name: /x/i}));
-    expect(mockCallback).toHaveBeenLastCalledWith('');
+    await waitFor(() => {
+      expect(mockCallback).toHaveBeenLastCalledWith('');
+    });
   });
   it("enables reset and save after descr modification", async () => {
     const utils = mySetup();
@@ -91,7 +93,7 @@ describe("schedgrputil - modify", () => {
     userEvent.click(utils.saveButton);
 
     await waitFor(() => {
-      expect(consoleWarnFn).toHaveBeenCalledTimes(1);
+      expect(consoleWarnFn).toHaveBeenCalledTimes(2);
     });
     API.graphql = prevAPIgraphql;
     consoleWarnFn.mockRestore();

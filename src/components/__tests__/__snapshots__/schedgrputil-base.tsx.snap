@@ -276,16 +276,44 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
         <div
           class="MuiBox-root css-o3707h"
         >
-          <label>
-            Name 
-            <input
-              aria-invalid="false"
-              data-testid="nameInput"
-              name="name"
-              size="12"
-              type="text"
-            />
-          </label>
+          <div
+            aria-invalid="false"
+            class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+          >
+            <label
+              class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+              data-shrink="true"
+              for=":rh:"
+              id=":rh:-label"
+            >
+              Name
+            </label>
+            <div
+              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                data-testid="nameInput"
+                id=":rh:"
+                name="name"
+                type="text"
+                value=""
+              />
+              <fieldset
+                aria-hidden="true"
+                class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+              >
+                <legend
+                  class="css-1in441m"
+                >
+                  <span>
+                    Name
+                  </span>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
         </div>
         <div
           class="MuiBox-root css-o3707h"
