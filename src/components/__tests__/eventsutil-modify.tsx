@@ -74,7 +74,7 @@ describe("eventsutil - modify", () => {
   it("enables reset and save after descr modification, handles cancel", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -91,7 +91,7 @@ describe("eventsutil - modify", () => {
   it("handles reset after fld modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new descr');
+    await userEvent.type(utils.descrFld, 'new descr');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -108,7 +108,7 @@ describe("eventsutil - modify", () => {
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -126,7 +126,7 @@ describe("eventsutil - modify", () => {
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -141,7 +141,7 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid descr mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc but way way too long');
+    await userEvent.type(utils.descrFld, 'new desc but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -154,8 +154,8 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid sound mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    userEvent.type(utils.soundFld, 'new sound but way way too long');
+    await userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.soundFld, 'new sound but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -168,8 +168,8 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid sound repeat mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    userEvent.type(utils.sRepeatFld, '100');
+    await userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.sRepeatFld, '100');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -205,7 +205,7 @@ describe("eventsutil - modify", () => {
     });
     API.graphql = prevAPIgraphql;
   });
-  it("handles grapql error on delete", async () => {
+  it("handles graphql error on delete", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
@@ -215,7 +215,7 @@ describe("eventsutil - modify", () => {
     const utils = render(spectest);
 
     const delButton = utils.getByTestId('del-testevt');
-    userEvent.click(delButton);
+    await userEvent.click(delButton);
 
     await waitFor(() => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(1);

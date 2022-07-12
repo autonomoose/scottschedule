@@ -83,7 +83,7 @@ describe("schedgrputil - mansched", () => {
     const delButton = utils.getByTestId('delSched');
 
     expect(delButton).toBeEnabled();
-    userEvent.click(delButton);
+    await userEvent.click(delButton);
   });
   it("starts with buttons in correct status", () => {
     const utils = mySetup();
@@ -92,17 +92,19 @@ describe("schedgrputil - mansched", () => {
     expect(utils.saveButton).toBeDisabled();
     expect(utils.newEvButton).toBeEnabled();
   });
-  it("cancels with upper right x button", () => {
+  it("cancels with upper right x button", async () => {
     const utils = mySetup();
 
-    userEvent.click(utils.canButton);
-    expect(mockCallback).toHaveBeenLastCalledWith('');
+    await userEvent.click(utils.canButton);
+    await waitFor(() => {
+      expect(mockCallback).toHaveBeenLastCalledWith('');
+    });
   });
 
   it("enables reset and save after descr modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'test desc');
+    await userEvent.type(utils.descrFld, 'test desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -111,11 +113,11 @@ describe("schedgrputil - mansched", () => {
   it("handles reset after descr modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'test desc');
+    await userEvent.type(utils.descrFld, 'test desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
-    userEvent.click(utils.resetButton);
+    await userEvent.click(utils.resetButton);
     await waitFor(() => {
       expect(utils.resetButton).toBeDisabled();
     });
@@ -127,12 +129,12 @@ describe("schedgrputil - mansched", () => {
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'test desc');
+    await userEvent.type(utils.descrFld, 'test desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
     expect(utils.saveButton).toBeEnabled();
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
 
     await waitFor(() => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(1);
@@ -145,12 +147,12 @@ describe("schedgrputil - mansched", () => {
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'test desc');
+    await userEvent.type(utils.descrFld, 'test desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
     expect(utils.saveButton).toBeEnabled();
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
 
     await waitFor(() => {
       expect(mockCallback).toHaveBeenLastCalledWith('testgrp!testsched');
@@ -164,13 +166,13 @@ describe("schedgrputil - mansched", () => {
     const saveButton = utils.getByRole('button', {name: /save/i});
 
     const nameFld = utils.getByTestId('schedNameInput');
-    userEvent.type(nameFld, 'newdescbutwaywaytoolong');
+    await userEvent.type(nameFld, 'newdescbutwaywaytoolong');
 
     await waitFor(() => {
       expect(saveButton).toBeEnabled();
     });
 
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
     await waitFor(() => {
       expect(utils.getByText(/20 char max/i)).toBeVisible();
     });
@@ -179,12 +181,12 @@ describe("schedgrputil - mansched", () => {
   it("handles error after invalid descr mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc but way way too long');
+    await userEvent.type(utils.descrFld, 'new desc but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
 
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
     await waitFor(() => {
       expect(utils.getByText(/20 char max/i)).toBeVisible();
     });
@@ -193,52 +195,50 @@ describe("schedgrputil - mansched", () => {
     const utils = mySetup();
     const editButton = utils.getByTestId('buttonEdit');
 
-    userEvent.click(editButton);
+    await userEvent.click(editButton);
     const inputFld = utils.getByTestId('buttonInput');
 
-    userEvent.type(inputFld, 'new text but way way too long');
+    await userEvent.type(inputFld, 'new text but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
 
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
     await waitFor(() => {
       expect(utils.getByText(/8 char max/i)).toBeVisible();
     });
-    userEvent.clear(inputFld);
+    await userEvent.clear(inputFld);
 
     const propCancel = utils.getByTestId('closeBname');
-    userEvent.click(propCancel);
+    await userEvent.click(propCancel);
 
     await waitFor(() => {
       expect(inputFld).not.toBeVisible();
     });
-
-
   });
   it("opens and handles start - begin name", async () => {
     const utils = mySetup();
     const editButton = utils.getByTestId('startEdit');
-    userEvent.click(editButton);
+    await userEvent.click(editButton);
     const inputFld = utils.getByTestId('beginsInput');
     await waitFor(() => {
       expect(inputFld).toBeVisible();
     });
 
 
-    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
 
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
     await waitFor(() => {
       expect(utils.getByText(/50 char max/i)).toBeVisible();
     });
-    userEvent.clear(inputFld);
+    await userEvent.clear(inputFld);
 
     const propCancel = utils.getByTestId('startCancel');
-    userEvent.click(propCancel);
+    await userEvent.click(propCancel);
 
     await waitFor(() => {
       expect(inputFld).not.toBeVisible();
@@ -248,25 +248,25 @@ describe("schedgrputil - mansched", () => {
   it("opens and handles finish - chain", async () => {
     const utils = mySetup();
     const editButton = utils.getByTestId('endEdit');
-    userEvent.click(editButton);
+    await userEvent.click(editButton);
     const inputFld = utils.getByTestId('chainInput');
     await waitFor(() => {
       expect(inputFld).toBeVisible();
     });
 
-    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
 
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
     await waitFor(() => {
       expect(utils.getByText(/40 char max/i)).toBeVisible();
     });
-    userEvent.clear(inputFld);
+    await userEvent.clear(inputFld);
 
     const propCancel = utils.getByTestId('endCancel');
-    userEvent.click(propCancel);
+    await userEvent.click(propCancel);
 
     await waitFor(() => {
       expect(inputFld).not.toBeVisible();
@@ -276,43 +276,43 @@ describe("schedgrputil - mansched", () => {
   it("opens and handles default-clock", async () => {
     const utils = mySetup();
     const editButton = utils.getByTestId('defaultEdit');
-    userEvent.click(editButton);
+    await userEvent.click(editButton);
     const inputFld = utils.getByTestId('clockInput');
     await waitFor(() => {
       expect(inputFld).toBeVisible();
     });
 
-    userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await userEvent.type(inputFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
 
-    userEvent.click(utils.saveButton);
+    await userEvent.click(utils.saveButton);
     await waitFor(() => {
-      expect(utils.getByText(/10 char max/i)).toBeVisible();
+      expect(utils.getByText(/10 char max/i)).toBeInTheDocument();
     });
-    userEvent.clear(inputFld);
+    await userEvent.clear(inputFld);
 
     const soundFld = utils.getByTestId('soundInput');
-    userEvent.type(soundFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
+    await userEvent.type(soundFld, 'newtextbuwaywaytoolong1234567890123456789012345678901234567890');
     await waitFor(() => {
       expect(utils.getByText(/20 char max/i)).toBeVisible();
     });
-    userEvent.clear(soundFld);
+    await userEvent.clear(soundFld);
 
     const sRepeatFld = utils.getByTestId('soundRepeatInput');
-    userEvent.type(sRepeatFld, 'newtextbuwaywaytoolong');
+    await userEvent.type(sRepeatFld, 'newtextbuwaywaytoolong');
     await waitFor(() => {
       expect(utils.getByText(/less than 100/i)).toBeVisible();
     });
 
-    userEvent.clear(sRepeatFld);
+    await userEvent.clear(sRepeatFld);
     const warnFld = utils.getByTestId('warnInput');
-    userEvent.type(warnFld, 'newtextbuwaywaytoolong12345678901234567890');
+    await userEvent.type(warnFld, 'newtextbuwaywaytoolong12345678901234567890');
     await waitFor(() => {
       expect(utils.getByText(/20 char max/i)).toBeVisible();
     });
-    userEvent.clear(warnFld);
+    await userEvent.clear(warnFld);
 
     const propCancel = utils.getByTestId('defaultCancel');
     userEvent.click(propCancel);
@@ -328,7 +328,7 @@ describe("schedgrputil - mansched", () => {
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
-    userEvent.click(utils.getByTestId('dconn-testev'));
+    await userEvent.click(utils.getByTestId('dconn-testev'));
 
     await waitFor(() => {
       expect(mockCallback).toHaveBeenLastCalledWith('testgrp!testsched');
@@ -338,11 +338,11 @@ describe("schedgrputil - mansched", () => {
   });
   it("handles add event", async () => {
     const utils = mySetup();
-    userEvent.click(utils.newEvButton);
+    await userEvent.click(utils.newEvButton);
     await waitFor(() => {
       expect(utils.getByTestId('evCancel')).toBeEnabled();
     });
-    userEvent.click(utils.getByTestId('evCancel'));
+    await userEvent.click(utils.getByTestId('evCancel'));
     await waitFor(() => {
       expect(utils.getByTestId('evCancel')).not.toBeVisible();
     });

@@ -82,12 +82,11 @@ describe("HomePage empty", () => {
     const qstart3 = utils.getByTestId('qstart3');
     expect(qstart3).toBeVisible();
 
-    userEvent.click(qstart1);
+    await userEvent.click(qstart1);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(mockEnqueue).toHaveBeenCalledWith(`Copy successful!`, {variant: 'success', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
-
   });
 
   it("handles quicksetup without good api return", async () => {
@@ -101,7 +100,7 @@ describe("HomePage empty", () => {
     expect(qstart2).toBeVisible();
 
     mockEnqueue.mockClear();
-    userEvent.click(qstart2);
+    await userEvent.click(qstart2);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
@@ -110,13 +109,11 @@ describe("HomePage empty", () => {
     mockEnqueue.mockClear();
     const qstart3 = utils.getByTestId('qstart3');
     (API.post as jest.Mock).mockImplementation(() => Promise.reject('mock failed'));
-    userEvent.click(qstart3);
+    await userEvent.click(qstart3);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
     expect(mockEnqueue).toHaveBeenCalledWith(`setup api failed`, {variant: 'error',});
-
   });
-
 
 });
