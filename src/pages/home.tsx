@@ -152,10 +152,12 @@ const HomePage = () => {
                 if (nextEvs.status === 'pending') {
                     setNextEvs({...nextEvs, status: 'current'});
                 }
+                // decide on the name to be played
                 let sname = 'default';
                 if (nextEvs.sound && 'name' in nextEvs.sound && typeof(nextEvs.sound.name) !== 'undefined') {
                     sname = nextEvs.sound.name;
                 }
+                // find the named sound and play it
                 const eventAudio = document.getElementById(sname+"-audio") as HTMLVideoElement;
                 if (eventAudio) eventAudio.play();
             }
@@ -420,12 +422,7 @@ const HomePage = () => {
             }
 
             let finalEvents = wkEvents.evs.filter(item => item.evTstamp > currdate.valueOf());
-            // set the next sound
-            let nextSound = wkEvents.sound;
-            if (allTasks[finalEvents[0]?.evTaskId]?.sound?.name) {
-                nextSound = allTasks[finalEvents[0].evTaskId].sound;
-            }
-            setFutureEvs({...wkEvents, sound: nextSound, evs: finalEvents});
+            setFutureEvs({...wkEvents, evs: finalEvents});
 
             if (finalEvents.length === 0) {
                 setHstatus("Ready");
@@ -598,9 +595,6 @@ const HomePage = () => {
         if (statusEv !== 'Loading' && statusGs !== 'Loading') {
             if (statusEv === 'Error' || statusGs === 'Error') {
                 enqueueSnackbar(`error retrieving data`, {variant: 'error'});
-            } else {
-                enqueueSnackbar(`data loaded`,
-                  {variant: 'info', anchorOrigin: {vertical: 'bottom', horizontal: 'right'}} );
             }
             setHstatus('Ready');
             setStarted(new Date(Date.now()));

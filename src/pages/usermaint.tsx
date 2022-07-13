@@ -22,7 +22,6 @@ const UserMaintPage = () => {
     const [chgEmailOpen, setChgEmailOpen] = useState(false);
     const [closeUserOpen, setCloseUserOpen] = useState(false);
 
-
     useEffect(() => {
       async function fetchUinfo() {
         try {
@@ -70,7 +69,7 @@ const UserMaintPage = () => {
           helpPage="/help/usermaint"
         />
 
-        <Paper elevation={5} style={{margin: 0, padding: 1, clear: 'both'}}>
+        <Paper elevation={5} style={{margin: 0, padding: 1, clear: 'both'}} data-testid='mainuser'>
             <PasswordChgDialog dialogOpen={chgPassOpen} dialogClose={() => {setChgPassOpen(false);} } />
             <EmailChgVerDialog dialogOpen={chgEmailOpen} verifyOnly={verifyonly} dialogClose={(retcode) => {handleEmailDialogClose(retcode);} }/>
             <UserDelDialog dialogOpen={closeUserOpen} dialogClose={() => {setCloseUserOpen(false);} }/>
@@ -160,8 +159,6 @@ const UserMaintPage = () => {
         </Layout>
         );
 };
-
-
 
 export default UserMaintPage
 
