@@ -6,7 +6,7 @@ usermaint
  - UserDelDialog
 */
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 import "@testing-library/jest-dom";
 
@@ -102,14 +102,13 @@ const mySetup = async () => {
 
 describe("UserMaintPage", () => {
   it("renders snapshot correctly", async () => {
-    const {container} = render(mytest);
+    const {container, getByTestId} = render(mytest);
     await waitFor(() => {
-        expect(screen.getByRole('button', {name: /sign out/i}))
-        .toBeVisible();
+        expect(getByTestId('mainuser')).toBeVisible();
     });
 
     expect(container.firstChild).toMatchSnapshot();
-  }, 15000);
+  });
 
   it("opens and closes change dialogs as primary", async () => {
     const utils = await mySetup();

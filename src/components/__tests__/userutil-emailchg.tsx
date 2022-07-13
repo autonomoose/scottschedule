@@ -52,7 +52,7 @@ describe("userutil email chg", () => {
 
   it("handles cancel correctly", async () => {
     const utils = mySetup();
-    userEvent.click(utils.cancelButton);
+    await userEvent.click(utils.cancelButton);
     await waitFor(() => {
       expect(handleDialogClose).toHaveBeenCalledWith('');
     });
@@ -60,20 +60,20 @@ describe("userutil email chg", () => {
 
   it("handles change email w/ verification ", async () => {
     const utils = mySetup();
-    userEvent.type(utils.newEmailInput, 'test@mock.com');
+    await userEvent.type(utils.newEmailInput, 'test@mock.com');
     expect(utils.chgEmailButton).toBeEnabled();
-    userEvent.click(utils.chgEmailButton);
+    await userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Verification code sent`, {variant: 'success'});
     });
 
-    userEvent.type(utils.getByTestId('verifyInput'), '123456');
+    await userEvent.type(utils.getByTestId('verifyInput'), '123456');
     expect(utils.verifyButton).toBeEnabled();
-    userEvent.click(utils.verifyButton);
+    await userEvent.click(utils.verifyButton);
     await waitFor(() => {
         expect(handleDialogClose).toHaveBeenCalledWith('ver');
     });
-  }, 20000);
+  });
 
   it("handles defaults, a bad email and resets ", async () => {
     const utils = mySetup();
@@ -81,44 +81,43 @@ describe("userutil email chg", () => {
     expect(utils.verifyButton).toBeDisabled();
 
     // put in bad email and then reset
-    userEvent.type(utils.newEmailInput, 't');
+    await userEvent.type(utils.newEmailInput, 't');
     await waitFor(() => {
       expect(utils.chgEmailButton).toBeDisabled();
     });
-    userEvent.click(utils.resetButton);
+    await userEvent.click(utils.resetButton);
     await waitFor(() => {
       expect(utils.newEmailInput).toHaveValue('');
     });
 
     // put in correct email to get to verification page
-    userEvent.type(utils.newEmailInput, 'test@mock.com');
+    await userEvent.type(utils.newEmailInput, 'test@mock.com');
     await waitFor(() => {
       expect(utils.chgEmailButton).toBeEnabled();
     });
-    userEvent.click(utils.chgEmailButton);
+    await userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
         expect(utils.getByTestId('verifyInput')).toBeVisible();
     });
 
     // put in bad verifcation code
-    userEvent.type(utils.getByTestId('verifyInput'), '123');
+    await userEvent.type(utils.getByTestId('verifyInput'), '123');
     await waitFor(() => {
       expect(utils.verifyButton).toBeDisabled();
     });
 
-    userEvent.click(utils.cancelButton);
+    await userEvent.click(utils.cancelButton);
     await waitFor(() => {
         expect(handleDialogClose).toHaveBeenCalledWith('email');
     });
 
     const utilsVer = render(myverifytest);
     // resend code
-    userEvent.click(utilsVer.getByRole('button', {name: /send code/i}));
+    await userEvent.click(utilsVer.getByRole('button', {name: /send code/i}));
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Code Sent`, {variant: 'success'});
     });
-
-  }, 60000);
+  });
 
   it("handles userattrib and resendcode rejects from Auth", async () => {
     const prevAuthUpdUsrAttrib = Auth.updateUserAttributes;
@@ -132,14 +131,14 @@ describe("userutil email chg", () => {
     const utils = mySetup();
 
     // put in correct email to get to verification page
-    userEvent.type(utils.newEmailInput, 'test@mock.com');
+    await userEvent.type(utils.newEmailInput, 'test@mock.com');
     expect(utils.chgEmailButton).toBeEnabled();
-    userEvent.click(utils.chgEmailButton);
+    await userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Failed to send code`, {variant: 'error'});
     });
 
-    userEvent.click(utils.cancelButton);
+    await userEvent.click(utils.cancelButton);
     await waitFor(() => {
         expect(handleDialogClose).toHaveBeenCalledWith('email');
     });
@@ -147,7 +146,7 @@ describe("userutil email chg", () => {
     // re-render with verify-only set
     const utilsVer = render(myverifytest);
     // resend code
-    userEvent.click(utilsVer.getByRole('button', {name: /send code/i}));
+    await userEvent.click(utilsVer.getByRole('button', {name: /send code/i}));
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Failed to resend code`, {variant: 'error'});
     });
@@ -158,7 +157,7 @@ describe("userutil email chg", () => {
 
     expect(consoleWarnFn).toHaveBeenCalledTimes(2);
     consoleWarnFn.mockRestore();
-  }, 20000);
+  });
 
   it("handles reject submit", async () => {
     const prevAuthVerAttrSub = Auth.verifyCurrentUserAttributeSubmit;
@@ -169,16 +168,16 @@ describe("userutil email chg", () => {
     const utils = mySetup();
 
     // put in correct email to get to verification page
-    userEvent.type(utils.newEmailInput, 'test@mock.com');
+    await userEvent.type(utils.newEmailInput, 'test@mock.com');
     expect(utils.chgEmailButton).toBeEnabled();
-    userEvent.click(utils.chgEmailButton);
+    await userEvent.click(utils.chgEmailButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Verification code sent`, {variant: 'success'});
     });
 
-    userEvent.type(utils.getByTestId('verifyInput'), '123456');
+    await userEvent.type(utils.getByTestId('verifyInput'), '123456');
     expect(utils.verifyButton).toBeEnabled();
-    userEvent.click(utils.verifyButton);
+    await userEvent.click(utils.verifyButton);
     await waitFor(() => {
         expect(mockEnqueue).toHaveBeenLastCalledWith(`Verification failed`, {variant: 'error'});
     });
@@ -186,6 +185,6 @@ describe("userutil email chg", () => {
     Auth.verifyCurrentUserAttributeSubmit = prevAuthVerAttrSub;
     expect(consoleWarnFn).toHaveBeenCalledTimes(1);
     consoleWarnFn.mockRestore();
-  }, 20000);
+  });
 
 });
