@@ -14,12 +14,21 @@ module.exports = {
       options: {
         name: `Scottschedule - Schedule Reminder`,
         short_name: `Scottschedule`,
-        start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
+        start_url: `/home`,
+        background_color: `#d3d7d8`,
+        theme_color: `#e9ebeb`,
         display: `minimal-ui`,
         icon: "src/images/wernerdigital-hosted.png",
+        cache_busting_mode: 'none'
       },
+    },
+    {
+        resolve: "gatsby-plugin-offline",
+        options: {
+          workboxConfig: {
+              globPatterns: ['**/src/images*']
+          }
+        },
     },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
