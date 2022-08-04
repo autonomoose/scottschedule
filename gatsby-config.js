@@ -24,11 +24,6 @@ module.exports = {
     },
     {
         resolve: "gatsby-plugin-offline",
-        options: {
-          workboxConfig: {
-              globPatterns: ['**/src/images*']
-          }
-        },
     },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
