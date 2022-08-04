@@ -61,6 +61,8 @@ describe("HomePage", () => {
   const mySetup = async () => {
       jest.clearAllTimers();
       Date.now = jest.fn(() => mockNow);
+      // const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+      const user = userEvent.setup({delay: null});
 
       const utils = render(mytest);
       await waitFor(() => {
@@ -74,6 +76,7 @@ describe("HomePage", () => {
           ...utils,
           groupInput,
           groupInputChg,
+          user,
       }
   }
 
@@ -91,22 +94,20 @@ describe("HomePage", () => {
       await waitFor(() => {
           expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
       });
-
   });
   it("changes clocks with click", async () => {
       const utils = await mySetup();
 
-      userEvent.click(utils.getByTestId('change clock'));
+      await utils.user.click(utils.getByTestId('change clock'));
+      await waitFor(() => {
+        expect(utils.getByRole('button', {name: /scheduler/i})).toBeVisible();
+      });
+      await utils.user.click(utils.getByTestId('change clock'));
       await waitFor(() => {
         expect(utils.getByRole('button', {name: /scheduler/i})).toBeVisible();
       });
 
-      userEvent.click(utils.getByTestId('change clock'));
-      await waitFor(() => {
-        expect(utils.getByRole('button', {name: /scheduler/i})).toBeVisible();
-      });
-
-      userEvent.click(utils.getByRole('button', {name: /scheduler/i}));
+      await utils.user.click(utils.getByRole('button', {name: /scheduler/i}));
       await waitFor(() => {
         expect(utils.getByTestId('clock-scheduler')).toBeVisible();
       });
@@ -123,7 +124,7 @@ describe("HomePage", () => {
 
   it("starts and stops scheduler", async () => {
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
@@ -143,33 +144,33 @@ describe("HomePage", () => {
     act(() => {jest.runOnlyPendingTimers()});
     expect(utils.getByTestId('ev-pending')).toBeVisible();
 
-    userEvent.click(utils.getByRole('button', {name: /off/i}));
+    await utils.user.click(utils.getByRole('button', {name: /off/i}));
     expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
   });
 
-
   it("stops scheduler with group change", async () => {
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
 
     utils.groupInputChg('test2');
     await waitFor(() => {
-      expect(utils.groupInput).toHaveValue('test2');
+      expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler canceled`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
     });
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler canceled`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
-
   });
 
   it("changes options", async () => {
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /tomorrow/i}));
+
+    const tobutton = utils.getByRole('button', {name: /tomorrow/i})
+    expect(tobutton).toBeEnabled();
+    await utils.user.click(tobutton);
   });
 
   it("restarts active schedule when changes options", async () => {
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
 
-    userEvent.click(utils.getByRole('button', {name: /tomorrow/i}));
+    await utils.user.click(utils.getByRole('button', {name: /tomorrow/i}));
   });
 
   // warning - fetchSchedGroupsDB mock changes
@@ -180,26 +181,26 @@ describe("HomePage", () => {
     }));
 
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
 
     // handles multiple presses
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
 
     // should run pre-alarm and reschedule
     act(() => {jest.runOnlyPendingTimers()});
     expect(utils.getByTestId('ev-soon')).toBeVisible();
 
-    userEvent.click(utils.getByRole('button', {name: /silence/i}));
+    await utils.user.click(utils.getByRole('button', {name: /silence/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-ack')).toBeVisible();
     });
     act(() => {jest.runOnlyPendingTimers()});
 
-    userEvent.click(utils.getByRole('button', {name: /off/i}));
-    expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
+    // await utils.user.click(utils.getByRole('button', {name: /off/i}));
+    // expect(mockEnqueue).toHaveBeenLastCalledWith(`scheduler off`, {variant: 'info', "anchorOrigin": {"horizontal": "right", "vertical": "bottom"},});
   });
 
   // warning - fetchSchedGroupsDB mock changes
@@ -210,7 +211,7 @@ describe("HomePage", () => {
     }));
 
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
@@ -219,7 +220,7 @@ describe("HomePage", () => {
     Date.now = jest.fn(() => mockNow + 10000);
     act(() => {jest.runOnlyPendingTimers()});
 
-    userEvent.click(utils.getByRole('button', {name: /silence/i}));
+    await utils.user.click(utils.getByRole('button', {name: /silence/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-ack')).toBeVisible();
     });
@@ -236,7 +237,7 @@ describe("HomePage", () => {
     }));
 
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
     await waitFor(() => {
       expect(utils.getByTestId('ev-pending')).toBeVisible();
     });
@@ -264,7 +265,7 @@ describe("HomePage", () => {
     ));
 
     const utils = await mySetup();
-    userEvent.click(utils.getByRole('button', {name: /test1/i}));
+    await utils.user.click(utils.getByRole('button', {name: /test1/i}));
     act(() => {jest.runOnlyPendingTimers()});
     expect(mockEnqueue).toHaveBeenLastCalledWith(`Complete with no future events`, {variant: 'warning',});
   });

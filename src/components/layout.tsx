@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, Component } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Auth, API, Hub } from "aws-amplify"
 import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
 
@@ -23,7 +23,7 @@ import { currUsersInfo, IgetCurrentUser } from '../graphql/queries';
 interface EboundaryState {
         errorMsg : string | null,
 }
-class WbenchErrorBoundary extends Component<{}, EboundaryState> {
+class WbenchErrorBoundary extends React.Component<{children: React.ReactNode}, EboundaryState> {
     constructor(props: any) {
         super(props);
         this.state = {errorMsg: ''};

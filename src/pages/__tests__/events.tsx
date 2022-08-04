@@ -79,7 +79,7 @@ describe("EventsPage", () => {
     const utils = await mySetup();
 
     expect(utils.testButton).toBeVisible();
-    userEvent.click(utils.testButton);
+    await userEvent.click(utils.testButton);
 
     await waitFor(() => {
         expect(utils.getByTestId('modifyEvent')).toBeVisible();
@@ -90,37 +90,38 @@ describe("EventsPage", () => {
   it("new event button switches back to new event card", async () => {
     const utils = await mySetup();
 
-    expect(utils.testButton).toBeVisible();
-    userEvent.click(utils.testButton);
-
     await waitFor(() => {
-        expect(utils.getByTestId('modifyEvent')).toBeVisible();
+      expect(utils.testButton).toBeVisible();
+    });
+    await userEvent.click(utils.testButton);
+    await waitFor(() => {
+        expect(utils.getByRole('button', {name: /save mod/i})).toBeVisible();
     });
     expect(utils.newEventButton).toBeEnabled();
-    userEvent.click(utils.newEventButton);
+    await userEvent.click(utils.newEventButton);
     await waitFor(() => {
         expect(utils.getByTestId('modifyEvent')).toBeVisible();
     });
     expect(utils.newEventButton).toBeDisabled();
-
   });
 
   it("reloads data after modified event is saved", async () => {
     const utils = await mySetup();
 
-    expect(utils.testButton).toBeVisible();
-    userEvent.click(utils.testButton);
+    await waitFor(() => {
+      expect(utils.testButton).toBeVisible();
+    });
+    await userEvent.click(utils.testButton);
 
     await waitFor(() => {
-        expect(utils.getByTestId('modifyEvent')).toBeVisible();
+        expect(utils.getByRole('button', {name: /save mod/i})).toBeVisible();
     });
 
     const saveModButton = utils.getByRole('button', {name: /save mod/i});
-    userEvent.click(saveModButton);
+    await userEvent.click(saveModButton);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-
   });
 
 });

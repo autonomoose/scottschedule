@@ -18,7 +18,6 @@ exports[`futurevents renders snapshot correctly 1`] = `
     >
       09:42:07 AM
        
-      
        - 
       test event
     </div>
@@ -27,7 +26,6 @@ exports[`futurevents renders snapshot correctly 1`] = `
     >
       09:44:07 AM
        
-      
        - 
       test event
     </div>

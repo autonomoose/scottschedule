@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
 import "@testing-library/jest-dom";
 
@@ -27,30 +27,40 @@ describe("userutil user delete", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it("exits correctly", () => {
+  it("exits correctly", async () => {
     const {getByText} = render(mytest);
-    userEvent.click(getByText(/Cancel/i));
-    expect(handleDialogClose).toHaveBeenCalledWith();
+    await userEvent.click(getByText(/Cancel/i));
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
   });
 
-  it("submits correctly", () => {
+  it("submits correctly", async () => {
     const {getByRole} = render(mytest);
     const delButton = getByRole('button', {name: /delete/i});
-    userEvent.click(delButton);
-    expect(handleDialogClose).toHaveBeenCalledWith();
+    await userEvent.click(delButton);
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
   });
 
-  it("handles Auth reject", () => {
+  it("handles Auth reject", async () => {
+    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const {getByRole} = render(mytest);
     const delButton = getByRole('button', {name: /delete/i});
 
     const spy = jest.spyOn(Auth, 'currentAuthenticatedUser')
       .mockImplementation(() => Promise.reject('mock reject'));
 
-    userEvent.click(delButton);
-    expect(handleDialogClose).toHaveBeenCalledWith();
+    await userEvent.click(delButton);
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
+
+    expect(consoleWarnFn).toHaveBeenCalledTimes(1);
 
     spy.mockRestore();
+    consoleWarnFn.mockRestore();
   });
 
 });

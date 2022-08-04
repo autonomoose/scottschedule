@@ -38,17 +38,19 @@ describe("eventsutil - newrule", () => {
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
   });
-  it("cancels with button", () => {
+  it("cancels with button", async () => {
     const utils = mySetup();
 
     userEvent.click(utils.canButton);
-    expect(mockCallback).toHaveBeenLastCalledWith('');
+    await waitFor(() => {
+      expect(mockCallback).toHaveBeenLastCalledWith('');
+    });
   });
 
   it("enables reset and save after rule modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.ruleFld, '+2');
+    await userEvent.type(utils.ruleFld, '+2');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -57,7 +59,7 @@ describe("eventsutil - newrule", () => {
   it("handles reset after rule modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.ruleFld, '+2');
+    await userEvent.type(utils.ruleFld, '+2');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -72,7 +74,7 @@ describe("eventsutil - newrule", () => {
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.ruleFld, '+2');
+    await userEvent.type(utils.ruleFld, '+2');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -90,7 +92,7 @@ describe("eventsutil - newrule", () => {
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.ruleFld, '+2');
+    await userEvent.type(utils.ruleFld, '+2');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });

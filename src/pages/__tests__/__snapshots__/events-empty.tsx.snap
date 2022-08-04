@@ -480,9 +480,6 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                           type="button"
                         >
                           New Event
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </button>
                       </div>
                     </div>
@@ -556,14 +553,11 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         </h6>
                         <button
                           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-8prnfn-MuiButtonBase-root-MuiIconButton-root"
-                          data-testid="cancel"
+                          data-testid="modEvCancel"
                           tabindex="0"
                           type="button"
                         >
                           X
-                          <span
-                            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                          />
                         </button>
                       </div>
                       <div
@@ -585,8 +579,8 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                 <label
                                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
                                   data-shrink="true"
-                                  for="mui-1"
-                                  id="mui-1-label"
+                                  for=":r0:"
+                                  id=":r0:-label"
                                 >
                                   Name
                                 </label>
@@ -597,7 +591,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                     aria-invalid="false"
                                     class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
                                     data-testid="nameInput"
-                                    id="mui-1"
+                                    id=":r0:"
                                     name="evName"
                                     type="text"
                                     value=""
@@ -631,8 +625,8 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                 <label
                                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
                                   data-shrink="true"
-                                  for="mui-2"
-                                  id="mui-2-label"
+                                  for=":r1:"
+                                  id=":r1:-label"
                                 >
                                   Summary
                                 </label>
@@ -643,7 +637,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                     aria-invalid="false"
                                     class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
                                     data-testid="descrInput"
-                                    id="mui-2"
+                                    id=":r1:"
                                     name="descr"
                                     type="text"
                                     value=""
@@ -678,10 +672,10 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                   class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
                                 >
                                   <label
-                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
+                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
                                     data-shrink="true"
-                                    for="mui-3"
-                                    id="mui-3-label"
+                                    for=":r2:"
+                                    id=":r2:-label"
                                   >
                                     Sound
                                   </label>
@@ -692,7 +686,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                       aria-invalid="false"
                                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
                                       data-testid="soundInput"
-                                      id="mui-3"
+                                      id=":r2:"
                                       name="sound"
                                       type="text"
                                       value=""
@@ -728,10 +722,10 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                   class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
                                 >
                                   <label
-                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
-                                    data-shrink="true"
-                                    for="mui-4"
-                                    id="mui-4-label"
+                                    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-pip3qv-MuiFormLabel-root-MuiInputLabel-root"
+                                    data-shrink="false"
+                                    for=":r3:"
+                                    id=":r3:-label"
                                   >
                                     Repeat
                                   </label>
@@ -742,7 +736,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                       aria-invalid="false"
                                       class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-myb2s4-MuiInputBase-input-MuiOutlinedInput-input"
                                       data-testid="soundRepeatInput"
-                                      id="mui-4"
+                                      id=":r3:"
                                       name="soundrepeat"
                                       type="text"
                                       value=""
@@ -752,7 +746,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                                       class="MuiOutlinedInput-notchedOutline css-9425fu-MuiOutlinedInput-notchedOutline"
                                     >
                                       <legend
-                                        class="css-1in441m"
+                                        class="css-1ftyaf0"
                                       >
                                         <span>
                                           Repeat
@@ -807,9 +801,6 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                         type="button"
                       >
                         New Rule
-                        <span
-                          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                        />
                       </button>
                     </div>
                   </div>

@@ -8,8 +8,10 @@ jest.mock('aws-amplify');
 
 const mockCallback = jest.fn();
 const mockEvents = {testevt: {descr: 'testing', schedRules: ["begin +2,++2,++2"], sound: {name: '_default_', repeat: 3},}};
+const mockEventsAlt = {testevt: {descr: '', schedRules: ["option test6 +2,++2,++2"], sound: {name: '_default_', repeat: 3},}};
 
 const mytest = <ModifyEvent evid='testevt' tasks={mockEvents} onComplete={mockCallback} open={true} />;
+const mytestAlt = <ModifyEvent evid='testevt' tasks={mockEventsAlt} onComplete={mockCallback} open={true} />;
 const mySetup = () => {
     const utils = render(mytest);
     const resetButton = utils.getByRole('button', {name: /reset/i});
@@ -36,27 +38,60 @@ describe("eventsutil - modify", () => {
 
     expect(container.firstChild).toMatchSnapshot();
   });
+  it("renders alternate data snapshot correctly", () => {
+    const {container} = render(mytestAlt);
+
+    expect(container.firstChild).toMatchSnapshot();
+  });
   it("starts with buttons in correct status", () => {
     const utils = mySetup();
 
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
     expect(utils.newRuleButton).toBeEnabled();
+
   });
-  it("enables reset and save after descr modification", async () => {
+  it("handles new rule and cancel", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    expect(utils.newRuleButton).toBeEnabled();
+    userEvent.click(utils.newRuleButton);
+    await waitFor(() => {
+      expect(utils.getByTestId('newEvCancel')).toBeVisible();
+    });
+
+    userEvent.click(utils.getByTestId('newEvCancel'));
+    await waitFor(() => {
+      expect(utils.getByTestId('newEvCancel')).not.toBeVisible();
+    });
+
+  });
+  it("handles delete rule", async () => {
+    const utils = mySetup();
+    const ruleDelButton = utils.getByTestId('testevtbeginDel');
+    userEvent.click(ruleDelButton);
+  });
+  it("enables reset and save after descr modification, handles cancel", async () => {
+    const utils = mySetup();
+
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
     expect(utils.saveButton).toBeEnabled();
+
+    const cancelButton = utils.getByTestId('modEvCancel');
+    userEvent.click(cancelButton);
+    await waitFor(() => {
+      expect(mockCallback).toHaveBeenCalled();
+    });
+
   });
 
   it("handles reset after fld modification", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new descr');
+    await userEvent.type(utils.descrFld, 'new descr');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -73,7 +108,7 @@ describe("eventsutil - modify", () => {
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -91,7 +126,7 @@ describe("eventsutil - modify", () => {
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.descrFld, 'new desc');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
@@ -106,7 +141,7 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid descr mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc but way way too long');
+    await userEvent.type(utils.descrFld, 'new desc but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -119,8 +154,8 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid sound mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    userEvent.type(utils.soundFld, 'new sound but way way too long');
+    await userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.soundFld, 'new sound but way way too long');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -133,8 +168,8 @@ describe("eventsutil - modify", () => {
   it("handles error after invalid sound repeat mod", async () => {
     const utils = mySetup();
 
-    userEvent.type(utils.descrFld, 'new desc');
-    userEvent.type(utils.sRepeatFld, '100');
+    await userEvent.type(utils.descrFld, 'new desc');
+    await userEvent.type(utils.sRepeatFld, '100');
     await waitFor(() => {
       expect(utils.saveButton).toBeEnabled();
     });
@@ -170,7 +205,7 @@ describe("eventsutil - modify", () => {
     });
     API.graphql = prevAPIgraphql;
   });
-  it("handles grapql error on delete", async () => {
+  it("handles graphql error on delete", async () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
@@ -180,7 +215,7 @@ describe("eventsutil - modify", () => {
     const utils = render(spectest);
 
     const delButton = utils.getByTestId('del-testevt');
-    userEvent.click(delButton);
+    await userEvent.click(delButton);
 
     await waitFor(() => {
       expect(consoleWarnFn).toHaveBeenCalledTimes(1);

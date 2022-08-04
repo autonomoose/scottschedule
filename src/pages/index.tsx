@@ -15,7 +15,7 @@ interface FeatureBoxProp {
 }
 const FeatureBox = (props: FeatureBoxProp) => {
     return(
-      <Card sx={{maxWidth: 180, marginRight: 2, marginBottom: 2, boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
+      <Card sx={{maxWidth: 170, marginRight: 2, marginBottom: 2, boxShadow: '5px 5px 12px #888888', borderRadius: '0 0 5px 5px'}}>
         <Box display="flex" justifyContent="center" sx={{bgcolor: 'site.main'}}>
           <Typography my={1}>
             {props.title}
@@ -62,9 +62,10 @@ const IndexPage = () => {
           <ul>
             <li>
               <Typography variant='h6'>
-                Current Version: 1.3.1-beta
+                Current Version: 1.3.2-beta
               </Typography>
             </li>
+            <li>1.3.2 07/13/22 - npm upgrades, test, react</li>
             <li>1.3.1 07/04/22 - ui redesign for config tools, bug fixes</li>
             <li>1.3.0 06/12/22 - flexible dark mode, bug fixes</li>
             <li>1.2.5 04/27/22 - patches, minor features logging, countdown</li>

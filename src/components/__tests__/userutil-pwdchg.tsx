@@ -26,7 +26,8 @@ const mytest = <PasswordChgDialog dialogOpen={true} dialogClose={handleDialogClo
 /// form has 3 input fields, 2 buttons
 ///   password, new password, confirm new password
 ///   change password, cancel
-const mySetup = () => {
+const mySetup = async () => {
+    const user = userEvent.setup();
     const utils = render(mytest);
 
     const oldPassInput = utils.getByTestId('oldPassInput');
@@ -35,6 +36,9 @@ const mySetup = () => {
 
     const canButton = utils.getByRole('button', {name: /cancel/i});
     const chgButton = utils.getByRole('button', {name: /change password/i});
+    await waitFor(() => {
+      expect(oldPassInput).toBeEnabled();
+    });
 
     return {
         ...utils,
@@ -43,6 +47,7 @@ const mySetup = () => {
         confPassInput,
         canButton,
         chgButton,
+        user,
     }
 }
 
@@ -52,46 +57,54 @@ describe("userutil password chg", () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it("exits correctly", () => {
-    const utils = mySetup();
+  it("exits correctly", async () => {
+    const utils = await mySetup();
 
-    userEvent.click(utils.canButton);
-    expect(handleDialogClose).toHaveBeenCalledWith();
+    await utils.user.click(utils.canButton);
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
   });
 
   it("submits with inputs filled", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     expect(utils.chgButton).toBeDisabled();
 
-    userEvent.type(utils.oldPassInput, 'oldpass8');
-    userEvent.type(utils.newPassInput, 'newpass8');
-    userEvent.type(utils.confPassInput, 'newpass8');
+    await utils.user.type(utils.oldPassInput, 'oldpass8');
+    await utils.user.type(utils.newPassInput, 'newpass8');
+    await utils.user.type(utils.confPassInput, 'newpass8');
 
     await waitFor(() => {
         expect(utils.chgButton).toBeEnabled();
     });
-
-    userEvent.click(utils.chgButton);
-    expect(handleDialogClose).toHaveBeenCalledWith();
-  }, 10000);
+    await userEvent.click(utils.chgButton);
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
+  });
 
   it("handles input errors and Auth reject", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     expect(utils.chgButton).toBeDisabled();
 
     // enter short newpass (<8)
-    userEvent.type(utils.oldPassInput, 'oldpass8');
-    userEvent.type(utils.newPassInput, 'newpass');
-    userEvent.type(utils.confPassInput, 'newpass');
-    expect(utils.chgButton).toBeDisabled();
+    await utils.user.type(utils.oldPassInput, 'oldpass8');
+    await utils.user.type(utils.newPassInput, 'newpass');
+    await utils.user.type(utils.confPassInput, 'newpass');
+    await waitFor(() => {
+      expect(utils.chgButton).toBeDisabled();
+    });
+
 
     // newpass not match confpass
-    userEvent.type(utils.newPassInput, 'newpass8');
-    expect(utils.chgButton).toBeDisabled();
+    await utils.user.type(utils.newPassInput, 'newpass8');
+    await waitFor(() => {
+      expect(utils.chgButton).toBeDisabled();
+    });
 
-    userEvent.type(utils.confPassInput, 'newpass8');
+    await utils.user.type(utils.confPassInput, 'newpass8');
     await waitFor(() => {
         expect(utils.chgButton).toBeEnabled();
     });
@@ -99,10 +112,12 @@ describe("userutil password chg", () => {
     const spy = jest.spyOn(Auth, 'currentAuthenticatedUser')
       .mockImplementation(() => Promise.reject('mock reject'));
 
-    userEvent.click(utils.chgButton);
-    expect(handleDialogClose).toHaveBeenCalledWith();
+    await utils.user.click(utils.chgButton);
+    await waitFor(() => {
+      expect(handleDialogClose).toHaveBeenCalledWith();
+    });
 
     spy.mockRestore();
-  }, 10000);
+  });
 
 });

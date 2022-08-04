@@ -51,7 +51,7 @@ describe("Layout", () => {
     await waitFor(() => {
         expect(screen.getByTestId('errorboundary')).toBeVisible();
     });
-    expect(consoleErrorFn).toHaveBeenCalledTimes(2); // error boundary and retry
+    expect(consoleErrorFn).toHaveBeenCalledTimes(3); // error boundary and retry
     expect(consoleWarnFn).toHaveBeenCalledTimes(1);
     consoleErrorFn.mockRestore();
     consoleWarnFn.mockRestore();

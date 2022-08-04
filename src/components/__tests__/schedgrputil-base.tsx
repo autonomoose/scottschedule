@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
+import {within} from '@testing-library/dom'
 
 import { API } from 'aws-amplify';
 import DisplaySchedGroup, { fetchSchedGroupsDB, ChoiceSchedGroup, CreateGroup, ConnectTask } from '../../components/schedgrputil';
@@ -226,7 +227,26 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
       });
       API.graphql = prevAPIgraphql;
   });
+  it("translates graphQL schedgroups w clock", async () => {
+      const prevAPIgraphql = API.graphql;
+      API.graphql = jest.fn(() => Promise.resolve({'data':
+        {'listSchedGroups': {items: [
+          testDBgroupArgs,
+          {...testDBschedArgs, clock: 'digital1',},
+          testDBevent,
+        ]}}
+      })) as any;
+      const schedGroups = await fetchSchedGroupsDB();
 
+      expect(schedGroups).toStrictEqual({
+        'default': {
+          descr: 'test schedules',
+          "notomorrow": false,
+          schedNames: [{...baseSchedNames, clock: 'digital1', }],
+        }
+      });
+      API.graphql = prevAPIgraphql;
+  });
 });
 
 
@@ -266,14 +286,17 @@ describe("schedgrputil - choice (ChoiceSchedGroup) event", () => {
 });
 
 describe("schedgrputil - connev (connect event)", () => {
-  const mockCallback = jest.fn();
-  const mytest = <ConnectTask evList={testEvList} schedName='testgrp' onComplete={mockCallback} open={true} />
-  const mySetup = () => {
+  const mySetup = async () => {
+      const mockCallback = jest.fn();
+      const mytest = <ConnectTask evList={testEvList} schedName='testgrp' onComplete={mockCallback} open={true} />
       const utils = render(mytest);
+      await waitFor(() => {
+        expect(utils.getByTestId('taskid')).toBeVisible();
+      });
+      const taskFld = utils.getByTestId('taskid');
       const canButton = utils.getByRole('button', {name: /cancel/i});
       const resetButton = utils.getByRole('button', {name: /reset/i});
       const saveButton = utils.getByRole('button', {name: /save/i});
-      const taskFld = utils.getByTestId('taskid');
 
       return {
           ...utils,
@@ -281,29 +304,32 @@ describe("schedgrputil - connev (connect event)", () => {
           resetButton,
           saveButton,
           taskFld,
+          mockCallback,
       }
   };
-  it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
+  it("renders snapshot correctly", async () => {
+    const utils = await mySetup();
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(utils.container.firstChild).toMatchSnapshot();
   });
-  it("starts with buttons in correct status", () => {
-    const utils = mySetup();
+  it("starts with buttons in correct status", async () => {
+    const utils = await mySetup();
 
     expect(utils.canButton).toBeEnabled();
     expect(utils.resetButton).toBeEnabled();
     expect(utils.saveButton).toBeEnabled();
   });
-  it("cancels with button", () => {
-    const utils = mySetup();
+  it("cancels with button", async () => {
+    const utils = await mySetup();
 
     userEvent.click(utils.canButton);
-    expect(mockCallback).toHaveBeenLastCalledWith('_testgrp');
+    await waitFor(() => {
+      expect(utils.mockCallback).toHaveBeenLastCalledWith('_testgrp');
+    });
   });
 
   it("enables reset and save after event name modification", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.taskFld, 'newev');
     await waitFor(() => {
@@ -312,7 +338,7 @@ describe("schedgrputil - connev (connect event)", () => {
     expect(utils.saveButton).toBeEnabled();
   });
   it("handles reset after event modification", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.taskFld, 'newev');
     await waitFor(() => {
@@ -322,28 +348,24 @@ describe("schedgrputil - connev (connect event)", () => {
   });
 
   it("handles graphql error on save", async () => {
-    const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
-    const utils = mySetup();
+    const utils = await mySetup();
 
-    userEvent.type(utils.taskFld, 'newev');
+    const inputFld = within(utils.taskFld).getByRole('button');
+    userEvent.type(inputFld, 'ev2');
     await waitFor(() => {
       expect(utils.resetButton).toBeEnabled();
     });
     expect(utils.saveButton).toBeEnabled();
     userEvent.click(utils.saveButton);
 
-    await waitFor(() => {
-      expect(consoleWarnFn).toHaveBeenCalledTimes(1);
-    });
     API.graphql = prevAPIgraphql;
-    consoleWarnFn.mockRestore();
   });
   it("handles save after name modification", async () => {
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.taskFld, 'newev');
     await waitFor(() => {
@@ -352,19 +374,19 @@ describe("schedgrputil - connev (connect event)", () => {
     expect(utils.saveButton).toBeEnabled();
     userEvent.click(utils.saveButton);
 
-    await waitFor(() => {
-      expect(mockCallback).toHaveBeenLastCalledWith('testgrp');
-    });
     API.graphql = prevAPIgraphql;
   });
 
 });
 
-describe("schedgrputil - create", () => {
-  const mockCallback = jest.fn();
-  const mytest = <CreateGroup onComplete={mockCallback} open={true} />;
-  const mySetup = () => {
+describe("schedgrputil - create group", () => {
+  const mySetup = async () => {
+      const mockCallback = jest.fn();
+      const mytest = <CreateGroup onComplete={mockCallback} open={true} />;
       const utils = render(mytest);
+      await waitFor(() => {
+        expect(utils.getByTestId('nameInput')).toBeVisible();
+      });
       const resetButton = utils.getByRole('button', {name: /reset/i});
       const saveButton = utils.getByRole('button', {name: /save/i});
       const nameFld = utils.getByTestId('nameInput');
@@ -376,31 +398,34 @@ describe("schedgrputil - create", () => {
           saveButton,
           nameFld,
           descrFld,
+          mockCallback,
       }
   };
 
-  it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
+  it("renders snapshot correctly", async () => {
+    const utils = await mySetup();
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(utils.container.firstChild).toMatchSnapshot();
   });
 
-  it("starts with buttons in correct status", () => {
-    const utils = mySetup();
+  it("starts with buttons in correct status", async () => {
+    const utils = await mySetup();
 
     expect(utils.resetButton).toBeDisabled();
     expect(utils.saveButton).toBeDisabled();
   });
 
-  it("cancels with upper right x button", () => {
-    const utils = mySetup();
+  it("cancels with upper right x button", async () => {
+    const utils = await mySetup();
 
     userEvent.click(utils.getByRole('button', {name: /x/i}));
-    expect(mockCallback).toHaveBeenLastCalledWith('');
+    await waitFor(() => {
+      expect(utils.mockCallback).toHaveBeenLastCalledWith('');
+    });
   });
 
   it("enables reset and save after name modification", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.nameFld, 'newgrp');
     await waitFor(() => {
@@ -409,7 +434,7 @@ describe("schedgrputil - create", () => {
     expect(utils.saveButton).toBeEnabled();
   });
   it("handles reset after name modification", async () => {
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.nameFld, 'newgrp');
     await waitFor(() => {
@@ -424,7 +449,7 @@ describe("schedgrputil - create", () => {
     const consoleWarnFn = jest.spyOn(console, 'warn').mockImplementation(() => jest.fn());
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.reject('mockreject')) as any;
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.nameFld, 'newgrp');
     userEvent.type(utils.descrFld, 'new desc');
@@ -435,7 +460,7 @@ describe("schedgrputil - create", () => {
     userEvent.click(utils.saveButton);
 
     await waitFor(() => {
-      expect(consoleWarnFn).toHaveBeenCalledTimes(1);
+      expect(consoleWarnFn).toHaveBeenCalledTimes(2);
     });
     API.graphql = prevAPIgraphql;
     consoleWarnFn.mockRestore();
@@ -443,7 +468,7 @@ describe("schedgrputil - create", () => {
   it("handles save after name modification", async () => {
     const prevAPIgraphql = API.graphql;
     API.graphql = jest.fn(() => Promise.resolve({})) as any;
-    const utils = mySetup();
+    const utils = await mySetup();
 
     userEvent.type(utils.nameFld, 'newgrp');
     userEvent.type(utils.descrFld, 'new desc');
@@ -453,9 +478,6 @@ describe("schedgrputil - create", () => {
     expect(utils.saveButton).toBeEnabled();
     userEvent.click(utils.saveButton);
 
-    await waitFor(() => {
-      expect(mockCallback).toHaveBeenLastCalledWith('newgrp');
-    });
     API.graphql = prevAPIgraphql;
   });
 

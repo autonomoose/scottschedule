@@ -34,16 +34,14 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 import { listSchedGroupsFull, iSchedGroupListDB } from '../graphql/queries';
-import { mutAddEvents, mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
+import { mutDelEvents, mutAddRules, mutAddScheds } from '../graphql/mutations';
 
 // -------------------------------------------------
 interface CreateGroupProps {
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean
 }
-const mockComplete = (msg: string) => {console.log(msg)};
 export const CreateGroup = (props: CreateGroupProps) => {
-    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     // form states
     const { register, handleSubmit, reset, formState } = useForm({
         defaultValues: {
@@ -68,8 +66,8 @@ export const CreateGroup = (props: CreateGroupProps) => {
                 'notomorrow': data.notomorrow,
                 }
             };
-            await API.graphql({query: mutAddEvents, variables: xdata});
-            funComplete(data.name);
+            await API.graphql({query: mutAddScheds, variables: xdata});
+            props.onComplete(data.name);
         } catch (result) {
             console.warn('failed group update', result);
         }
@@ -85,7 +83,7 @@ export const CreateGroup = (props: CreateGroupProps) => {
             <Typography variant='h6'>
               Add New Schedule Group
             </Typography>
-            <IconButton size='small' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
           <Box px='0.5em'><label>
@@ -114,11 +112,10 @@ export const CreateGroup = (props: CreateGroupProps) => {
 interface ModifyGroupProps {
   group: string,
   groupSched: iSchedGroup,
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean,
 }
 export const ModifyGroup = (props: ModifyGroupProps) => {
-    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     const wkGroup = props.groupSched;
     const wkName = props.group;
 
@@ -152,8 +149,8 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
                 'notomorrow': (data.notomorrow)? 'true': '',
                 }
             };
-            await API.graphql({query: mutAddEvents, variables: xdata});
-            funComplete(wkName);
+            await API.graphql({query: mutAddScheds, variables: xdata});
+            props.onComplete(wkName);
         } catch (result) {
             console.warn('failed group update', result);
         }
@@ -169,7 +166,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
                 }
             };
             await API.graphql({query: mutDelEvents, variables: xdata});
-            funComplete(wkName);
+            props.onComplete(wkName);
         } catch (result) {
             console.warn('failed delete', result);
         }
@@ -183,7 +180,7 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           <form key="modGroup" onSubmit={handleSubmit(formModGroupSubmit)}>
           <Box px='0.5em' display="flex" justifyContent="space-between" alignItems="baseline" sx={{bgcolor: 'site.main'}}>
             <Typography variant='h6'>Modify Group</Typography>
-            <IconButton size='small' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
           <Box px='0.5em' display='flex' alignItems='center'>
             {wkName}
@@ -219,13 +216,13 @@ export const ModifyGroup = (props: ModifyGroupProps) => {
           <>
             <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
               <span>Schedules ({wkGroup.schedNames.length}) </span>
-              <Button onClick={() => funComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
+              <Button onClick={() => props.onComplete('_'+wkName+'!_NEW_')}  size="small" variant="outlined" color="primary">New Schedule</Button>
             </Box>
             <List disablePadding dense sx={{marginLeft: '1em'}}>
             {
               wkGroup.schedNames.map(schedule => {
                 return(
-                  <ListItem button key={schedule.schedName} onClick={() => funComplete('_'+wkName+'!'+schedule.schedName)}>
+                  <ListItem button key={schedule.schedName} onClick={() => props.onComplete('_'+wkName+'!'+schedule.schedName)}>
                       {schedule.schedName} - {schedule.descr}
                   </ListItem>
               ) } )
@@ -242,7 +239,7 @@ interface ManSchedProps {
   groupSchedName: string, // group!sched or group!_NEW_
   gSchedule: iSchedule,
   evList: string[],
-  onComplete?: (status: string) => void,
+  onComplete: (status: string) => void,
   open: boolean
 }
 interface FormManSchedParms {
@@ -263,7 +260,6 @@ interface FormManSchedParms {
 */
 
 export const ManSched = (props: ManSchedProps) => {
-    const funComplete = (props.onComplete) ? props.onComplete : mockComplete;
     let wkWords = props.groupSchedName.split('!');
     const groupName = wkWords.shift() || '';
     const schedName = wkWords.shift() || '';
@@ -293,36 +289,27 @@ export const ManSched = (props: ManSchedProps) => {
     const { register, handleSubmit, reset, formState } = useForm({defaultValues: formDefaultVal});
     const { isDirty, errors } = formState;
 
-    /* -------- reset form defaults to any current values ------ */
+
+    /* --------  reset form defaults
+           to current values in currSchedule
+           any values set to '' or undefined are reset to default
+    */
     useEffect(() => {
         let defaultValues: FormManSchedParms = formDefaultVal;
         if (schedName && schedName !== '_NEW_' && currSchedule) {
-            defaultValues['schedName'] = schedName;
-            defaultValues['descr'] = currSchedule.descr || '';
-            defaultValues['begins'] = currSchedule.begins || 'now';
-            if (currSchedule.buttonName || currSchedule.buttonName === '') {
-                defaultValues['buttonName'] = currSchedule.buttonName;
-            }
-            if (currSchedule.sound) {
-                if (currSchedule.sound['name'] || currSchedule.sound['name'] === '') {
-                    defaultValues['sound'] = currSchedule.sound.name;
-                }
-                if (currSchedule.sound['repeat']) {
-                    defaultValues['soundrepeat'] = currSchedule.sound.repeat.toString();
-                }
-            }
-            if ('warn' in currSchedule) {
-                defaultValues['warn'] = '_default_';
-                if (currSchedule.warn && currSchedule.warn.sound) {
-                    defaultValues['warn'] = currSchedule.warn.sound.name || '_default';
-                }
-            }
-            if (currSchedule.chain || currSchedule.chain === '') {
-                defaultValues['chain'] = currSchedule.chain;
-            }
-            if (currSchedule.clock || currSchedule.clock === '') {
-                defaultValues['clock'] = currSchedule.clock;
-            }
+            // overlay currrent values over formDefaultVal values
+            // these should stay unrolled, it helps coverage testing find omissions
+            defaultValues.schedName = schedName;
+            defaultValues.descr = currSchedule.descr || formDefaultVal.descr;
+            defaultValues.begins = currSchedule.begins || formDefaultVal.begins;
+            defaultValues.buttonName = currSchedule?.buttonName || formDefaultVal.buttonName;
+
+            defaultValues.sound = currSchedule?.sound?.name || formDefaultVal.sound;
+            defaultValues.soundrepeat = (currSchedule?.sound?.repeat)? currSchedule.sound.repeat.toString(): formDefaultVal.soundrepeat;
+            defaultValues.warn = currSchedule?.warn?.sound?.name || formDefaultVal.warn;
+
+            defaultValues.chain = currSchedule?.chain || formDefaultVal.chain;
+            defaultValues.clock = currSchedule?.clock || formDefaultVal.clock;
         }
 
         reset(defaultValues);
@@ -353,7 +340,7 @@ export const ManSched = (props: ManSchedProps) => {
                 }
             };
             await API.graphql({query: mutAddScheds, variables: xdata});
-            funComplete(wkRetNames);
+            props.onComplete(wkRetNames);
         } catch (result) {
             console.warn('failed sched update', result);
         }
@@ -370,7 +357,7 @@ export const ManSched = (props: ManSchedProps) => {
                 }
             };
             await API.graphql({query: mutDelEvents, variables: xdata});
-            funComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
+            props.onComplete((data.cmd === 'args')? '_'+keyNames: keyNames);
         } catch (result) {
             console.warn('failed delete', result);
         }
@@ -378,7 +365,7 @@ export const ManSched = (props: ManSchedProps) => {
     const formCallback = (status: string) => {
         setSchedEv('');
         if (status[0] !== '_') {
-            funComplete(status);
+            props.onComplete(status);
         }
     };
 
@@ -394,7 +381,7 @@ export const ManSched = (props: ManSchedProps) => {
               { (schedName && schedName !== '_NEW_') ?
                 <span>Schedule {schedName}
                   { (currSchedule && currSchedule.schedTasks.length === 0) ?
-                    <IconButton color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
+                    <IconButton data-testid='delSched' color='warning' onClick={() => formDelEvent({'cmd': 'args'})}>
                       <DeleteForeverIcon sx={{height: '1.25rem'}} />
                     </IconButton>
                     :
@@ -407,7 +394,7 @@ export const ManSched = (props: ManSchedProps) => {
                 </span>
               }
             </Typography>
-            <IconButton data-testid='cancel' size='small' onClick={() => funComplete('')}>X</IconButton>
+            <IconButton data-testid='cancel' size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
           {/* -------------- Main Form Grid ----------------- */}
@@ -415,12 +402,21 @@ export const ManSched = (props: ManSchedProps) => {
             {/* -------------- Top Line ----------------- */}
             <Grid item xs={5}>
               {/* -------------- for Add this is a text box ----------------- */}
-              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'flex'}>
-                <TextField label='Name' variant="outlined"
-                  size='small'
-                  {...register('schedName', { required: true,})}
+              <Box px='0.5rem' display={(schedName && schedName !== '_NEW_')?'none':'block'}>
+                <TextField label='Name' size='small'
+                  {...register('schedName', {
+                    required: 'this field is required',
+                    pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special characters'},
+                    maxLength: {value: 20, message: '20 char max'},
+                  })}
                   aria-invalid={errors.schedName ? "true" : "false"}
+                  color={errors.schedName ? 'error' : 'primary'}
+                  inputProps={{'data-testid': 'schedNameInput'}}
+                  InputLabelProps={{shrink: true}}
                 />
+                <ErrorMessage errors={errors} name="schedName" render={({ message }) =>
+                  <CaptionBox caption={message} color='error'/>
+                } />
               </Box>
 
               {/* -------------- for Modify this is a button name textbox OR button ------ */}
@@ -432,10 +428,10 @@ export const ManSched = (props: ManSchedProps) => {
                       pattern: {value: /^[a-zA-Z0-9\ ]+$/, message: 'no special chars'},
                       maxLength: {value: 8, message: '8 char max'},
                     })}
-                    inputProps={{'data-testid': 'buttonInput'}}
                     aria-invalid={errors.buttonName ? "true" : "false"}
                     color={errors.buttonName ? 'error' : 'primary'}
                     InputLabelProps={{shrink: true}}
+                    inputProps={{'data-testid': 'buttonInput'}}
                   />
                   <Box mt={-2} ml={-2.5}>
                     <IconButton data-testid='closeBname' size='small' onClick={() => setButtonNameEdit(false)}>X</IconButton>
@@ -458,7 +454,7 @@ export const ManSched = (props: ManSchedProps) => {
                         to={`/home?start=${groupName};${schedName}`}>
                         {(currSchedule.buttonName)? currSchedule.buttonName : schedName}
                       </Button>
-                      <IconButton  size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                      <IconButton data-testid='buttonEdit' size='small' onClick={() => setButtonNameEdit(true)}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
                     </Box>
                   : <span>
                       multi
@@ -475,7 +471,7 @@ export const ManSched = (props: ManSchedProps) => {
                   {...register('descr', {
                     required: 'this field is required',
                     pattern: {value: /^[a-zA-Z0-9 \-]+$/, message: 'no special characters'},
-                    maxLength: {value: 20, message: 'limited to 20 characters'},
+                    maxLength: {value: 20, message: '20 char max'},
                   })}
                   aria-invalid={errors.descr ? "true" : "false"}
                   color={errors.descr ? 'error' : 'primary'}
@@ -497,7 +493,7 @@ export const ManSched = (props: ManSchedProps) => {
                   <Typography variant='body2'>
                     {(currSchedule.begins === 'now' || schedName === '_NEW_')? <span> (normal) </span>: <span> (complex) </span> }
                   </Typography>
-                  <IconButton  size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                  <IconButton data-testid='startEdit' size='small' onClick={() => setShowCfg('start')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
                 </Box>
               </Box>
             </Grid>
@@ -512,7 +508,7 @@ export const ManSched = (props: ManSchedProps) => {
                     : <span>(default)</span>
                   }
                 </Typography>
-                <IconButton  size='small' onClick={() => setShowCfg('defaults')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                <IconButton data-testid='defaultEdit' size='small' onClick={() => setShowCfg('defaults')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
               </Box>
             </Box></Grid>
 
@@ -526,7 +522,7 @@ export const ManSched = (props: ManSchedProps) => {
                   : <span>none</span>
                   }
                 </Typography>
-                <IconButton  size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
+                <IconButton data-testid='endEdit' size='small' onClick={() => setShowCfg('end')}><EditIcon sx={{height: '1.25rem'}}/></IconButton>
               </Box>
             </Box></Grid>
 
@@ -537,14 +533,14 @@ export const ManSched = (props: ManSchedProps) => {
                    {...register('begins', {
                     required: 'this field is required',
                     pattern: {value: /^[a-zA-Z0-9\:\,]+$/, message: 'alphanumeric, colons, and commas only'},
-                    maxLength: {value: 50, message: 'limited to 50 characters'},
+                    maxLength: {value: 50, message: '50 char max'},
                   })}
                   aria-invalid={errors.begins ? "true" : "false"}
                   color={errors.begins ? 'error' : 'primary'}
                   inputProps={{'data-testid': 'beginsInput'}}
                 />
                 <Box mt={-2} ml={-2.5}>
-                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  <IconButton data-testid='startCancel' size='small' onClick={() => setShowCfg('')}>X</IconButton>
                 </Box>
               </Box>
               <Box px={1.5}>
@@ -560,14 +556,14 @@ export const ManSched = (props: ManSchedProps) => {
                 <Typography variant='h6'>
                   Defaults
                 </Typography>
-                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  <IconButton data-testid='defaultCancel' size='small' onClick={() => setShowCfg('')}>X</IconButton>
               </Box>
               <Grid item xs={12}>
                 <Box px='0.5rem' display='flex'>
                   <TextField label='Clock' size='small'
                     {...register('clock', {
+                      maxLength: {value: 10, message: '10 char max'},
                       pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special chars'},
-                      maxLength: {value: 10, message: 'too long - limited to 10 characters'},
                     })}
                     aria-invalid={errors.clock ? "true" : "false"}
                     color={errors.clock ? 'error' : 'primary'}
@@ -590,7 +586,7 @@ export const ManSched = (props: ManSchedProps) => {
                     <TextField label='Sound' size='small' fullWidth
                       {...register('sound', {
                         pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
-                        maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                        maxLength: {value: 20, message: '20 char max'},
                       })}
                       aria-invalid={errors.sound ? "true" : "false"}
                       color={errors.sound ? 'error' : 'primary'}
@@ -631,7 +627,7 @@ export const ManSched = (props: ManSchedProps) => {
                     <TextField label='Warning' size='small'
                       {...register('warn', {
                         pattern: {value: /^[a-zA-Z0-9\-\_]+$/, message: 'no special chars'},
-                        maxLength: {value: 20, message: 'too long - limited to 10 characters'},
+                        maxLength: {value: 20, message: '20 char max'},
                       })}
                       aria-invalid={errors.warn ? "true" : "false"}
                       color={errors.warn ? 'error' : 'primary'}
@@ -653,14 +649,14 @@ export const ManSched = (props: ManSchedProps) => {
                 <TextField label='Schedule Chain' variant="outlined" size='small' fullWidth
                   {...register('chain', {
                     pattern: {value: /^[a-zA-Z0-9\+]+$/, message: 'no special characters'},
-                    maxLength: {value: 40, message: 'limited to 40 characters'},
+                    maxLength: {value: 40, message: '40 char max'},
                   })}
                   aria-invalid={errors.chain ? "true" : "false"}
                   color={errors.chain ? 'error' : 'primary'}
                   inputProps={{'data-testid': 'chainInput'}}
                 />
                 <Box mt={-2} ml={-2.5}>
-                  <IconButton  size='small' onClick={() => setShowCfg('')}>X</IconButton>
+                  <IconButton data-testid='endCancel' size='small' onClick={() => setShowCfg('')}>X</IconButton>
                 </Box>
                 <ErrorMessage errors={errors} name="chain" render={({ message }) =>
                   <CaptionBox caption={message} color='error'/>
@@ -682,7 +678,7 @@ export const ManSched = (props: ManSchedProps) => {
           <>
             <Box px='0.5em'  mt={2} mb={1} display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
               <span>Events ({currSchedule.schedTasks.length}) </span>
-              <Button disabled={(schedName === '_NEW_')} onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">
+              <Button data-testid='addEventButton' disabled={(schedName === '_NEW_')} onClick={() => setSchedEv(groupName+'!'+schedName)}  size="small" variant="outlined" color="primary">
                 Add Event
               </Button>
             </Box>
@@ -773,9 +769,9 @@ export const ConnectTask = (props: ConnectTaskProps) => {
           </Box>
 
           <Box my={2} mr={1} display='flex' justifyContent='flex-end'>
-            <Button size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
-            <Button size="small" variant="outlined" onClick={() => reset()}>Reset</Button>
-            <Button size="small" variant="contained" type="submit">Save</Button>
+            <Button data-testid='evCancel' size="small" variant="outlined" color='error' onClick={() => formConnectTaskCancel()}>Cancel</Button>
+            <Button data-testid='evRest' size="small" variant="outlined" onClick={() => reset()}>Reset</Button>
+            <Button data-testid='evSave' size="small" variant="contained" type="submit">Save</Button>
           </Box>
 
           </form>
