@@ -29,6 +29,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import BigBellSound from '../sounds/bigbell.wav';
@@ -51,6 +52,7 @@ const HomePage = () => {
 
     const [showClock, setShowClock] = useState('');
     const [showControls, setShowControls] = useState(true);
+    const [showSound, setShowSound] = useState(false);
 
     const [started, setStarted] = useState(new Date(Date.now()));
     const [currGroup, setCurrGroup] = useState('');
@@ -820,7 +822,7 @@ const HomePage = () => {
             padding: '0px 4px', margin: '6px 0px 0px 0px',
           }} expandIcon={<ExpandMoreIcon />} >Schedule Buttons</AccordionSummary>
         <AccordionDetails sx={{padding: '0px', margin: '0px'}}>
-        <Box mx={1}>
+        <Box mx={1} mb={3}>
           {Object.keys(schedButtons).map(item => {
           return (
             <Button size='large' key={item} variant={(currSched === item)? "contained": "outlined"} color="primary" onClick={() => toggleScheds(item)}>
@@ -894,30 +896,41 @@ const HomePage = () => {
              descr={(allTasks[item.evTaskId])? allTasks[item.evTaskId].descr: 'system'}/>)
            }
          </Box>
+
          {(nextEvs.status !== 'ack') &&
-             <Accordion disableGutters elevation={0}>
-               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
-                 minHeight: 32, maxHeight: 32,
-                 float: 'right'
-                 }}>
-                   Sound controls
-               </AccordionSummary>
-               <AccordionDetails>
-                 <Box sx={{float: 'right'}}>
+           <Box>
+                 <Box display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
+                   <Typography mx={1} variant='subitle'>Sound Controls</Typography>
+                    <IconButton data-testid='show-sound' size='small' onClick={() => setShowSound(showSound === false)}>
+                      <ExpandMoreIcon sx={{height: '1.25rem'}} />
+                    </IconButton>
+                 </Box>
+
                  { audioComp.map(item => {
                  return (
-                   <Box key={item.id} display='flex' alignItems='center' justifyContent='flex-end'>
-                     {item.descr}
-                     <audio id={item.id} controls>
-                       <source src={item.src} type="audio/wav" />
-                       Your browser doesn't support audio
-                     </audio>
+                   <Box key={item.id} display='flex'>
+                     {(showSound) ?
+                       <>
+                         <Typography mx={1}>{item.descr}</Typography>
+                         <audio id={item.id} controls preload="auto">
+                           <source src={item.src} type="audio/wav" />
+                           Your browser doesn't support audio
+                         </audio>
+                       </>
+                     :
+                       <>
+                         <audio id={item.id} preload="auto">
+                           <source src={item.src} type="audio/wav" />
+                         </audio>
+                       </>
+                     }
+
                    </Box>
                  )})}
-                 </Box>
-               </AccordionDetails>
-             </Accordion>
+
+           </Box>
          }
+
        </Card>
        }
 
