@@ -2,7 +2,7 @@
 
 exports[`ClockDigital1 renders snapshot correctly 1`] = `
 <button
-  class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1oiecvs-MuiButtonBase-root-MuiButton-root"
+  class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1oiecvs-MuiButtonBase-root-MuiButton-root"
   data-testid="change clock"
   tabindex="0"
   type="button"

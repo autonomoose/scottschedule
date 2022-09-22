@@ -72,7 +72,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
               </p>
             </a>
             <button
-              class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-1vbvugf-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -465,7 +465,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                           0
                         </p>
                         <button
-                          class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
+                          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
                           tabindex="0"
                           type="button"
                         >
@@ -527,7 +527,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     class="MuiBox-root css-x1sij0"
                   >
                     <button
-                      class="MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButtonBase-root  css-1o011v7-MuiButtonBase-root-MuiButton-root"
+                      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
                       data-testid="change clock"
                       tabindex="0"
                       type="button"
@@ -573,7 +573,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                       class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
                     >
                       <label
-                        class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
+                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled css-1yl10x9-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="true"
                         for="schedgroup"
                         id="schedgroup-label"
@@ -581,14 +581,13 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         Schedule Group
                       </label>
                       <div
-                        class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-px39cz-MuiInputBase-root-MuiOutlinedInput-root"
-                        variant="outlined"
+                        class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-px39cz-MuiInputBase-root-MuiOutlinedInput-root"
                       >
                         <div
                           aria-expanded="false"
                           aria-haspopup="listbox"
                           aria-labelledby="schedgroup-label schedgroup"
-                          class="MuiSelect-select MuiSelect-outlined MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-11yrlng-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                          class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-11yrlng-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
                           id="schedgroup"
                           role="button"
                           tabindex="0"
@@ -618,7 +617,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                           class="MuiOutlinedInput-notchedOutline css-9425fu-MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="css-1in441m"
+                            class="css-14lo706"
                           >
                             <span>
                               Schedule Group
@@ -633,7 +632,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                   class="MuiBox-root css-ibnnmb"
                 >
                   <button
-                    class="MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButtonBase-root  css-1v6ey5s-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge css-1v6ey5s-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
@@ -643,7 +642,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                     />
                   </button>
                   <button
-                    class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-1571p40-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge css-1571p40-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
@@ -701,10 +700,10 @@ exports[`HomePage renders snapshot correctly 1`] = `
                             class="MuiAccordionDetails-root css-6w18af-MuiAccordionDetails-root"
                           >
                             <div
-                              class="MuiBox-root css-ibnnmb"
+                              class="MuiBox-root css-1unkww5"
                             >
                               <button
-                                class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButtonBase-root  css-1571p40-MuiButtonBase-root-MuiButton-root"
+                                class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge css-1571p40-MuiButtonBase-root-MuiButton-root"
                                 tabindex="0"
                                 type="button"
                               >
