@@ -44,7 +44,7 @@ exports[`schedgrputil - choice (ChoiceSchedGroup) event renders choice snapshot 
   class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
 >
   <label
-    class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+    class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
     data-shrink="true"
     for="schedgroup"
     id="schedgroup-label"
@@ -52,14 +52,13 @@ exports[`schedgrputil - choice (ChoiceSchedGroup) event renders choice snapshot 
     Schedule Group
   </label>
   <div
-    class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-    variant="outlined"
+    class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
   >
     <div
       aria-expanded="false"
       aria-haspopup="listbox"
       aria-labelledby="schedgroup-label schedgroup"
-      class="MuiSelect-select MuiSelect-outlined MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+      class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
       id="schedgroup"
       role="button"
       tabindex="0"
@@ -89,7 +88,7 @@ exports[`schedgrputil - choice (ChoiceSchedGroup) event renders choice snapshot 
       class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
     >
       <legend
-        class="css-1in441m"
+        class="css-14lo706"
       >
         <span>
           Schedule Group
@@ -125,7 +124,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
           class="MuiBox-root css-1l4w6pd"
         >
           <div
-            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-viou3o-MuiAutocomplete-root"
+            class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-gcwvw8-MuiAutocomplete-root"
             data-testid="taskid"
           >
             <div
@@ -133,7 +132,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
               class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
             >
               <label
-                class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
                 data-shrink="false"
                 for="taskid"
                 id="taskid-label"
@@ -141,7 +140,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
                 Event Name
               </label>
               <div
-                class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root"
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root"
               >
                 <input
                   aria-autocomplete="list"
@@ -149,7 +148,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
                   aria-invalid="false"
                   autocapitalize="none"
                   autocomplete="off"
-                  class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-nxo287-MuiInputBase-input-MuiOutlinedInput-input"
                   id="taskid"
                   name="taskid"
                   role="combobox"
@@ -188,7 +187,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
                   class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                 >
                   <legend
-                    class="css-1ftyaf0"
+                    class="css-yjsfm1"
                   >
                     <span>
                       Event Name
@@ -203,7 +202,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
           class="MuiBox-root css-1csj9ua"
         >
           <button
-            class="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1ir7th6-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1ir7th6-MuiButtonBase-root-MuiButton-root"
             data-testid="evCancel"
             tabindex="0"
             type="button"
@@ -214,7 +213,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
             />
           </button>
           <button
-            class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
             data-testid="evRest"
             tabindex="0"
             type="button"
@@ -225,7 +224,7 @@ exports[`schedgrputil - connev (connect event) renders snapshot correctly 1`] = 
             />
           </button>
           <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
             data-testid="evSave"
             tabindex="0"
             type="submit"
@@ -281,7 +280,7 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
             class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
           >
             <label
-              class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary css-1sumxir-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="true"
               for=":rh:"
               id=":rh:-label"
@@ -289,11 +288,11 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
               Name
             </label>
             <div
-              class="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-invalid="false"
-                class="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input"
                 data-testid="nameInput"
                 id=":rh:"
                 name="name"
@@ -305,7 +304,7 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
                 class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="css-1in441m"
+                  class="css-14lo706"
                 >
                   <span>
                     Name
@@ -333,7 +332,7 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
           class="MuiBox-root css-1ol4ztf"
         >
           <button
-            class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButtonBase-root Mui-disabled  css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
             disabled=""
             tabindex="-1"
             type="button"
@@ -341,7 +340,7 @@ exports[`schedgrputil - create group renders snapshot correctly 1`] = `
             Reset
           </button>
           <button
-            class="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root Mui-disabled  css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
             disabled=""
             tabindex="-1"
             type="submit"

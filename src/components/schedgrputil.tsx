@@ -86,12 +86,19 @@ export const CreateGroup = (props: CreateGroupProps) => {
             <IconButton size='small' onClick={() => props.onComplete('')}>X</IconButton>
           </Box>
 
-          <Box px='0.5em'><label>
-            Name <input type="text" size={12} data-testid="nameInput"
-             {...register('name', { required: true, pattern: /\S+/, maxLength:16 })}
-             aria-invalid={errors.name ? "true" : "false"}
-            />
-          </label></Box>
+          <Box px='0.5em'>
+          <TextField label='Name' size='small'
+            {...register('name', {
+              pattern: {value: /^[a-zA-Z0-9\-]+$/, message: 'no special chars'},
+              maxLength: {value: 20, message: '20 char max'},
+            })}
+            aria-invalid={errors.name ? "true" : "false"}
+            color={errors.name ? 'error' : 'primary'}
+            inputProps={{'data-testid': 'nameInput'}}
+            InputLabelProps={{shrink: true}}
+          />
+
+          </Box>
           <Box px='0.5em'><label> Description
             <input type="text" size={30} data-testid="descrInput"
              {...register('descr', { required: true, pattern: /\S+/, maxLength:30 })}
@@ -754,7 +761,7 @@ export const ConnectTask = (props: ConnectTaskProps) => {
           <Box display="flex" justifyContent="center">
             <Autocomplete
               options={props.evList}
-              id="taskid" data-testid="taskid"
+              id="taskid" data-testid='taskid'
               sx={{ width: 300 }}
               clearOnEscape clearOnBlur
               renderInput={(params) => (

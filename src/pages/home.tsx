@@ -900,7 +900,7 @@ const HomePage = () => {
          {(nextEvs.status !== 'ack') &&
            <Box>
                  <Box display='flex' justifyContent='space-between' sx={{bgcolor: 'site.main'}}>
-                   <Typography mx={1} variant='subitle'>Sound Controls</Typography>
+                   <Typography mx={1} variant='subtitle1'>Sound Controls</Typography>
                     <IconButton data-testid='show-sound' size='small' onClick={() => setShowSound(showSound === false)}>
                       <ExpandMoreIcon sx={{height: '1.25rem'}} />
                     </IconButton>
