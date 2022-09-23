@@ -26,13 +26,9 @@ module.exports = {
     },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
-    "gatsby-remark-images",
     {
       resolve: "gatsby-plugin-mdx",
       options: {
-        defaultLayouts: {
-          default: require.resolve("./src/components/layout.tsx"),
-        },
         gatsbyRemarkPlugins: [
           {
             resolve: "gatsby-remark-images",
