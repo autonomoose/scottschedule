@@ -1,6 +1,7 @@
 // schedule listing
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
@@ -25,6 +26,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const SchedsPage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const { authStatus } = useAuthenticator(context => [context.authStatus]);
     const vdebug = useQueryParam('debug', '');
 
     const [hstatus, setHstatus] = useState('Loading'); // hstatus depends on hdata
@@ -121,8 +123,10 @@ const SchedsPage = () => {
         setHstatus('Ready');
         };
 
-        fetchScheds();
-    }, [enqueueSnackbar, pgserial]);
+        if (authStatus === 'authenticated') {
+            fetchScheds();
+        }
+    }, [enqueueSnackbar, pgserial, authStatus]);
 
     useEffect(() => {
         const fetchEvs = async () => {
@@ -132,8 +136,10 @@ const SchedsPage = () => {
             }
         };
 
-        fetchEvs();
-    }, []);
+        if (authStatus === 'authenticated') {
+            fetchEvs();
+        }
+    }, [authStatus]);
 
     return(
       <Layout><Seo title="Schedules - Scottschedule" />

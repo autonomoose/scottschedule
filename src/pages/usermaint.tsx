@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Auth } from "aws-amplify"
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
 import { EmailChgVerDialog, PasswordChgDialog, UserDelDialog } from '../components/userutil';
@@ -10,6 +11,7 @@ import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 
 const UserMaintPage = () => {
+    const { authStatus } = useAuthenticator(context => [context.authStatus]);
     const [uid, setUid] = useState('');
     const [uparent, setUparent] = useState('');
     const [uemail, setUemail] = useState('');
@@ -49,8 +51,10 @@ const UserMaintPage = () => {
         }
       };
 
-      fetchUinfo();
-    }, [pgserial]);
+      if (authStatus === 'authenticated') {
+          fetchUinfo();
+      }
+    }, [pgserial, authStatus]);
 
     const handleEmailDialogClose = (retcode: string) => {
         setChgEmailOpen(false);
