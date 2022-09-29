@@ -11,8 +11,8 @@ const mytest = <Header uname="tester1" />;
 describe("Header", () => {
 
   it("renders signed-in snapshot correctly", () => {
-    const {container} = render(mytest);
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("opens menu", async () => {

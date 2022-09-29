@@ -81,11 +81,11 @@ describe("HomePage", () => {
   }
 
   it("renders snapshot correctly", async () => {
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
   it("displays a time in the morning", async () => {
       const mockAM = 1482331087071; // 9:38 AM

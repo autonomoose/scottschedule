@@ -34,9 +34,8 @@ const mySetup = () => {
 
 describe("schedgrputil - modify empty group", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
   it("starts with buttons in correct status", () => {
     const utils = mySetup();

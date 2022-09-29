@@ -34,9 +34,8 @@ const mySetup = () => {
 
 describe("eventsutil - modify", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
   it("renders alternate data snapshot correctly", () => {
     const {container} = render(mytestAlt);

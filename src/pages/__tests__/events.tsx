@@ -58,11 +58,11 @@ const mySetup = async () => {
 
 describe("EventsPage", () => {
   it("renders snapshot correctly", async () => {
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("handles panel setup correctly", async () => {

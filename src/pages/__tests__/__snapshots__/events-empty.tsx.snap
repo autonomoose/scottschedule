@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
-<div
-  data-testid="authenticator"
->
+<DocumentFragment>
    
   <div
     style="margin: 1rem auto; min-height: 100vh; text-align: center;"
@@ -68,7 +66,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
               <p
                 class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
               >
-                mockuname
+                testusr
               </p>
             </a>
             <button
@@ -470,9 +468,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                       <div
                         class="MuiBox-root css-pvuze6"
                       >
-                        Events List (
-                        0
-                        )
+                        Events List (0)
                         <button
                           class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
                           data-testid="create-event"
@@ -791,9 +787,7 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
                       class="MuiBox-root css-soic1s"
                     >
                       <span>
-                        Rules (
-                        0
-                        )
+                        Rules (0)
                       </span>
                       <button
                         class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1is3qj5-MuiButtonBase-root-MuiButton-root"
@@ -883,11 +877,9 @@ exports[`EventsPage - empty renders no events snapshot correctly 1`] = `
       <span
         class="MuiTypography-root MuiTypography-caption css-3merus-MuiTypography-root"
       >
-        © 2021-
-        2022
-        , Werner Digital Technology Inc
+        © 2021-2022, Werner Digital Technology Inc
       </span>
     </footer>
   </div>
-</div>
+</DocumentFragment>
 `;

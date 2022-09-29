@@ -1,54 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ClockDigital1 renders snapshot correctly 1`] = `
-<button
-  class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1oiecvs-MuiButtonBase-root-MuiButton-root"
-  data-testid="change clock"
-  tabindex="0"
-  type="button"
->
-  <div
-    class="MuiBox-root css-1w0wdur"
+<DocumentFragment>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1oiecvs-MuiButtonBase-root-MuiButton-root"
+    data-testid="change clock"
+    tabindex="0"
+    type="button"
   >
     <div
-      class="MuiBox-root css-1mxzarq"
+      class="MuiBox-root css-1w0wdur"
     >
-      <p
-        class="MuiTypography-root MuiTypography-body1 css-bnbzw0-MuiTypography-root"
-        data-testid="mainpm"
-        id="mainpm"
+      <div
+        class="MuiBox-root css-1mxzarq"
       >
-        PM
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-bnbzw0-MuiTypography-root"
+          data-testid="mainpm"
+          id="mainpm"
+        >
+          PM
+        </p>
+      </div>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1qk3xk8-MuiTypography-root"
+        data-testid="compclock"
+        id="compclock"
+      >
+        0
       </p>
+      <div
+        class="MuiBox-root css-1b3ucee"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-14da47l-MuiTypography-root"
+          data-testid="compminutes"
+          id="compminutes"
+        >
+          00
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 css-q6tqwp-MuiTypography-root"
+          data-testid="maindate"
+          id="maindate"
+        >
+          Day, 01/01
+        </p>
+      </div>
     </div>
-    <p
-      class="MuiTypography-root MuiTypography-body1 css-1qk3xk8-MuiTypography-root"
-      data-testid="compclock"
-      id="compclock"
+    <span
+      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </button>
+  <div
+    class="MuiBox-root css-rqjkj4"
+  >
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
     >
-      0
-    </p>
-    <div
-      class="MuiBox-root css-1b3ucee"
+      Color
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
     >
-      <p
-        class="MuiTypography-root MuiTypography-body1 css-14da47l-MuiTypography-root"
-        data-testid="compminutes"
-        id="compminutes"
-      >
-        00
-      </p>
-      <p
-        class="MuiTypography-root MuiTypography-body1 css-q6tqwp-MuiTypography-root"
-        data-testid="maindate"
-        id="maindate"
-      >
-        Day, 01/01
-      </p>
-    </div>
+      Scheduler
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </button>
   </div>
-  <span
-    class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-  />
-</button>
+</DocumentFragment>
 `;

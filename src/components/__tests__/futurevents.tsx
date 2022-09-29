@@ -63,9 +63,8 @@ const testSchedGroup = {
 const mytest = <DisplayFutureCard tasks={eventList} evs={evsList} />
 describe("futurevents", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("creates basic futurevents", () => {

@@ -24,14 +24,14 @@ const myXtras = [
 
 describe("PageTopper", () => {
     it("renders home snapshot correctly", async () => {
-      const {container} = render(
+      const {asFragment} = render(
         <PageTopper pname='Home' ptitle='Testing Home'
           helpPage={myhelp}
           linksList={myLinks}
           xtraList={myXtras}
         />
       );
-      expect(container.firstChild).toMatchSnapshot();
+      expect(asFragment()).toMatchSnapshot();
     });
     it("renders debug", async () => {
       render(

@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`userutil email chg renders snapshot correctly 1`] = `null`;
+exports[`userutil email chg renders snapshot correctly 1`] = `<DocumentFragment />`;

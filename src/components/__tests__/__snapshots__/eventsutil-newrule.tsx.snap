@@ -1,93 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`eventsutil - newrule renders snapshot correctly 1`] = `
-<div
-  class="MuiBox-root css-13o7eu2"
->
+<DocumentFragment>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
-    style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+    class="MuiBox-root css-13o7eu2"
   >
     <div
-      class="MuiBox-root css-ibnnmb"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+      style="margin-top: 3px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
     >
-      <form>
-        <div
-          class="MuiBox-root css-h9yv4t"
-        >
-          <h6
-            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+      <div
+        class="MuiBox-root css-ibnnmb"
+      >
+        <form>
+          <div
+            class="MuiBox-root css-h9yv4t"
           >
-            Add New Rule
-          </h6>
-        </div>
-        <div
-          class="MuiBox-root css-k008qs"
-        >
-          <select
-            name="cmd"
-          >
-            <option
-              value="begin"
+            <h6
+              class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
             >
-              begin
-            </option>
-            <option
-              value="option"
-            >
-              option
-            </option>
-          </select>
-          <input
-            data-testid="optionsInput"
-            disabled=""
-            name="options"
-          />
-        </div>
-        <div
-          class="MuiBox-root css-0"
-        >
-          <textarea
-            aria-invalid="false"
-            cols="27"
-            data-testid="contentRule"
-            name="content"
-            rows="2"
-          />
-        </div>
-        <div
-          class="MuiBox-root css-10igwnb"
-        >
-          <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1ir7th6-MuiButtonBase-root-MuiButton-root"
-            data-testid="newEvCancel"
-            tabindex="0"
-            type="button"
+              Add New Rule
+            </h6>
+          </div>
+          <div
+            class="MuiBox-root css-k008qs"
           >
-            Cancel
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            <select
+              name="cmd"
+            >
+              <option
+                value="begin"
+              >
+                begin
+              </option>
+              <option
+                value="option"
+              >
+                option
+              </option>
+            </select>
+            <input
+              data-testid="optionsInput"
+              disabled=""
+              name="options"
             />
-          </button>
-          <button
-            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="button"
+          </div>
+          <div
+            class="MuiBox-root css-0"
           >
-            Reset
-          </button>
-          <button
-            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="submit"
+            <textarea
+              aria-invalid="false"
+              cols="27"
+              data-testid="contentRule"
+              name="content"
+              rows="2"
+            />
+          </div>
+          <div
+            class="MuiBox-root css-10igwnb"
           >
-            Save
-          </button>
-        </div>
-      </form>
+            <button
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1ir7th6-MuiButtonBase-root-MuiButton-root"
+              data-testid="newEvCancel"
+              tabindex="0"
+              type="button"
+            >
+              Cancel
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+            <button
+              class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+            >
+              Reset
+            </button>
+            <button
+              class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+              disabled=""
+              tabindex="-1"
+              type="submit"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
+</DocumentFragment>
 `;

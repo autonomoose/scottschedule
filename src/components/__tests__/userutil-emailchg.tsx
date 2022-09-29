@@ -46,8 +46,8 @@ const mySetup = () => {
 
 describe("userutil email chg", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("handles cancel correctly", async () => {

@@ -37,12 +37,12 @@ const mySetup = async () => {
 
 describe("SetupStep2Page", () => {
   it("renders snapshot correctly", async () => {
-    const {container} = render(mytest);
+    const {asFragment} = render(mytest);
     await waitFor(() => {
         expect(screen.getByRole('button', {name: /sign out/i}))
         .toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("calls API correctly", async () => {

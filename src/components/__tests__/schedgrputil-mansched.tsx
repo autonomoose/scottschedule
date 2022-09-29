@@ -61,9 +61,8 @@ const mySetup = () => {
 
 describe("schedgrputil - mansched", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
   it("starts in _NEW_ mode - custom setup", () => {
     const utils = render(myNewTest);

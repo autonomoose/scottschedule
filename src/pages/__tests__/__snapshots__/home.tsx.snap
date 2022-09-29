@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HomePage renders snapshot correctly 1`] = `
-<div
-  data-testid="authenticator"
->
+<DocumentFragment>
    
   <div
     style="margin: 1rem auto; min-height: 100vh; text-align: center;"
@@ -68,7 +66,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
               <p
                 class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
               >
-                mockuname
+                testusr
               </p>
             </a>
             <button
@@ -447,22 +445,18 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         <p
                           class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
                         >
-                          Status: (
-                          off
-                          ) 
-                          for
+                          Status: (off) for
                         </p>
                         <h6
                           class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
                           id="countUp"
                         >
-                          0m 0s
+                           0s 
                         </h6>
                         <p
                           class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
                         >
-                          Run 
-                          0
+                          Run 0
                         </p>
                         <button
                           class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
@@ -536,7 +530,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                         class="MuiTypography-root MuiTypography-h4 css-18ljsam-MuiTypography-root"
                         id="mainclock"
                       >
-                        00:00
+                        06:36
                       </h4>
                       <span
                         class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
@@ -556,7 +550,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
                       class="MuiTypography-root MuiTypography-h6 css-16ht8xe-MuiTypography-root"
                       id="maindate"
                     >
-                      01/01/00
+                      Wed, Dec 21
                     </h6>
                     <span
                       class="MuiTypography-root MuiTypography-caption css-1l11w9n-MuiTypography-root"
@@ -725,7 +719,7 @@ exports[`HomePage renders snapshot correctly 1`] = `
           <div
             aria-hidden="true"
             class="MuiBackdrop-root css-1178cxv-MuiBackdrop-root"
-            style="opacity: 0; visibility: hidden;"
+            style="opacity: 0; webkit-transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 195ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
           >
             <span
               class="MuiCircularProgress-root MuiCircularProgress-indeterminate MuiCircularProgress-colorInherit css-62e83j-MuiCircularProgress-root"
@@ -797,11 +791,9 @@ exports[`HomePage renders snapshot correctly 1`] = `
       <span
         class="MuiTypography-root MuiTypography-caption css-3merus-MuiTypography-root"
       >
-        © 2021-
-        2022
-        , Werner Digital Technology Inc
+        © 2021-2022, Werner Digital Technology Inc
       </span>
     </footer>
   </div>
-</div>
+</DocumentFragment>
 `;

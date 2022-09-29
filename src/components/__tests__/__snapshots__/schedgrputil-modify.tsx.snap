@@ -1,135 +1,133 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`schedgrputil - modify renders snapshot correctly 1`] = `
-<div
-  class="MuiBox-root css-2t3rs8"
->
+<DocumentFragment>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
-    style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
+    class="MuiBox-root css-2t3rs8"
   >
     <div
-      class="MuiBox-root css-0"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
+      style="margin: 3px 0px 0px 0px; max-width: 350px; min-width: 350px; flex: 1 1; box-shadow: -5px 5px 12px #888888; border-radius: 0 0 5px 5px;"
     >
-      <form>
-        <div
-          class="MuiBox-root css-1j6jckw"
-        >
-          <h6
-            class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
-          >
-            Modify Group
-          </h6>
-          <button
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-            tabindex="0"
-            type="button"
-          >
-            X
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
-        </div>
-        <div
-          class="MuiBox-root css-bqdthe"
-        >
-          testgrp
-          <button
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
-            data-testid="no-del"
-            tabindex="0"
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
-              data-testid="DeleteForeverIcon"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
-              />
-            </svg>
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
-        </div>
-        <div
-          class="MuiBox-root css-o3707h"
-        >
-          <label>
-            <input
-              aria-invalid="false"
-              data-testid="descrInput"
-              name="descr"
-              size="30"
-              type="text"
-            />
-          </label>
-        </div>
-        <div
-          class="MuiBox-root css-o3707h"
-        />
-        <div
-          class="MuiBox-root css-1m55zth"
-        >
-          <button
-            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="button"
-          >
-            Reset
-          </button>
-          <button
-            class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
-            disabled=""
-            tabindex="-1"
-            type="submit"
-          >
-            Save
-          </button>
-        </div>
-      </form>
       <div
-        class="MuiBox-root css-brm5ry"
+        class="MuiBox-root css-0"
       >
-        <span>
-          Schedules (
-          1
-          ) 
-        </span>
-        <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-          tabindex="0"
-          type="button"
-        >
-          New Schedule
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        <form>
+          <div
+            class="MuiBox-root css-1j6jckw"
+          >
+            <h6
+              class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+            >
+              Modify Group
+            </h6>
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+              tabindex="0"
+              type="button"
+            >
+              X
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+          <div
+            class="MuiBox-root css-bqdthe"
+          >
+            testgrp
+            <button
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1pe4mpk-MuiButtonBase-root-MuiIconButton-root"
+              data-testid="no-del"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1vqgfli-MuiSvgIcon-root"
+                data-testid="DeleteForeverIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
+                />
+              </svg>
+              <span
+                class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+              />
+            </button>
+          </div>
+          <div
+            class="MuiBox-root css-o3707h"
+          >
+            <label>
+              <input
+                aria-invalid="false"
+                data-testid="descrInput"
+                name="descr"
+                size="30"
+                type="text"
+              />
+            </label>
+          </div>
+          <div
+            class="MuiBox-root css-o3707h"
           />
-        </button>
-      </div>
-      <ul
-        class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
-      >
+          <div
+            class="MuiBox-root css-1m55zth"
+          >
+            <button
+              class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+              disabled=""
+              tabindex="-1"
+              type="button"
+            >
+              Reset
+            </button>
+            <button
+              class="MuiButtonBase-root Mui-disabled MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall css-11qr2p8-MuiButtonBase-root-MuiButton-root"
+              disabled=""
+              tabindex="-1"
+              type="submit"
+            >
+              Save
+            </button>
+          </div>
+        </form>
         <div
-          class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
-          role="button"
-          tabindex="0"
+          class="MuiBox-root css-brm5ry"
         >
-          testsched
-           - 
-          test sched
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-          />
+          <span>
+            Schedules (1) 
+          </span>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            New Schedule
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
         </div>
-      </ul>
+        <ul
+          class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
+        >
+          <div
+            class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
+            role="button"
+            tabindex="0"
+          >
+            testsched - test sched
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </div>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+</DocumentFragment>
 `;

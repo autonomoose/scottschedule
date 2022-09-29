@@ -1,111 +1,113 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PageTopper renders home snapshot correctly 1`] = `
-<div
-  class="MuiBox-root css-7kebnq"
->
+<DocumentFragment>
   <div
-    style="float: left;"
+    class="MuiBox-root css-7kebnq"
   >
-    <nav
-      aria-label="Breadcrumb"
-      class="MuiTypography-root MuiTypography-body1 MuiBreadcrumbs-root css-63vwl1-MuiTypography-root-MuiBreadcrumbs-root"
+    <div
+      style="float: left;"
     >
-      <ol
-        class="MuiBreadcrumbs-ol css-4pdmu4-MuiBreadcrumbs-ol"
+      <nav
+        aria-label="Breadcrumb"
+        class="MuiTypography-root MuiTypography-body1 MuiBreadcrumbs-root css-63vwl1-MuiTypography-root-MuiBreadcrumbs-root"
       >
-        <li
-          class="MuiBreadcrumbs-li"
+        <ol
+          class="MuiBreadcrumbs-ol css-4pdmu4-MuiBreadcrumbs-ol"
         >
-          <a
-            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-            href="/bcrumblink1"
+          <li
+            class="MuiBreadcrumbs-li"
           >
-            bcrumb1
-          </a>
-        </li>
-        <li
-          aria-hidden="true"
-          class="MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator"
-        >
-          &gt;
-        </li>
-        <li
-          class="MuiBreadcrumbs-li"
-        >
-          <a
-            class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-            href="/bcrumblink2?test=special"
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              href="/bcrumblink1"
+            >
+              bcrumb1
+            </a>
+          </li>
+          <li
+            aria-hidden="true"
+            class="MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator"
           >
-            bcrumb2
-          </a>
-        </li>
-        <li
-          aria-hidden="true"
-          class="MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator"
-        >
-          &gt;
-        </li>
-        <li
-          class="MuiBreadcrumbs-li"
-        >
-          <span>
-            Home
-          </span>
-        </li>
-      </ol>
-    </nav>
-    <h2>
-      Testing Home
-    </h2>
-  </div>
-  <div
-    class="MuiBox-root css-0"
-  >
-    <button
-      class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-      style="margin: 0px 2px;"
-      tabindex="0"
-      type="button"
+            &gt;
+          </li>
+          <li
+            class="MuiBreadcrumbs-li"
+          >
+            <a
+              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+              href="/bcrumblink2?test=special"
+            >
+              bcrumb2
+            </a>
+          </li>
+          <li
+            aria-hidden="true"
+            class="MuiBreadcrumbs-separator css-1wuw8dw-MuiBreadcrumbs-separator"
+          >
+            &gt;
+          </li>
+          <li
+            class="MuiBreadcrumbs-li"
+          >
+            <span>
+              Home
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <h2>
+        Testing Home
+      </h2>
+    </div>
+    <div
+      class="MuiBox-root css-0"
     >
-      <a
-        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-        href="/xtralink1"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+        style="margin: 0px 2px;"
+        tabindex="0"
+        type="button"
       >
-        <small>
-          xtra1
-        </small>
-      </a>
-      <span
-        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-      />
-    </button>
-    <button
-      class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
-      style="margin: 0px 2px;"
-      tabindex="0"
-      type="button"
-    >
-      <a
-        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
-        href="/xtralink2"
+        <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+          href="/xtralink1"
+        >
+          <small>
+            xtra1
+          </small>
+        </a>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1k23hlb-MuiButtonBase-root-MuiButton-root"
+        style="margin: 0px 2px;"
+        tabindex="0"
+        type="button"
       >
-        <small>
-          xtra2
-        </small>
+        <a
+          class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1ps4owl-MuiTypography-root-MuiLink-root"
+          href="/xtralink2"
+        >
+          <small>
+            xtra2
+          </small>
+        </a>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div>
+      <a
+        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1kt0v4n-MuiTypography-root-MuiLink-root"
+        href="/help/pagetopper"
+      >
+        Help
       </a>
-      <span
-        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-      />
-    </button>
+    </div>
   </div>
-  <div>
-    <a
-      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1kt0v4n-MuiTypography-root-MuiLink-root"
-      href="/help/pagetopper"
-    >
-      Help
-    </a>
-  </div>
-</div>
+</DocumentFragment>
 `;
