@@ -21,7 +21,7 @@
     "author": "tw",
     "license": "ISC",
     "dependencies": {
-        "@aws-amplify/ui-react": "^1.2.26",
+        "@aws-amplify/ui-react": "^3.5.4",
         "@emotion/react": "^11.10.4",
         "@emotion/styled": "^11.10.4",
         "@hookform/error-message": "^2.0.0",

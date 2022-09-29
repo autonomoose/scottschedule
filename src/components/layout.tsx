@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Auth, API, Hub } from "aws-amplify"
-import { AmplifyAuthenticator } from '@aws-amplify/ui-react';
+import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 
 import { useSnackbar } from 'notistack';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -95,11 +95,13 @@ interface HdataValues {
 
 const Layout = (props: LayoutProps) => {
     const { enqueueSnackbar } = useSnackbar();
-    const [uname, setUname] = useState('')
     const [uid, setUid] = useState('')
 
     const [hdata, setHdata] = useState<HdataValues>({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
     const [mode, setMode] = useState("light");
+    // we also use the authenticator to watch for auth status changes
+    const { authStatus } = useAuthenticator(context => [context.authStatus]);
+    const { user } = useAuthenticator((context) => [context.user]);
 
     // const vdebug = true;    // test and dev settings
     const vdebug = (props.vdebug || false);  // production settings
@@ -108,43 +110,6 @@ const Layout = (props: LayoutProps) => {
         () => createTheme(mode === "light" ? lightTheme : darkTheme), [mode]
     );
 
-    // get the username and uid from session accessToken
-    // using memoized fetchUname to keep renders from
-    //   triggering useeffects listing it in dependencies
-    // NOTE: this could be simply defined in the useeffect
-    //   without usecallback since it is only used by one useeffect
-    const fetchUname = useCallback(async () => {
-        try {
-            // @ts-expect-error: until aws-amplify gets formal typing
-            const {accessToken} = await Auth.currentSession();
-            const uname = accessToken.payload['username'];
-            setUname(uname);
-            const uid = accessToken.payload['sub'];
-            setUid(uid);
-        } catch (error) {
-            setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTH-CURRENSESSION"}}});
-            setUname('');
-            }
-        }, []);
-
-    // every time the page loads
-    useEffect(() => {
-        fetchUname();
-    }, [fetchUname, vdebug]);
-
-    // log out user after an hour
-    // useInterval(() => {
-    //     async function signOut() {
-    //       try {
-    //           await Auth.signOut({ global: true });
-    //       } catch (error) {
-    //           console.log('error signing out: ', error);
-    //       }
-    //     };
-    //
-    //     signOut();
-    //     // fetchUname();
-    // }, (uname === 'no user' || uname === '')? 0: 3600000);
 
     // get the user record from dynamodb
     // everytime the user changes to a valid name
@@ -153,15 +118,29 @@ const Layout = (props: LayoutProps) => {
           try {
             const result: any = await API.graphql({query: currUsersInfo});
             setHdata(result);
-            } catch (error) {
+          } catch (error) {
               setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTHDB-CURRUSERSINFO"}}});
-            }
-          };
+          }
+          try {
+              // @ts-expect-error: until aws-amplify gets formal typing
+              const {accessToken} = await Auth.currentSession();
+              // const uname = accessToken.payload['username'];
+              const uid = accessToken.payload['sub'];
+              setUid(uid);
+          } catch (error) {
+              setHdata({"data":{"getCurrentUser":{"progError": "AWS-AUTH-CURRENSESSION"}}});
+          }
 
-        if (uname !== 'no user' && uname !=='') {
+        };
+
+        // useEffect body
+        if (authStatus === 'authenticated') {
             fetchUser();
-      }
-    }, [uname, vdebug]);
+        } else {
+            setHdata({"data":{"getCurrentUser":{"loading": "true", "progError": null}}});
+
+        }
+    }, [authStatus]);
 
     // setup dark/light mode on initial load and add listener
     useEffect(() => {
@@ -185,31 +164,78 @@ const Layout = (props: LayoutProps) => {
         };
     }, []);
 
+    useEffect(() => {
+        const root = window.document.documentElement;
+        if (mode === 'light') {
+            // backgrounds, borders
+            root.style.setProperty('--amplify-colors-background-primary', '#f2eee2');
+            root.style.setProperty('--amplify-colors-border-primary', 'var(--amplify-colors-blue-90)');
+            root.style.setProperty('--amplify-colors-border-focus', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-primary-background-color', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-primary-hover-background-color', 'var(--amplify-colors-blue-80)');
+            root.style.setProperty('--amplify-components-button-primary-active-background-color', 'var(--amplify-colors-blue-20)');
+
+            // text
+            root.style.setProperty('--amplify-colors-font-primary', 'var(--amplify-colors-black)');
+            root.style.setProperty('--amplify-colors-font-interactive', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-color', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-hover-color', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-hover-border-color', 'var(--amplify-colors-blue-90)');
+            root.style.setProperty('--amplify-components-button-hover-background-color', '#f5ce28');
+
+            root.style.setProperty('--amplify-components-button-link-hover-color', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-link-hover-background-color', '#f5ce28');
+
+        } else {
+            // backgrounds, borders, buttons
+            root.style.setProperty('--amplify-colors-background-primary', '#031424');
+            root.style.setProperty('--amplify-colors-border-primary', 'var(--amplify-colors-blue-80)');
+            root.style.setProperty('--amplify-colors-border-focus', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-primary-background-color', 'var(--amplify-colors-blue-100)');
+            root.style.setProperty('--amplify-components-button-primary-hover-background-color', 'var(--amplify-colors-blue-80)');
+            root.style.setProperty('--amplify-components-button-primary-active-background-color', 'var(--amplify-colors-blue-60)');
+
+            // text
+            root.style.setProperty('--amplify-colors-font-primary', 'var(--amplify-colors-white)');
+            root.style.setProperty('--amplify-colors-font-interactive', 'var(--amplify-colors-blue-40)');
+            root.style.setProperty('--amplify-components-button-color', 'var(--amplify-colors-blue-40)');
+            root.style.setProperty('--amplify-components-button-hover-color', 'var(--amplify-colors-neutral-60)');
+            root.style.setProperty('--amplify-components-button-hover-border-color', 'var(--amplify-colors-blue-60)');
+            root.style.setProperty('--amplify-components-button-hover-background-color', '#30415d');
+
+            root.style.setProperty('--amplify-components-button-link-hover-color', 'var(--amplify-colors-neutral-60)');
+            root.style.setProperty('--amplify-components-button-link-hover-background-color', '#30415d');
+        }
+    }, [mode]);
+
     // subscribe to any changes in auth status
     useEffect(() => {
         const hubListener = (data: any) => {
+            const mytime = new Date(Date.now());
+
             switch (data.payload.event) {
             case 'signIn':
-                window.location.reload();
                 enqueueSnackbar(`Sign-on successful`, {variant: 'success'});
+                console.log('Sign-in:', mytime.toLocaleTimeString());
                 break;
             case 'tokenRefresh_failure':
-                // setUname('no user');
                 window.location.reload();
                 enqueueSnackbar(`user timed out`, {variant: 'success'});
-                // navigate("/");
+                console.log('Time-out:', mytime.toLocaleTimeString());
                 break;
             case 'signOut':
-                // setUname('no user');
                 enqueueSnackbar(`user logged off`, {variant: 'success'});
+                console.log('Sign-out:', mytime.toLocaleTimeString());
                 break;
             case 'tokenRefresh':
+                console.log(mytime.toLocaleTimeString());
                 console.log('user refreshed session');
                 break;
             case 'signIn_failure':
             case 'signUp':
                 break;
             default:
+                console.log(mytime.toLocaleTimeString());
                 console.log('Uncaught Auth module hub signal', data.payload.event);
                 break;
             }
@@ -221,10 +247,10 @@ const Layout = (props: LayoutProps) => {
 
 
     return (
-        <AmplifyAuthenticator>
         <ThemeProvider theme={theme}> <CssBaseline enableColorScheme />
+        { (authStatus !== 'authenticated') ? <Authenticator /> :
         <div style={{margin: `1rem auto`, minHeight: '100vh', textAlign: 'center' }} >
-          <Header uname={uname} mode={mode} setMode={setMode} />
+          <Header uname={user?.username || ''} mode={mode} setMode={setMode} />
           <Box mt={8}>
 
             <main>
@@ -289,8 +315,8 @@ const Layout = (props: LayoutProps) => {
               </Typography>
             </footer>
         </div>
+        }
         </ThemeProvider>
-        </AmplifyAuthenticator>
     ) // end of anonymous return
 }
 
