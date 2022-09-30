@@ -102,12 +102,12 @@ const mySetup = async () => {
 
 describe("UserMaintPage", () => {
   it("renders snapshot correctly", async () => {
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('mainuser')).toBeVisible();
     });
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("opens and closes change dialogs as primary", async () => {

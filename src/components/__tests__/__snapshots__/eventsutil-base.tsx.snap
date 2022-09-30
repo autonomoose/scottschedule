@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`eventsutil - base renders snapshot correctly 1`] = `
-<ul
-  class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
->
-  <div
-    class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
-    role="button"
-    tabindex="0"
+<DocumentFragment>
+  <ul
+    class="MuiList-root MuiList-dense css-16vbaq4-MuiList-root"
   >
-    testevt
-     - 
-    test event
-    <span
-      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-    />
-  </div>
-</ul>
+    <div
+      class="MuiButtonBase-root MuiListItem-root MuiListItem-dense MuiListItem-gutters MuiListItem-padding MuiListItem-button css-qyxyi3-MuiButtonBase-root-MuiListItem-root"
+      role="button"
+      tabindex="0"
+    >
+      testevt - test event
+      <span
+        class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+      />
+    </div>
+  </ul>
+</DocumentFragment>
 `;

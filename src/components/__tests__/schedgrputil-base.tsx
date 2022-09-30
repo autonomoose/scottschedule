@@ -76,9 +76,8 @@ describe("schedgrputil - base DisplaySchedGroup event", () => {
   const mytest = <DisplaySchedGroup group='default' groupSched={testSchedGroup} select={mockCallback} />
 
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("handles graphQL thrown error", async () => {

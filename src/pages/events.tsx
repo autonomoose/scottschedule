@@ -1,6 +1,7 @@
 // events listing
 import React, { useEffect, useState } from 'react';
 import { useQueryParam } from 'gatsby-query-params';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 import Layout from '../components/layout';
 import PageTopper from '../components/pagetopper';
@@ -22,6 +23,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const EventsPage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const { authStatus } = useAuthenticator(context => [context.authStatus]);
     const startParm = useQueryParam('start', '');
     const vdebug = useQueryParam('debug', '');
 
@@ -72,9 +74,10 @@ const EventsPage = () => {
         setHstatus('Ready');
         };
 
-        fetchEvs();
-        // console.log('ev fetch', pgserial, startParm);
-    }, [enqueueSnackbar, vdebug, pgserial, startParm] );
+        if (authStatus === 'authenticated') {
+            fetchEvs();
+        }
+    }, [enqueueSnackbar, vdebug, pgserial, startParm, authStatus] );
 
     return(
       <Layout><Seo title="Events - Scottschedule" />

@@ -4,6 +4,7 @@
  * See: https://www.gatsbyjs.org/docs/ssr-apis/
  */
 import React from 'react'
+import { Authenticator } from '@aws-amplify/ui-react';
 import { SnackbarProvider } from 'notistack';
 
 const DeferredScript = () => {
@@ -41,7 +42,12 @@ export const onRenderBody = ({ setPreBodyComponents }) => {
 export const wrapPageElement = ({ element }) => {
   // props provide same data to Layout as Page element will get
   // including location, data, etc - you don't need to pass it
-  return <SnackbarProvider maxSnack={3} dense preventDuplicate>{element}</SnackbarProvider>;
-};
+  return (
+      <Authenticator.Provider>
+      <SnackbarProvider maxSnack={3} dense preventDuplicate>
+        {element}
+      </SnackbarProvider>
+      </Authenticator.Provider>
+)};
 
 

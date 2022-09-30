@@ -22,11 +22,11 @@ jest.mock('notistack', () => ({
 const mytest = <EventsPage />;
 describe("EventsPage - empty", () => {
   it("renders no events snapshot correctly", async () => {
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   }, 15000);
 
   it("handles null for events fetch", async () => {

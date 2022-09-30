@@ -1,6 +1,14 @@
 import React from 'react';
 
-export const AmplifyAuthenticator = props => {
-    return (<div data-testid='authenticator'>{props.children}</div>);
+export const Authenticator = props => {
+    return (<div data-testid='authenticator'> My authent</div>);
 }
+
+export const useAuthenticator = props => {
+    const user = {
+        username: 'testusr',
+    }
+    return ({ user, authStatus: 'authenticated' });
+}
+
 

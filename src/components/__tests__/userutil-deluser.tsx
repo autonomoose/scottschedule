@@ -23,8 +23,8 @@ const mytest = <UserDelDialog dialogOpen={true} dialogClose={handleDialogClose}/
 
 describe("userutil user delete", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("exits correctly", async () => {

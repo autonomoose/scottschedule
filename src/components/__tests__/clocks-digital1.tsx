@@ -28,8 +28,8 @@ const mySetup = async () => {
 
 describe("ClockDigital1", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("changes clock when clock is clicked", async () => {

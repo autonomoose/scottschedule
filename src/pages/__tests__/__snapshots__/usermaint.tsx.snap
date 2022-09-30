@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UserMaintPage renders snapshot correctly 1`] = `
-<div
-  data-testid="authenticator"
->
+<DocumentFragment>
    
   <div
     style="margin: 1rem auto; min-height: 100vh; text-align: center;"
@@ -68,11 +66,11 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
               <p
                 class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
               >
-                mockuname
+                testusr
               </p>
             </a>
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -462,16 +460,12 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                   <li>
                      Account key:
                     <br />
-                     
-                    test
-                     
+                     test 
                   </li>
                   <li>
                      User key:
                     <br />
-                     
-                    test
-                     
+                     test 
                   </li>
                 </ul>
               </div>
@@ -490,7 +484,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                   class="MuiBox-root css-1impqaw"
                 >
                   <button
-                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1is3qj5-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1is3qj5-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
@@ -514,7 +508,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                   class="MuiBox-root css-1impqaw"
                 >
                   <button
-                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1is3qj5-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-1is3qj5-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
@@ -553,7 +547,7 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
                   class="MuiBox-root css-1impqaw"
                 >
                   <button
-                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-bt5zmn-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall MuiButton-root MuiButton-outlined MuiButton-outlinedSecondary MuiButton-sizeSmall MuiButton-outlinedSizeSmall css-bt5zmn-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
@@ -617,11 +611,9 @@ exports[`UserMaintPage renders snapshot correctly 1`] = `
       <span
         class="MuiTypography-root MuiTypography-caption css-3merus-MuiTypography-root"
       >
-        © 2021-
-        2022
-        , Werner Digital Technology Inc
+        © 2021-2022, Werner Digital Technology Inc
       </span>
     </footer>
   </div>
-</div>
+</DocumentFragment>
 `;

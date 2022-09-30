@@ -84,19 +84,19 @@ jest.mock('notistack', () => ({
 const mytest = <SchedsPage />;
 describe("SchedsPage", () => {
   it("renders no group/scheds correctly", async () => {
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
-  }, 15000);
+    expect(asFragment()).toMatchSnapshot();
+  });
 
   it("handles null for group/scheds fetch", async () => {
     const utils = render(mytest);
     await waitFor(() => {
         expect(utils.getByTestId('dataBackdrop')).not.toBeVisible();
     });
-  }, 15000);
+  });
 });
 
 

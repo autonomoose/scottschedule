@@ -45,11 +45,11 @@ describe("HomePage empty", () => {
   it("renders empty snapshot correctly", async () => {
     (fetchSchedGroupsDB as jest.Mock).mockImplementation(() => Promise.resolve({}));
     (fetchEventsDB as jest.Mock).mockImplementation(() => Promise.resolve({}));
-    const {container, getByTestId} = render(mytest);
+    const {asFragment, getByTestId} = render(mytest);
     await waitFor(() => {
         expect(getByTestId('dataBackdrop')).not.toBeVisible();
     });
-    expect(container.firstChild).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("handles event lookup error", async () => {

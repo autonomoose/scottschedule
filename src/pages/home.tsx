@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useQueryParam } from 'gatsby-query-params';
 
 import Layout from '../components/layout';
@@ -43,6 +44,7 @@ interface iAudioComp {
 
 const HomePage = () => {
     const { enqueueSnackbar } = useSnackbar();
+    const { authStatus } = useAuthenticator(context => [context.authStatus]);
     const startParm = useQueryParam('start', '');
     const vdebug = useQueryParam('debug', '');
 
@@ -568,29 +570,33 @@ const HomePage = () => {
             }
         };
 
-        fetchData();
-    }, [dataSerial] );
+        if (authStatus === 'authenticated') {
+            fetchData();
+        }
+    }, [dataSerial, authStatus] );
 
     // load all schedules/groups, schedGroups and statusGs
     useEffect(() => {
-      const fetchData = async () => {
-          try {
-              setStatusGs('Loading');
-              const newSchedgrps = await fetchSchedGroupsDB();
-              if (newSchedgrps && Object.keys(newSchedgrps).length > 0) {
-                  setSchedGroups(newSchedgrps);
-              } else {
-                  setSchedGroups({});
-              }
-              setStatusGs('Ready');
+        const fetchData = async () => {
+            try {
+                setStatusGs('Loading');
+                const newSchedgrps = await fetchSchedGroupsDB();
+                if (newSchedgrps && Object.keys(newSchedgrps).length > 0) {
+                    setSchedGroups(newSchedgrps);
+                } else {
+                    setSchedGroups({});
+                }
+                setStatusGs('Ready');
 
-          } catch (result) {
-              setStatusGs('Error');
-          }
-      };
+            } catch (result) {
+                setStatusGs('Error');
+            }
+        };
 
-      fetchData();
-    }, [dataSerial] );
+        if (authStatus === 'authenticated') {
+            fetchData();
+        }
+    }, [dataSerial, authStatus] );
 
     // init page when data is finished loading
     useEffect(() => {

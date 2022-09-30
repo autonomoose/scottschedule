@@ -25,9 +25,8 @@ const eventSoundList = {
 const mytest = <DisplayEvents tasks={eventList} select={mockCallback} />
 describe("eventsutil - base", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(mytest);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(mytest);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("translates simple graphQL into events", async () => {

@@ -33,9 +33,8 @@ const clickOptions = (_item: string) => {
 
 describe("schedbuttons", () => {
   it("renders snapshot correctly", () => {
-    const {container} = render(<OptionsButtons options={testOptions} onClick={clickOptions}/>);
-
-    expect(container.firstChild).toMatchSnapshot();
+    const {asFragment} = render(<OptionsButtons options={testOptions} onClick={clickOptions}/>);
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it("handles button click to enable", () => {
