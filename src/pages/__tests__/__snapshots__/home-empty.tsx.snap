@@ -70,7 +70,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
               </p>
             </a>
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium css-1vbvugf-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -459,7 +459,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                           Run 0
                         </p>
                         <button
-                          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
+                          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
                           tabindex="0"
                           type="button"
                         >
@@ -521,7 +521,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                     class="MuiBox-root css-x1sij0"
                   >
                     <button
-                      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
+                      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1o011v7-MuiButtonBase-root-MuiButton-root"
                       data-testid="change clock"
                       tabindex="0"
                       type="button"
@@ -567,7 +567,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                       class="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root css-khqvv2-MuiFormControl-root-MuiTextField-root"
                     >
                       <label
-                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary css-pip3qv-MuiFormLabel-root-MuiInputLabel-root"
+                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-pip3qv-MuiFormLabel-root-MuiInputLabel-root"
                         data-shrink="false"
                         for="schedgroup"
                         id="schedgroup-label"
@@ -649,7 +649,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-h2ronv-MuiListItem-root"
                       >
                         <div
-                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
+                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
                           data-testid="qstart1"
                           role="button"
                           tabindex="0"
@@ -677,7 +677,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-h2ronv-MuiListItem-root"
                       >
                         <div
-                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
+                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
                           data-testid="qstart2"
                           role="button"
                           tabindex="0"
@@ -705,7 +705,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                         class="MuiListItem-root MuiListItem-dense MuiListItem-gutters css-h2ronv-MuiListItem-root"
                       >
                         <div
-                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
+                          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters MuiListItemButton-root MuiListItemButton-dense MuiListItemButton-gutters css-1r3qkbx-MuiButtonBase-root-MuiListItemButton-root"
                           data-testid="qstart3"
                           role="button"
                           tabindex="0"
@@ -736,7 +736,7 @@ exports[`HomePage empty renders empty snapshot correctly 1`] = `
                   class="MuiBox-root css-ibnnmb"
                 >
                   <button
-                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge css-1v6ey5s-MuiButtonBase-root-MuiButton-root"
+                    class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeLarge MuiButton-containedSizeLarge css-1v6ey5s-MuiButtonBase-root-MuiButton-root"
                     tabindex="0"
                     type="button"
                   >
